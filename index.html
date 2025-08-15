@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PowerBots360 – Catalogue & Paiement</title>
+<meta name="theme-color" content="#0f172a"/>
+<link rel="manifest" href="#app-manifest">
+<style>
+  /* ---------- Base / Reset ---------- */
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{height:100%}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+    color:#0f172a;
+    -webkit-touch-callout:none; -webkit-user-select:none; user-select:none;
+    background:#0b1020 url('https://i.postimg.cc/0j8Jbgfg/IMG-3217.jpg') center/cover fixed no-repeat;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font:inherit}
+
+  /* ---------- Overlay pour lisibilité ---------- */
+  .bg-overlay{
+    position:fixed;inset:0;background:linear-gradient( to bottom, rgba(2,6,23,.68), rgba(2,6,23,.35) 35%, rgba(2,6,23,.68));
+    pointer-events:none;z-index:0;
+  }
+
+  /* ---------- Conteneur global ---------- */
+  .container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:16px}
+  .card{
+    background:rgba(255,255,255,.10);backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+  }
+
+  /* ---------- Header / Nav ---------- */
+  header{position:sticky;top:0;z-index:10;background:rgba(2,6,23,.65);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.12)}
+  .nav{display:flex;align-items:center;gap:10px;justify-content:space-between;max-width:1200px;margin:0 auto;padding:10px 16px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand .logo{
+    width:34px;height:34px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #22d3ee, #2563eb 60%, #0ea5e9);
+    box-shadow:0 0 20px rgba(56,189,248,.5), inset 0 0 12px rgba(59,130,246,.5);
+  }
+  .brand h1{font-size:18px;margin:0;color:#e5e7eb;letter-spacing:.02em}
+  .nav .actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .btn{
+    border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.10);color:#e5e7eb;
+    padding:9px 14px;border-radius:999px;cursor:pointer;transition:.2s;
+  }
+  .btn:hover{background:rgba(255,255,255,.18)}
+  .btn-primary{background:linear-gradient(90deg,#22c55e,#16a34a);border:none}
+  .btn-warn{background:linear-gradient(90deg,#ef4444,#b91c1c);border:none}
+  .badge{border-radius:999px;background:#0ea5e9;color:#fff;padding:4px 9px;font-size:12px}
+  .btn[disabled]{opacity:.5;pointer-events:none}
+
+  /* ---------- Hero ---------- */
+  .hero{margin:16px auto;display:grid;gap:12px}
+  .hero h2{margin:0;color:#f1f5f9;font-size:26px;letter-spacing:-.01em}
+  .hero p{margin:0;color:#cbd5e1}
+  .pillbar{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{background:rgba(2,6,23,.6);color:#cbd5e1;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 10px;font-size:12px}
+
+  /* ---------- Toolbar Catalogue ---------- */
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
+  .field{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#e5e7eb}
+  .field input,.field select{all:unset;color:#e5e7eb}
+  .field input::placeholder{color:#cbd5e1}
+
+  /* ---------- Grille Catalogue ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+  .service{
+    display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:14px;
+    background:rgba(2,6,23,.45); /* plus transparent qu’avant */
+    border:1px solid rgba(255,255,255,.12);
+    transition:.2s;
+  }
+  .service:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+  .service h3{margin:0;color:#f8fafc;font-size:16px}
+  .service .meta{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font-size:11px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.1);color:#e2e8f0;border:1px solid rgba(255,255,255,.18)}
+  .price{color:#86efac;font-weight:700}
+  .old{color:#94a3b8;text-decoration:line-through;margin-left:6px;font-weight:500}
+  .row{display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap}
+  .qty{display:flex;align-items:center;gap:6px}
+  .qty input{all:unset;width:60px;text-align:center;background:rgba(255,255,255,.08);padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,.12);color:#e5e7eb}
+
+  /* ---------- Sections masquables ---------- */
+  section{margin:12px 0}
+  .hidden{display:none}
+
+  /* ---------- Panier / Modals ---------- */
+  .drawer{
+    position:fixed;right:0;top:0;height:100%;width:92%;max-width:420px;background:rgba(15,23,42,.96);
+    border-left:1px solid rgba(255,255,255,.12);transform:translateX(100%);transition:.25s;z-index:30;color:#e5e7eb;padding:16px 14px;overflow:auto
+  }
+  .drawer.open{transform:none}
+  .line{display:flex;justify-content:space-between;gap:10px;margin:6px 0}
+  .muted{color:#94a3b8;font-size:13px}
+  .divider{height:1px;background:rgba(255,255,255,.12);margin:10px 0}
+  .total{font-size:18px;font-weight:800;color:#f8fafc}
+  .promo{display:flex;gap:6px;margin-top:8px}
+  .promo input{all:unset;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:8px;border-radius:10px;color:#e5e7eb;flex:1}
+  .modal{
+    position:fixed;inset:0;background:rgba(2,6,23,.66);display:none;align-items:center;justify-content:center;z-index:40
+  }
+  .modal.open{display:flex}
+  .modal .card{max-width:560px;width:92%}
+
+  /* ---------- Pagination ---------- */
+  .pager{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .pager input{all:unset;width:60px;text-align:center;background:rgba(255,255,255,.08);padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,.12);color:#e5e7eb}
+
+  /* ---------- Footer ---------- */
+  footer{color:#94a3b8;text-align:center;padding:30px 16px}
+
+  /* ---------- Responsive ---------- */
+  @media (min-width:800px){
+    .hero{grid-template-columns:1.2fr .8fr;align-items:center}
+  }
+</style>
+</head>
+<body>
+<div class="bg-overlay"></div>
+
+<header>
+  <nav class="nav">
+    <div class="brand" role="banner">
+      <div class="logo" aria-hidden="true"></div>
+      <h1>PowerBots360</h1>
+      <span class="badge" id="langBadge">FR</span>
+    </div>
+    <div class="actions" role="navigation" aria-label="Navigation principale">
+      <button class="btn" id="backBtn" title="Retour">⟵ Retour</button>
+      <button class="btn" data-goto="home">Accueil</button>
+      <button class="btn" data-goto="catalogue" id="btnCatalogue">Catalogue</button>
+      <button class="btn" data-goto="contact">Contact</button>
+      <button class="btn" data-goto="legal">Légal</button>
+      <select class="btn" id="currency">
+        <option value="EUR" selected>€ EUR</option>
+        <option value="USD">$ USD</option>
+        <option value="GBP">£ GBP</option>
+      </select>
+      <button class="btn" id="toggleLang">EN/FR</button>
+      <button class="btn" id="loginBtn">Connexion</button>
+      <button class="btn btn-primary" id="openCart">Panier (<span id="cartCount">0</span>)</button>
+    </div>
+  </nav>
+</header>
+
+<main class="container">
+  <!-- HERO -->
+  <section id="home" class="card">
+    <div class="hero">
+      <div>
+        <h2 id="heroTitle">Des bots fiables pour booster vos réseaux — pro, rapides, transparents.</h2>
+        <p id="heroSubtitle">Recherche avancée, panier sécurisé, paiement PayPal — tout en un. Multi-langues, multi-devises, codes promo et support réactif.</p>
+        <div class="pillbar" aria-label="atouts">
+          <div class="pill">Paiement PayPal</div>
+          <div class="pill">600+ services</div>
+          <div class="pill">Multi-plateformes</div>
+          <div class="pill">Support 24/7</div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" data-goto="catalogue">Voir le catalogue</button>
+          <button class="btn" data-goto="contact">Parler à un conseiller</button>
+        </div>
+      </div>
+      <div class="card" style="background:rgba(2,6,23,.55);border-color:rgba(255,255,255,.12)">
+        <div class="row"><strong>Connexion rapide (Démo)</strong><span class="muted">Aucune donnée sensible stockée côté serveur.</span></div>
+        <div class="divider"></div>
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <input id="demoEmail" class="btn" placeholder="email@exemple.com" style="flex:1;min-width:220px;background:rgba(255,255,255,.08)"/>
+          <input id="demoPass" class="btn" placeholder="Mot de passe" type="password" style="flex:1;min-width:160px;background:rgba(255,255,255,.08)"/>
+          <button class="btn" id="demoSignup">Créer</button>
+          <button class="btn" id="demoSignin">Se connecter</button>
+          <button class="btn btn-warn" id="demoSignout">Se déconnecter</button>
+        </div>
+        <div id="authState" class="muted" style="margin-top:8px">Statut : invité</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOGUE -->
+  <section id="catalogue" class="card hidden" aria-label="Catalogue">
+    <div class="row" style="align-items:stretch">
+      <div class="field" style="flex:1"><span>🔎</span><input id="search" placeholder="Rechercher un service (ex : TikTok likes)…"></div>
+      <div class="field"><span>🏷️</span>
+        <select id="platform">
+          <option value="all">Toutes plateformes</option>
+          <option>TikTok</option><option>Instagram</option><option>YouTube</option>
+          <option>Facebook</option><option>Twitter/X</option><option>Snapchat</option>
+          <option>Twitch</option><option>Reddit</option><option>LinkedIn</option>
+          <option>Telegram</option><option>Spotify</option><option>Discord</option>
+        </select>
+      </div>
+      <div class="field"><span>⚙️</span>
+        <select id="sort">
+          <option value="pop">Populaires</option>
+          <option value="priceAsc">Prix ↑</option>
+          <option value="priceDesc">Prix ↓</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <!-- Pagination -->
+    <div class="pager" id="pager">
+      <button class="btn" id="prevPage">⟵ Précédent</button>
+      <span id="pageInfo" class="muted">Page 1 / 1</span>
+      <button class="btn" id="nextPage">Suivant ⟶</button>
+      <span class="muted">Aller à</span>
+      <input id="gotoPage" type="number" min="1" value="1" />
+      <button class="btn" id="goPage">OK</button>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="card hidden" aria-label="Contact">
+    <h3>Contact</h3>
+    <p class="muted">Besoin d’aide ? Laisse-nous un message, on répond vite.</p>
+    <form id="contactForm" class="grid">
+      <input class="btn" name="name" placeholder="Nom complet" required style="background:rgba(255,255,255,.08)"/>
+      <input class="btn" name="email" placeholder="Email" type="email" required style="background:rgba(255,255,255,.08)"/>
+      <textarea class="btn" name="msg" placeholder="Message" rows="4" required style="background:rgba(255,255,255,.08)"></textarea>
+      <button class="btn btn-primary" type="submit">Envoyer</button>
+    </form>
+    <div id="contactOk" class="muted" style="margin-top:8px;display:none">Merci, votre message a été envoyé (simulation).</div>
+  </section>
+
+  <!-- LEGAL -->
+  <section id="legal" class="card hidden" aria-label="Pages légales">
+    <h3>Mentions légales & CGV</h3>
+    <p class="muted">Contenu d’exemple. Adapte à ton activité et à ta juridiction.</p>
+    <details open><summary>Mentions légales</summary><p class="muted">PowerBots360 – Contact : support@powerbots360.com</p></details>
+    <details><summary>CGU/CGV</summary><p class="muted">Prestations numériques livrées après paiement. Pas de promesse de résultat, respect des règles des plateformes. Pas d’usage nuisible.</p></details>
+    <details><summary>Confidentialité</summary><p class="muted">Cookies techniques, aucune revente de données. Voir politique détaillée.</p></details>
+  </section>
+</main>
+
+<!-- PANIER -->
+<aside id="cart" class="drawer" aria-label="Panier">
+  <div class="row"><h3 style="margin:0">Panier</h3><button class="btn" id="closeCart">Fermer</button></div>
+  <div class="divider"></div>
+  <div id="cartItems"></div>
+  <div class="divider"></div>
+  <div class="line"><span>Sous-total</span><span id="subTotal">0.00</span></div>
+  <div class="line"><span>Remise</span><span id="discount">0.00</span></div>
+  <div class="line"><span>Devise</span><span id="currencyView">EUR</span></div>
+  <div class="total line"><span>Total</span><span id="grandTotal">0.00</span></div>
+  <div class="promo">
+    <input id="coupon" placeholder="Code promo (WELCOME10 / VIP5)"/>
+    <button class="btn" id="applyCoupon">Appliquer</button>
+  </div>
+  <div class="divider"></div>
+  <button class="btn btn-primary" id="checkout">Passer au paiement</button>
+</aside>
+
+<!-- CONFIRMATION / PAIEMENT -->
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true">
+  <div class="card">
+    <h3 style="margin-top:0">Confirmer votre commande</h3>
+    <p class="muted" id="confirmText">Un récapitulatif va s’ouvrir avant le paiement.</p>
+    <div class="divider"></div>
+    <div id="paypalButtons" style="margin-bottom:10px; display:none"></div>
+    <div class="row">
+      <button class="btn" id="cancelConfirm">Annuler</button>
+      <button class="btn btn-primary" id="goPay">Payer avec PayPal</button>
+    </div>
+  </div>
+</div>
+
+<!-- MANIFEST INLINE (data: URL) -->
+<link id="app-manifest" rel="manifest" href='data:application/json,{
+  "name":"PowerBots360",
+  "short_name":"PB360",
+  "start_url":".",
+  "display":"standalone",
+  "background_color":"#0b1020",
+  "theme_color":"#0f172a",
+  "icons":[]
+}' />
+
+<script>
+/* =========================
+   UTILITAIRES & ÉTAT GLOBAL
+========================= */
+const state = {
+  lang: 'fr',
+  currency: 'EUR',
+  rate: { EUR:1, USD:1.08, GBP:0.85 }, // taux approximatifs
+  catalog: [],
+  view: 'home',
+  cart: [],
+  coupon: null,
+  user: null, // {email}
+  filtered: [],
+  page: 1,
+  pageSize: 36
+};
+const PAYPAL_ME = 'https://www.paypal.me/BotMarketPlus';
+const PAYPAL_CLIENT_ID = ""; // <-- mets ton vrai client id pour activer les Smart Buttons
+
+/* Anti sélection / long-press */
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('selectstart', e => e.preventDefault());
+
+/* =========================
+   NAVIGATION + TOGGLE
+========================= */
+function show(id){
+  for(const sec of document.querySelectorAll('main section')) sec.classList.add('hidden');
+  document.getElementById(id).classList.remove('hidden');
+  state.view = id;
+  document.getElementById('backBtn').disabled = (id==='home');
+}
+document.querySelectorAll('[data-goto]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const target = b.dataset.goto;
+    // toggle : si on reclique sur la même section (hors Accueil), on revient Accueil
+    if(state.view === target && target!=='home'){ show('home'); }
+    else { show(target); }
+  });
+});
+document.getElementById('backBtn').addEventListener('click',()=> show('home'));
+
+/* Langue */
+const i18n = {
+  fr:{heroTitle:'Des bots fiables pour booster vos réseaux — pro, rapides, transparents.',
+      heroSubtitle:'Recherche avancée, panier sécurisé, paiement PayPal — tout en un. Multi-langues, multi-devises, codes promo et support réactif.'},
+  en:{heroTitle:'Reliable bots to grow your socials — pro, fast, transparent.',
+      heroSubtitle:'Advanced search, secure cart, PayPal checkout — all-in-one. Multilingual, multi-currency, coupons & responsive support.'}
+}
+const langBadge = document.getElementById('langBadge');
+const toggleLang = document.getElementById('toggleLang');
+toggleLang.addEventListener('click',()=>{
+  state.lang = state.lang==='fr'?'en':'fr';
+  langBadge.textContent = state.lang.toUpperCase();
+  document.getElementById('heroTitle').textContent = i18n[state.lang].heroTitle;
+  document.getElementById('heroSubtitle').textContent = i18n[state.lang].heroSubtitle;
+});
+
+/* Devise */
+const currencySel = document.getElementById('currency');
+currencySel.addEventListener('change',()=>{
+  state.currency = currencySel.value;
+  renderGrid(true);
+  renderCart();
+});
+
+/* =========================
+   CATALOGUE (700+ items)
+========================= */
+const PLATFORMS = ["TikTok","Instagram","YouTube","Facebook","Twitter/X","Snapchat","Twitch","Reddit","LinkedIn","Telegram","Spotify","Discord"];
+const BASE_SERVICES = [
+  {name:"Likes", min:100, max:50000, base:1.80},
+  {name:"Followers", min:100, max:100000, base:2.20},
+  {name:"Views", min:500, max:1000000, base:1.50},
+  {name:"Comments", min:20, max:10000, base:3.90},
+  {name:"Live Boost", min:50, max:50000, base:2.80},
+  {name:"Shares", min:50, max:50000, base:1.70}
+];
+const BOTWATCH = [{name:"BotWatch — Compliance Scan", min:1, max:1000, base:4.50, tag:"Nouveau"}];
+
+function buildCatalog(){
+  const items = [];
+  let id = 1;
+  for(const p of PLATFORMS){
+    for(const spec of BOTWATCH){
+      items.push({
+        id:id++,
+        platform:p,
+        title:`${p} ${spec.name}`,
+        speed:"Rapide",
+        refill:true,
+        priceEUR: +(spec.base + Math.random()*1.8).toFixed(2),
+        oldEUR: null,
+        min: spec.min,
+        max: spec.max,
+        tag: spec.tag || "Premium",
+        popular: true
+      });
+    }
+    for(const base of BASE_SERVICES){
+      for(let v=0; v<10; v++){
+        const price = base.base + v*0.08 + Math.random()*0.5;
+        items.push({
+          id:id++,
+          platform:p,
+          title:`${p} ${base.name} v${v+1}`,
+          speed:["Instant","Rapide","Progressif"][Math.floor(Math.random()*3)],
+          refill: Math.random()<0.6,
+          priceEUR:+price.toFixed(2),
+          oldEUR: Math.random()<0.25 ? +(price*1.2).toFixed(2) : null,
+          min: base.min,
+          max: base.max,
+          tag: ["Premium","Eco","Pro","Safe"][Math.floor(Math.random()*4)],
+          popular: Math.random()<0.45
+        });
+      }
+    }
+  }
+  state.catalog = items;
+}
+buildCatalog();
+
+/* Filtrage commun */
+function currentFiltered(){
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const pf = document.getElementById('platform').value;
+  const sort = document.getElementById('sort').value;
+  let list = state.catalog.filter(s=>{
+    const okP = (pf==='all') || (s.platform===pf);
+    const okQ = !q || s.title.toLowerCase().includes(q);
+    return okP && okQ;
+  });
+  if(sort==='priceAsc') list.sort((a,b)=>a.priceEUR-b.priceEUR);
+  if(sort==='priceDesc') list.sort((a,b)=>b.priceEUR-a.priceEUR);
+  if(sort==='pop') list.sort((a,b)=> (b.popular|0) - (a.popular|0));
+  state.filtered = list;
+}
+
+/* Rendu carte */
+function priceInCurrency(eur){
+  const r = state.rate[state.currency] || 1;
+  const val = eur * (state.currency==='EUR'?1:r);
+  return {num:val, txt: formatMoney(val, state.currency)};
+}
+function formatMoney(n,cur){
+  const sym = cur==='EUR'?'€':cur==='USD'?'$':'£';
+  return `${sym} ${n.toFixed(2)}`;
+}
+function renderCard(item){
+  const p = priceInCurrency(item.priceEUR);
+  const old = item.oldEUR ? priceInCurrency(item.oldEUR).txt : null;
+  return `
+    <div class="service" data-id="${item.id}">
+      <h3>${item.title}</h3>
+      <div class="meta">
+        <span class="chip">${item.platform}</span>
+        <span class="chip">${item.speed}</span>
+        ${item.refill ? '<span class="chip">Refill</span>' : ''}
+        ${item.tag ? `<span class="chip">${item.tag}</span>`:''}
+        ${item.popular? '<span class="chip">Populaire</span>':''}
+      </div>
+      <div class="row">
+        <div>
+          <span class="price">${p.txt}</span>
+          ${old? `<span class="old">${old}</span>`:''}
+        </div>
+        <div class="qty">
+          <small class="muted">Min ${item.min} / Max ${item.max}</small>
+        </div>
+      </div>
+      <div class="row">
+        <input class="qtyInput" type="number" min="${item.min}" max="${item.max}" step="${Math.ceil(item.min/5)}" value="${item.min}">
+        <button class="btn addBtn">Ajouter</button>
+      </div>
+    </div>
+  `;
+}
+
+/* Rendu grille + pagination */
+const grid = document.getElementById('grid');
+const pageInfo = document.getElementById('pageInfo');
+const prevPage = document.getElementById('prevPage');
+const nextPage = document.getElementById('nextPage');
+const gotoPage = document.getElementById('gotoPage');
+const goPage = document.getElementById('goPage');
+
+function totalPages(){ return Math.max(1, Math.ceil(state.filtered.length / state.pageSize)); }
+function renderGrid(reset=false){
+  if(reset){ state.page = 1; }
+  currentFiltered();
+  const start = (state.page-1) * state.pageSize;
+  const end = start + state.pageSize;
+  const slice = state.filtered.slice(start, end);
+
+  grid.innerHTML = slice.map(renderCard).join('');
+  // pager
+  const total = totalPages();
+  pageInfo.textContent = `Page ${state.page} / ${total}`;
+  prevPage.disabled = (state.page<=1);
+  nextPage.disabled = (state.page>=total);
+  gotoPage.max = total;
+  gotoPage.value = state.page;
+}
+
+prevPage.addEventListener('click',()=>{ if(state.page>1){ state.page--; renderGrid(false);} });
+nextPage.addEventListener('click',()=>{ if(state.page<totalPages()){ state.page++; renderGrid(false);} });
+goPage.addEventListener('click',()=>{
+  const p = Math.min(Math.max(1, +gotoPage.value||1), totalPages());
+  state.page = p; renderGrid(false);
+});
+
+renderGrid(true);
+['search','platform','sort'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',()=>renderGrid(true));
+  document.getElementById(id).addEventListener('change',()=>renderGrid(true));
+});
+
+/* Ajouter au panier */
+grid.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.addBtn'); if(!btn) return;
+  const card = e.target.closest('.service');
+  const id = +card.dataset.id;
+  const qty = +card.querySelector('.qtyInput').value;
+  const item = state.catalog.find(s=>s.id===id);
+  if(!item) return;
+  const q = Math.min(Math.max(qty,item.min),item.max);
+  const exist = state.cart.find(c=>c.id===id);
+  if(exist){ exist.qty += q; } else {
+    state.cart.push({id, title:item.title, platform:item.platform, priceEUR:item.priceEUR, qty:q});
+  }
+  bumpCart();
+  renderCart();
+});
+
+/* =========================
+   PANIER & COUPONS
+========================= */
+const cartDrawer = document.getElementById('cart');
+const cartCount = document.getElementById('cartCount');
+document.getElementById('openCart').addEventListener('click',()=>cartDrawer.classList.add('open'));
+document.getElementById('closeCart').addEventListener('click',()=>cartDrawer.classList.remove('open'));
+
+function bumpCart(){
+  cartCount.textContent = state.cart.reduce((a,b)=>a+b.qty,0);
+  cartCount.animate([{transform:'scale(1)'},{transform:'scale(1.25)'},{transform:'scale(1)'}],{duration:300});
+}
+function renderCart(){
+  const wrap = document.getElementById('cartItems'); wrap.innerHTML='';
+  let subEUR = 0;
+  for(const c of state.cart){
+    subEUR += c.priceEUR * c.qty / 1000; // exemple: prix au 1000 unités
+    const line = document.createElement('div'); line.className='line';
+    line.innerHTML = `
+      <div>
+        <div><strong>${c.title}</strong></div>
+        <div class="muted">${c.qty} unités · ${formatMoney(c.priceEUR,'EUR')}/1000</div>
+      </div>
+      <div>
+        <button class="btn rm" data-id="${c.id}">✕</button>
+      </div>`;
+    wrap.appendChild(line);
+  }
+  const discount = computeDiscount(subEUR);
+  const cur = state.currency;
+  const subC = priceInCurrency(subEUR);
+  const discC = priceInCurrency(discount);
+  const totalC = priceInCurrency(subEUR - discount);
+  document.getElementById('subTotal').textContent = subC.txt;
+  document.getElementById('discount').textContent = discC.txt;
+  document.getElementById('grandTotal').textContent = totalC.txt;
+  document.getElementById('currencyView').textContent = cur;
+
+  wrap.querySelectorAll('.rm').forEach(b=>{
+    b.addEventListener('click',()=>{
+      state.cart = state.cart.filter(x=>x.id!==+b.dataset.id);
+      bumpCart(); renderCart();
+    });
+  });
+}
+function computeDiscount(subEUR){
+  const code = (state.coupon||'').toUpperCase();
+  if(code==='WELCOME10') return subEUR*0.10;
+  if(code==='VIP5') return subEUR*0.05;
+  return 0;
+}
+document.getElementById('applyCoupon').addEventListener('click',()=>{
+  const v = document.getElementById('coupon').value.trim();
+  state.coupon = v || null;
+  renderCart();
+});
+
+/* Checkout / Modal */
+const confirmModal=document.getElementById('confirmModal');
+const paypalButtonsWrap = document.getElementById('paypalButtons');
+document.getElementById('checkout').addEventListener('click',()=>{
+  if(!state.cart.length){ alert('Panier vide.'); return; }
+  confirmModal.classList.add('open');
+  // si on a un client id PayPal → prépare Smart Buttons
+  if(PAYPAL_CLIENT_ID){
+    paypalButtonsWrap.style.display='block';
+    ensurePayPalSDK().then(renderPayPalButtons);
+  } else {
+    paypalButtonsWrap.style.display='none';
+  }
+});
+document.getElementById('cancelConfirm').addEventListener('click',()=>confirmModal.classList.remove('open'));
+document.getElementById('goPay').addEventListener('click',()=>{
+  // Fallback PayPal.me
+  let subEUR=0; for(const c of state.cart) subEUR += c.priceEUR * c.qty / 1000;
+  const discount = computeDiscount(subEUR);
+  let totalEUR = Math.max(0, subEUR - discount);
+  if(state.currency!=='EUR'){
+    const r = state.rate[state.currency]||1;
+    totalEUR = totalEUR / r;
+  }
+  const amount = Math.max(1, +totalEUR.toFixed(2));
+  window.open(`${PAYPAL_ME}/${amount}`, '_blank');
+  confirmModal.classList.remove('open');
+});
+
+/* PayPal Smart Buttons (optionnel) */
+function orderTotalEUR(){
+  let subEUR=0; for(const c of state.cart) subEUR += c.priceEUR * c.qty / 1000;
+  const discount = computeDiscount(subEUR);
+  let total = Math.max(0, subEUR - discount);
+  if(state.currency!=='EUR'){
+    const r = state.rate[state.currency]||1;
+    total = total / r;
+  }
+  return +total.toFixed(2);
+}
+function ensurePayPalSDK(){
+  return new Promise((resolve)=>{
+    if(document.getElementById('pp-sdk')) return resolve();
+    const s = document.createElement('script');
+    s.id='pp-sdk';
+    s.src=`https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(PAYPAL_CLIENT_ID)}&currency=EUR`;
+    s.onload=()=>resolve();
+    document.body.appendChild(s);
+  });
+}
+function renderPayPalButtons(){
+  if(!window.paypal) return;
+  paypalButtonsWrap.innerHTML="";
+  window.paypal.Buttons({
+    style:{layout:'horizontal',shape:'pill'},
+    createOrder: (data, actions) => actions.order.create({
+      purchase_units:[{ amount:{ currency_code:'EUR', value: orderTotalEUR().toFixed(2) } }]
+    }),
+    onApprove: async (data, actions)=>{
+      try{
+        await actions.order.capture();
+        alert('Paiement réussi ✅');
+        state.cart=[]; bumpCart(); renderCart();
+        confirmModal.classList.remove('open');
+      }catch(e){ alert('Erreur de capture PayPal.'); }
+    },
+    onError: (err)=>{ console.error(err); alert('Erreur PayPal.'); }
+  }).render('#paypalButtons');
+}
+
+/* =========================
+   AUTH (Démo locale) — remplaçable par Firebase
+========================= */
+function setUser(u){
+  state.user = u;
+  document.getElementById('authState').textContent = u ? `Connecté : ${u.email}` : 'Statut : invité';
+  document.getElementById('loginBtn').textContent = u ? 'Mon compte' : 'Connexion';
+}
+const demoSignup = document.getElementById('demoSignup');
+const demoSignin = document.getElementById('demoSignin');
+const demoSignout= document.getElementById('demoSignout');
+demoSignup.addEventListener('click',()=>{
+  const email = document.getElementById('demoEmail').value.trim();
+  const pass  = document.getElementById('demoPass').value.trim();
+  if(email && pass.length>=6){
+    localStorage.setItem('pb360_user', JSON.stringify({email}));
+    setUser({email});
+    alert('Compte créé (démo).');
+  } else alert('Email/mot de passe invalide (min 6).');
+});
+demoSignin.addEventListener('click',()=>{
+  const email = document.getElementById('demoEmail').value.trim();
+  const pass  = document.getElementById('demoPass').value.trim();
+  const stored = localStorage.getItem('pb360_user');
+  if(stored){
+    const u = JSON.parse(stored);
+    if(email===u.email && pass.length>=6){ setUser(u); alert('Connecté.'); }
+    else alert('Identifiants incorrects (démo).');
+  } else alert('Aucun compte (démo). Cliquez “Créer”.');
+});
+demoSignout.addEventListener('click',()=>{ localStorage.removeItem('pb360_user'); setUser(null); });
+
+/* =========================
+   CONTACT (simulation)
+========================= */
+document.getElementById('contactForm').addEventListener('submit',(e)=>{
+  e.preventDefault();
+  document.getElementById('contactOk').style.display='block';
+  e.target.reset();
+});
+
+/* =========================
+   BOUTONS NAV RAPIDES
+========================= */
+document.getElementById('btnCatalogue').addEventListener('click',()=>{/* géré par toggle plus haut */});
+
+/* =========================
+   SERVICE WORKER (PWA)
+========================= */
+if('serviceWorker' in navigator){
+  const sw = `
+    const CACHE='pb360-v1';
+    const CORE=['./'];
+    self.addEventListener('install',e=>{
+      e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)));
+      self.skipWaiting();
+    });
+    self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim())});
+    self.addEventListener('fetch',e=>{
+      e.respondWith(
+        caches.match(e.request).then(r=>r||fetch(e.request))
+      );
+    });
+  `;
+  const blob=new Blob([sw],{type:'text/javascript'});
+  const url=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url);
+}
+</script>
+
+<!-- ============ SECTION FIREBASE (OPTIONNELLE) =================
+1) Crée un projet sur https://console.firebase.google.com
+2) Authentification -> Méthode de connexion -> active Email/mot de passe (et Google si tu veux)
+3) Colle ta config ci-dessous, décommente, et on remplace la “démo” par les vrais appels.
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  // ---- Colle ICI ta config (exemple que tu avais) ----
+  const firebaseConfig = {
+    apiKey: "AIzaSyDXccU8CrvsLsNRN2xwAoswyJaapJpS6Do",
+    authDomain: "powerbots360.firebaseapp.com",
+    projectId: "powerbots360",
+    storageBucket: "powerbots360.firebasestorage.app",
+    messagingSenderId: "676854068382",
+    appId: "1:676854068382:web:4a7b40a5241b022471b78f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  // Remplace handlers démo par Firebase :
+  demoSignup.onclick = async ()=>{
+    const email = demoEmail.value.trim(), pass = demoPass.value.trim();
+    await createUserWithEmailAndPassword(auth, email, pass);
+  };
+  demoSignin.onclick = async ()=>{
+    const email = demoEmail.value.trim(), pass = demoPass.value.trim();
+    await signInWithEmailAndPassword(auth, email, pass);
+  };
+  demoSignout.onclick = ()=> signOut(auth);
+  // Login Google (si tu ajoutes un bouton dédié) :
+  // document.getElementById('googleBtn').onclick = ()=> signInWithPopup(auth, provider);
+
+  onAuthStateChanged(auth, (user)=>{
+    setUser(user ? {email:user.email} : null);
+  });
+</script>
+================================================================= -->
+
+</body>
+</html>
