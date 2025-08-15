@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PowerBots360 — Catalogue</title>
+<meta name="theme-color" content="#0f172a">
+<style>
+  /* ===== Reset & base ===== */
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+    color:#0f172a;
+    background:#0b1020 url('https://i.postimg.cc/0j8Jbgfg/IMG-3217.jpg') center/cover fixed no-repeat;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font:inherit}
+
+  /* ===== Overlay pour lisibilité ===== */
+  .bg-overlay{position:fixed;inset:0;background:linear-gradient(to bottom,rgba(2,6,23,.75),rgba(2,6,23,.25) 35%,rgba(2,6,23,.75));pointer-events:none;z-index:0}
+
+  /* ===== Layout ===== */
+  .wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:16px}
+  .glass{
+    background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.18); border-radius:16px; padding:14px;
+    backdrop-filter:blur(8px); box-shadow:0 10px 30px rgba(0,0,0,.25);
+  }
+
+  /* ===== Header ===== */
+  header{position:sticky;top:0;z-index:10;background:rgba(2,6,23,.65);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.12)}
+  .nav{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:12px;justify-content:space-between;padding:10px 16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .brand .logo{
+    width:34px;height:34px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #22d3ee, #2563eb 60%, #0ea5e9);
+    box-shadow:0 0 20px rgba(56,189,248,.5), inset 0 0 12px rgba(59,130,246,.5);
+    flex:0 0 auto
+  }
+  .brand h1{margin:0;color:#e5e7eb;font-size:18px;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+  .btn{
+    border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.10); color:#e5e7eb;
+    padding:9px 14px; border-radius:999px; cursor:pointer; transition:.2s; display:inline-flex; align-items:center; gap:6px
+  }
+  .btn:hover{background:rgba(255,255,255,.18)}
+  .btn-primary{background:linear-gradient(90deg,#22c55e,#16a34a);border:none;color:#fff}
+  .btn-ghost{background:transparent;border-color:rgba(255,255,255,.2)}
+  .badge{border-radius:999px;background:#0ea5e9;color:#fff;padding:4px 9px;font-size:12px}
+
+  /* ===== Hero ===== */
+  .hero{display:grid;gap:12px}
+  .hero h2{margin:0;color:#f1f5f9;font-size:26px}
+  .hero p{margin:0;color:#cbd5e1}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font-size:12px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.08);color:#e2e8f0;border:1px solid rgba(255,255,255,.16)}
+
+  /* ===== Sections ===== */
+  section{margin:12px 0}
+  .hidden{display:none}
+
+  /* ===== Outils catalogue ===== */
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
+  .field{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#e5e7eb}
+  .field input,.field select{all:unset;color:#e5e7eb}
+  .field input::placeholder{color:#cbd5e1}
+
+  /* ===== Grille ===== */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+  .card{
+    background:rgba(2,6,23,.50);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:12px;transition:.2s
+  }
+  .card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+  .card h3{margin:0;color:#f8fafc;font-size:16px}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+  .price{color:#86efac;font-weight:800}
+  .old{color:#94a3b8;text-decoration:line-through;margin-left:8px;font-weight:500}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .qty{display:flex;align-items:center;gap:6px}
+  .qty input{all:unset;width:70px;text-align:center;background:rgba(255,255,255,.08);padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,.12);color:#e5e7eb}
+  .seeMore{margin-left:auto}
+
+  /* ===== Pagination ===== */
+  .pagi{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .pagi input{all:unset;width:80px;text-align:center;background:rgba(255,255,255,.08);padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,.16);color:#e5e7eb}
+
+  /* ===== Panier / Modals ===== */
+  .drawer{
+    position:fixed;right:0;top:0;height:100%;width:92%;max-width:420px;background:rgba(15,23,42,.96);
+    border-left:1px solid rgba(255,255,255,.12);transform:translateX(100%);transition:.25s;z-index:30;color:#e5e7eb;padding:16px 14px;overflow:auto
+  }
+  .drawer.open{transform:none}
+  .line{display:flex;justify-content:space-between;gap:10px;margin:6px 0}
+  .muted{color:#94a3b8;font-size:13px}
+  .divider{height:1px;background:rgba(255,255,255,.12);margin:10px 0}
+  .total{font-size:18px;font-weight:800;color:#f8fafc}
+  .promo{display:flex;gap:6px;margin-top:8px}
+  .promo input{all:unset;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:8px;border-radius:10px;color:#e5e7eb;flex:1}
+
+  .modal{position:fixed;inset:0;background:rgba(2,6,23,.66);display:none;align-items:center;justify-content:center;z-index:40}
+  .modal.open{display:flex}
+  .modal .box{max-width:700px;width:92%}
+  .box{background:rgba(15,23,42,.96);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:16px;color:#e5e7eb}
+
+  /* ===== Footer ===== */
+  footer{color:#94a3b8;text-align:center;padding:30px 16px}
+
+  /* ===== Mobile polish ===== */
+  @media (min-width:800px){
+    .hero{grid-template-columns:1.2fr .8fr;align-items:center}
+  }
+</style>
+</head>
+<body>
+<div class="bg-overlay"></div>
+
+<header>
+  <nav class="nav">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <h1>PowerBots360</h1>
+      <span class="badge" id="langBadge">FR</span>
+    </div>
+    <div class="actions" role="navigation" aria-label="Navigation principale">
+      <button class="btn btn-ghost" id="btnBack">↩︎ Retour</button>
+      <button class="btn" data-goto="home">Accueil</button>
+      <button class="btn" id="btnCatalogue" data-goto="catalogue">Catalogue</button>
+      <button class="btn" data-goto="contact">Contact</button>
+      <button class="btn" data-goto="legal">Légal</button>
+      <select class="btn" id="currency">
+        <option value="EUR" selected>€ EUR</option>
+        <option value="USD">$ USD</option>
+        <option value="GBP">£ GBP</option>
+      </select>
+      <button class="btn" id="toggleLang">EN/FR</button>
+      <button class="btn" id="loginBtn">Connexion</button>
+      <button class="btn btn-primary" id="openCart">Panier (<span id="cartCount">0</span>)</button>
+    </div>
+  </nav>
+</header>
+
+<main class="wrap">
+  <!-- HERO -->
+  <section id="home" class="glass">
+    <div class="hero">
+      <div>
+        <h2 id="heroTitle">Des bots fiables pour booster vos réseaux — pro, rapides, transparents.</h2>
+        <p id="heroSubtitle">Recherche, panier, crypto-paiement, multi-devises, descriptions détaillées pack par pack.</p>
+        <div class="chips">
+          <span class="chip">Paiement crypto</span>
+          <span class="chip">800+ services</span>
+          <span class="chip">Descriptions complètes</span>
+          <span class="chip">Support réactif</span>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" data-goto="catalogue">Voir le catalogue</button>
+          <button class="btn" data-goto="contact">Parler à un conseiller</button>
+        </div>
+      </div>
+      <div class="glass" style="background:rgba(2,6,23,.55);border-color:rgba(255,255,255,.12)">
+        <div class="row"><strong>Espace client (Démo locale)</strong><span class="muted">Remplaçable par Firebase plus tard.</span></div>
+        <div class="divider"></div>
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <input id="demoEmail" class="btn" placeholder="email@exemple.com" style="flex:1;min-width:220px;background:rgba(255,255,255,.08)"/>
+          <input id="demoPass" class="btn" placeholder="Mot de passe" type="password" style="flex:1;min-width:160px;background:rgba(255,255,255,.08)"/>
+          <button class="btn" id="demoSignup">Créer</button>
+          <button class="btn" id="demoSignin">Se connecter</button>
+          <button class="btn btn-ghost" id="demoSignout">Se déconnecter</button>
+        </div>
+        <div id="authState" class="muted" style="margin-top:8px">Statut : invité</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOGUE -->
+  <section id="catalogue" class="glass hidden" aria-label="Catalogue">
+    <div class="row" style="align-items:stretch">
+      <div class="field" style="flex:1"><span>🔎</span><input id="search" placeholder="Rechercher un service (ex : TikTok Likes)…"></div>
+      <div class="field"><span>🏷️</span>
+        <select id="platform">
+          <option value="all">Toutes plateformes</option>
+          <option>TikTok</option><option>Instagram</option><option>YouTube</option>
+          <option>Facebook</option><option>Twitter/X</option><option>Snapchat</option>
+          <option>Twitch</option><option>Reddit</option><option>LinkedIn</option>
+          <option>Telegram</option><option>Spotify</option><option>Discord</option>
+          <option>MYM</option>
+        </select>
+      </div>
+      <div class="field"><span>⚙️</span>
+        <select id="sort">
+          <option value="pop">Populaires</option>
+          <option value="priceAsc">Prix ↑</option>
+          <option value="priceDesc">Prix ↓</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="grid" class="grid"></div>
+
+    <!-- Pagination -->
+    <div class="pagi">
+      <button class="btn" id="prevPage">◀︎ Précédent</button>
+      <span class="chip">Page <span id="pageNow">1</span> / <span id="pageTotal">—</span></span>
+      <button class="btn" id="nextPage">Suivant ▶︎</button>
+      <span class="chip">Aller à</span>
+      <input id="jumpTo" placeholder="ex: 7">
+      <button class="btn" id="jumpBtn">OK</button>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="glass hidden" aria-label="Contact">
+    <h3>Contact</h3>
+    <p class="muted">Besoin d’aide ? Laisse-nous un message.</p>
+    <form id="contactForm" class="grid">
+      <input class="btn" name="name" placeholder="Nom complet" required style="background:rgba(255,255,255,.08)"/>
+      <input class="btn" name="email" placeholder="Email" type="email" required style="background:rgba(255,255,255,.08)"/>
+      <textarea class="btn" name="msg" placeholder="Message" rows="4" required style="background:rgba(255,255,255,.08)"></textarea>
+      <button class="btn btn-primary" type="submit">Envoyer</button>
+    </form>
+    <div id="contactOk" class="muted" style="margin-top:8px;display:none">Merci, votre message a été envoyé (simulation).</div>
+  </section>
+
+  <!-- LEGAL -->
+  <section id="legal" class="glass hidden" aria-label="Pages légales">
+    <h3>Mentions légales & CGV</h3>
+    <details open><summary>Mentions légales</summary><p class="muted">PowerBots360 – Contact : support@powerbots360.com</p></details>
+    <details><summary>CGU/CGV</summary><p class="muted">Prestations numériques livrées après paiement crypto confirmé. Pas de promesse de résultat, respect des règles des plateformes, pas d’usage nuisible.</p></details>
+    <details><summary>Confidentialité</summary><p class="muted">Cookies techniques uniquement. Aucune revente de données. Respect RGPD.</p></details>
+  </section>
+</main>
+
+<!-- PANIER -->
+<aside id="cart" class="drawer" aria-label="Panier">
+  <div class="row"><h3 style="margin:0">Panier</h3><button class="btn" id="closeCart">Fermer</button></div>
+  <div class="divider"></div>
+  <div id="cartItems"></div>
+  <div class="divider"></div>
+  <div class="line"><span>Sous-total</span><span id="subTotal">0.00</span></div>
+  <div class="line"><span>Remise</span><span id="discount">0.00</span></div>
+  <div class="line"><span>Devise</span><span id="currencyView">EUR</span></div>
+  <div class="total line"><span>Total</span><span id="grandTotal">0.00</span></div>
+  <div class="promo">
+    <input id="coupon" placeholder="Code promo (WELCOME10 / VIP5)"/>
+    <button class="btn" id="applyCoupon">Appliquer</button>
+  </div>
+  <div class="divider"></div>
+  <button class="btn btn-primary" id="checkout">Payer en crypto</button>
+</aside>
+
+<!-- MODAL CONFIRMATION & CRYPTO -->
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true">
+  <div class="box">
+    <h3 style="margin-top:0">Confirmer votre commande</h3>
+    <p class="muted">Un récapitulatif s’affiche avant le paiement crypto.</p>
+    <div id="orderSummary" class="muted" style="font-size:13px"></div>
+    <div class="divider"></div>
+    <h4 style="margin:8px 0 4px">Paiement crypto (USDT recommandé)</h4>
+    <p class="muted">
+      Méthode conseillée : <strong>USDT (TRC20)</strong> ou <strong>USDT (ERC20)</strong> — frais faibles, confirmation rapide.<br>
+      Après validation, payez à l’adresse ci-dessous puis envoyez le TXID via le formulaire « Contact ».
+    </p>
+    <div class="glass" style="background:rgba(2,6,23,.55);margin:8px 0">
+      <div class="line"><span>Devise conseillée</span><strong>USDT</strong></div>
+      <div class="line"><span>Réseau</span><strong>TRC20 (ou ERC20)</strong></div>
+      <div class="line"><span>Montant</span><strong id="cryptoAmount">—</strong></div>
+      <div class="line"><span>Adresse (placeholder)</span><strong id="walletAddr">À définir</strong></div>
+    </div>
+    <p class="muted" style="margin-top:6px">
+      Besoin d’acheter des cryptos ? Consultez par exemple : <em>Binance, Coinbase, Kraken</em> — achetez puis envoyez <strong>USDT</strong> à l’adresse ci-dessus.
+    </p>
+    <div class="divider"></div>
+    <div class="row">
+      <button class="btn" id="cancelConfirm">Annuler</button>
+      <button class="btn btn-primary" id="confirmCrypto">J’ai payé</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DÉTAIL SERVICE -->
+<div class="modal" id="detailModal" role="dialog" aria-modal="true">
+  <div class="box">
+    <div class="row">
+      <h3 id="dTitle" style="margin:0">Détails du service</h3>
+      <button class="btn" id="closeDetail">Fermer</button>
+    </div>
+    <div class="divider"></div>
+    <div id="dContent"></div>
+  </div>
+</div>
+
+<footer class="wrap">
+  © <span id="year"></span> PowerBots360 — Tous droits réservés.
+</footer>
+
+<script>
+/* ========== ÉTAT GLOBAL ========== */
+const state = {
+  lang:'fr',
+  currency:'EUR',
+  rate:{ EUR:1, USD:1.08, GBP:0.85 }, // taux approx.
+  catalog:[],
+  page:1,
+  perPage:30,
+  cart:[],
+  coupon:null,
+  user:null
+};
+
+/* ========== UTILS ========== */
+const fmtMoney = (n, cur)=> (cur==='EUR'?'€':cur==='USD'?'$':'£')+' '+n.toFixed(2);
+const priceIn = (eur)=> ({num:eur*(state.currency==='EUR'?1:state.rate[state.currency]), txt:fmtMoney(eur*(state.currency==='EUR'?1:state.rate[state.currency]), state.currency)});
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+/* ========== NAV ========== */
+function show(id){
+  document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('[data-goto]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const sec = b.dataset.goto;
+    if(sec==='catalogue'){
+      // Toggle catalogue sur double clic
+      const already = !document.getElementById('catalogue').classList.contains('hidden');
+      if(already){ document.getElementById('catalogue').classList.add('hidden'); return; }
+    }
+    show(sec);
+  });
+});
+document.getElementById('btnBack').addEventListener('click',()=>{
+  // Retour simple : revient à Accueil
+  show('home');
+});
+
+/* Langue (titre/ss-titre) */
+const i18n = {
+  fr:{t:'Des bots fiables pour booster vos réseaux — pro, rapides, transparents.',
+      s:'Recherche, panier, crypto-paiement, multi-devises, descriptions détaillées pack par pack.'},
+  en:{t:'Reliable bots to grow your socials — pro, fast, transparent.',
+      s:'Search, cart, crypto checkout, multi-currency, detailed pack descriptions.'}
+};
+document.getElementById('toggleLang').addEventListener('click',()=>{
+  state.lang = state.lang==='fr'?'en':'fr';
+  document.getElementById('langBadge').textContent = state.lang.toUpperCase();
+  document.getElementById('heroTitle').textContent = i18n[state.lang].t;
+  document.getElementById('heroSubtitle').textContent = i18n[state.lang].s;
+});
+
+/* Devise */
+const currencySel = document.getElementById('currency');
+currencySel.addEventListener('change',()=>{ state.currency=currencySel.value; renderGrid(); renderCart(); });
+
+/* ========== CATALOGUE ========== */
+const PLATFORMS = ["TikTok","Instagram","YouTube","Facebook","Twitter/X","Snapchat","Twitch","Reddit","LinkedIn","Telegram","Spotify","Discord","MYM"];
+const BASE = [
+  {key:"Likes", base:1.80, min:100, max:50000},
+  {key:"Followers", base:2.20, min:100, max:100000},
+  {key:"Views", base:1.50, min:500, max:1000000},
+  {key:"Comments", base:3.90, min:20, max:10000},
+  {key:"Shares", base:1.70, min:50, max:50000},
+  {key:"Live Boost", base:2.80, min:50, max:50000},
+];
+
+/* Descriptions pack (affichées dans la fiche détaillée) */
+function buildPackDescription(title, speed, qualityTag){
+  // Explication claire des « V1/V2/V3… »
+  return `
+    <p><strong>À propos :</strong> <em>${title}</em> est un pack ${qualityTag.toLowerCase()} pensé pour un équilibre entre vitesse et stabilité.</p>
+    <ul>
+      <li><strong>Vitesse :</strong> ${speed} (début sous quelques minutes à quelques heures).</li>
+      <li><strong>Qualité :</strong> ${qualityTag} — profilage réaliste, mix de sources, variations naturelles.</li>
+      <li><strong>Refill :</strong> si baisse anormale détectée, remise à niveau pendant la période couverte.</li>
+      <li><strong>Sécurité :</strong> progression et plafonds adaptés au service (min/max visibles sur la carte).</li>
+      <li><strong>Conseil :</strong> privilégier plusieurs petites commandes espacées pour un rendu organique.</li>
+    </ul>
+    <p class="muted">Note : aucun résultat n’est garanti par les plateformes. Respectez leurs règles, évitez les pics trop brusques, et utilisez des contenus conformes.</p>
+  `;
+}
+
+/* Génération ~ 840 services */
+function buildCatalog(){
+  const list=[]; let id=1;
+  for(const p of PLATFORMS){
+    // Pack "compliance" / contrôle
+    list.push({
+      id:id++,
+      platform:p,
+      title:`${p} BotWatch (Scan Conformité)`,
+      speed:"Rapide",
+      tag:"Safe",
+      priceEUR:+(4.5+Math.random()*1.5).toFixed(2),
+      oldEUR:null,
+      min:1,max:1000,
+      popular:true,
+      detail:buildPackDescription(`${p} BotWatch (Scan Conformité)`,"Rapide","Safe")
+    });
+    for(const b of BASE){
+      for(let v=1; v<=10; v++){
+        const speed = ["Instant","Rapide","Progressif"][Math.floor(Math.random()*3)];
+        const tags = ["Eco","Standard","Pro","Ultra","Safe"];
+        const t = tags[Math.floor(Math.random()*tags.length)];
+        const price = b.base + v*0.08 + Math.random()*0.5;
+        const title = `${p} ${b.key} (V${v})`;
+        list.push({
+          id:id++, platform:p, title,
+          speed, tag:t,
+          priceEUR:+price.toFixed(2),
+          oldEUR: Math.random()<0.22 ? +(price*1.18).toFixed(2) : null,
+          min:b.min, max:b.max,
+          popular:Math.random()<0.45,
+          detail:buildPackDescription(title,speed,t)
+        });
+      }
+    }
+  }
+  state.catalog = list;
+}
+buildCatalog();
+
+/* Rendu & pagination */
+const grid = document.getElementById('grid');
+const pageNow = document.getElementById('pageNow');
+const pageTotal = document.getElementById('pageTotal');
+const prevPage = document.getElementById('prevPage');
+const nextPage = document.getElementById('nextPage');
+const jumpTo = document.getElementById('jumpTo');
+const jumpBtn = document.getElementById('jumpBtn');
+
+function filterSort(){
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const pf = document.getElementById('platform').value;
+  const sort = document.getElementById('sort').value;
+  let list = state.catalog.filter(s=>{
+    const okP = (pf==='all')||(s.platform===pf);
+    const okQ = !q || s.title.toLowerCase().includes(q);
+    return okP && okQ;
+  });
+  if(sort==='priceAsc') list.sort((a,b)=>a.priceEUR-b.priceEUR);
+  if(sort==='priceDesc') list.sort((a,b)=>b.priceEUR-a.priceEUR);
+  if(sort==='pop') list.sort((a,b)=>(b.popular|0)-(a.popular|0));
+  return list;
+}
+function renderGrid(){
+  const list = filterSort();
+  const totalPages = Math.max(1, Math.ceil(list.length / state.perPage));
+  state.page = clamp(state.page, 1, totalPages);
+  pageNow.textContent = state.page;
+  pageTotal.textContent = totalPages;
+
+  grid.innerHTML='';
+  const start = (state.page-1)*state.perPage;
+  const slice = list.slice(start, start + state.perPage);
+  grid.insertAdjacentHTML('beforeend', slice.map(renderCard).join(''));
+}
+function renderCard(item){
+  const p = priceIn(item.priceEUR), old = item.oldEUR ? priceIn(item.oldEUR).txt : null;
+  return `
+    <article class="card" data-id="${item.id}">
+      <h3>${item.title}</h3>
+      <div class="meta">
+        <span class="chip">${item.platform}</span>
+        <span class="chip">${item.speed}</span>
+        ${item.tag?`<span class="chip">${item.tag}</span>`:''}
+        ${item.popular?`<span class="chip">Populaire</span>`:''}
+      </div>
+      <div class="row">
+        <div><span class="price">${p.txt}</span>${old?`<span class="old">${old}</span>`:''}</div>
+        <button class="btn seeMore">Détails</button>
+      </div>
+      <div class="row">
+        <small class="muted">Min ${item.min} / Max ${item.max}</small>
+        <div class="qty">
+          <input class="qtyInput" type="number" min="${item.min}" max="${item.max}" step="${Math.ceil(item.min/5)}" value="${item.min}">
+          <button class="btn addBtn">Ajouter</button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+/* Événements grid + outils */
+document.getElementById('search').addEventListener('input',()=>{state.page=1; renderGrid();});
+document.getElementById('platform').addEventListener('change',()=>{state.page=1; renderGrid();});
+document.getElementById('sort').addEventListener('change',()=>{state.page=1; renderGrid();});
+prevPage.addEventListener('click',()=>{state.page--; renderGrid();});
+nextPage.addEventListener('click',()=>{state.page++; renderGrid();});
+jumpBtn.addEventListener('click',()=>{
+  const n = parseInt(jumpTo.value,10);
+  if(!Number.isNaN(n)){ state.page = n; renderGrid(); }
+});
+grid.addEventListener('click',(e)=>{
+  const card = e.target.closest('.card'); if(!card) return;
+  const id = +card.dataset.id;
+  const item = state.catalog.find(x=>x.id===id);
+  if(e.target.closest('.addBtn')){
+    const q = clamp(+card.querySelector('.qtyInput').value, item.min, item.max);
+    const exist = state.cart.find(c=>c.id===id);
+    if(exist) exist.qty += q; else state.cart.push({id,title:item.title,platform:item.platform,priceEUR:item.priceEUR,qty:q});
+    bumpCart(); renderCart();
+  }
+  if(e.target.closest('.seeMore')){
+    openDetail(item);
+  }
+});
+
+/* Détail service (fiche explicative) */
+const detailModal = document.getElementById('detailModal');
+const closeDetail = document.getElementById('closeDetail');
+const dTitle = document.getElementById('dTitle');
+const dContent = document.getElementById('dContent');
+function openDetail(item){
+  dTitle.textContent = item.title;
+  dContent.innerHTML = `
+    <div class="row">
+      <div class="chip">${item.platform}</div>
+      <div class="chip">${item.speed}</div>
+      ${item.tag?`<div class="chip">${item.tag}</div>`:''}
+    </div>
+    <div class="divider"></div>
+    ${item.detail}
+  `;
+  detailModal.classList.add('open');
+}
+closeDetail.addEventListener('click',()=>detailModal.classList.remove('open'));
+detailModal.addEventListener('click',(e)=>{ if(e.target===detailModal) detailModal.classList.remove('open'); });
+
+/* ========== PANIER & COUPONS ========== */
+const cartDrawer = document.getElementById('cart');
+const cartCount = document.getElementById('cartCount');
+document.getElementById('openCart').addEventListener('click',()=>cartDrawer.classList.add('open'));
+document.getElementById('closeCart').addEventListener('click',()=>cartDrawer.classList.remove('open'));
+
+function bumpCart(){
+  cartCount.textContent = state.cart.reduce((a,b)=>a+b.qty,0);
+  cartCount.animate([{transform:'scale(1)'},{transform:'scale(1.25)'},{transform:'scale(1)'}],{duration:300});
+}
+function computeDiscount(subEUR){
+  const code=(state.coupon||'').toUpperCase();
+  if(code==='WELCOME10') return subEUR*0.10;
+  if(code==='VIP5') return subEUR*0.05;
+  return 0;
+}
+function renderCart(){
+  const wrap = document.getElementById('cartItems'); wrap.innerHTML='';
+  let subEUR = 0;
+  for(const c of state.cart){
+    subEUR += c.priceEUR * c.qty / 1000; // ex: prix pour 1000 unités
+    const line = document.createElement('div'); line.className='line';
+    line.innerHTML = `
+      <div>
+        <div><strong>${c.title}</strong></div>
+        <div class="muted">${c.qty} unités · ${fmtMoney(c.priceEUR,'EUR')}/1000</div>
+      </div>
+      <button class="btn rm" data-id="${c.id}">✕</button>
+    `;
+    wrap.appendChild(line);
+  }
+  const disc = computeDiscount(subEUR);
+  const subC = priceIn(subEUR), discC = priceIn(disc), totalC = priceIn(subEUR-disc);
+  document.getElementById('subTotal').textContent = subC.txt;
+  document.getElementById('discount').textContent = discC.txt;
+  document.getElementById('grandTotal').textContent = totalC.txt;
+  document.getElementById('currencyView').textContent = state.currency;
+
+  wrap.querySelectorAll('.rm').forEach(b=>{
+    b.addEventListener('click',()=>{
+      state.cart = state.cart.filter(x=>x.id!==+b.dataset.id);
+      bumpCart(); renderCart();
+    });
+  });
+}
+document.getElementById('applyCoupon').addEventListener('click',()=>{
+  const v = document.getElementById('coupon').value.trim();
+  state.coupon = v||null; renderCart();
+});
+
+/* Paiement crypto */
+const confirmModal = document.getElementById('confirmModal');
+const cancelConfirm = document.getElementById('cancelConfirm');
+const confirmCrypto = document.getElementById('confirmCrypto');
+const orderSummary = document.getElementById('orderSummary');
+const cryptoAmount = document.getElementById('cryptoAmount');
+const walletAddr = document.getElementById('walletAddr');
+
+document.getElementById('checkout').addEventListener('click',()=>{
+  if(!state.cart.length){ alert('Panier vide.'); return; }
+  // Récap
+  orderSummary.innerHTML = state.cart.map(c=>`• ${c.title} — ${c.qty} unités`).join('<br>');
+  // Montant en EUR → converti si besoin, puis affichage équivalent USDT ≈ 1:1
+  let subEUR=0; state.cart.forEach(c=> subEUR += c.priceEUR*c.qty/1000);
+  const totalEUR = Math.max(0, subEUR - computeDiscount(subEUR));
+  cryptoAmount.textContent = `≈ ${totalEUR.toFixed(2)} USDT`;
+  // Adresse placeholder (à remplacer par ton wallet)
+  walletAddr.textContent = 'À définir (colle ici ton adresse TRC20/ ERC20)';
+  confirmModal.classList.add('open');
+});
+cancelConfirm.addEventListener('click',()=>confirmModal.classList.remove('open'));
+confirmCrypto.addEventListener('click',()=>{
+  confirmModal.classList.remove('open');
+  alert('Merci ! Après paiement, envoie le TXID via la page Contact pour vérification.');
+});
+
+/* ========== AUTH DÉMO (remplaçable par Firebase) ========== */
+function setUser(u){
+  state.user = u;
+  document.getElementById('authState').textContent = u ? `Connecté : ${u.email}` : 'Statut : invité';
+  document.getElementById('loginBtn').textContent = u ? 'Mon compte' : 'Connexion';
+}
+demoSignup.onclick = ()=>{
+  const email = demoEmail.value.trim(), pass = demoPass.value.trim();
+  if(email && pass.length>=6){
+    localStorage.setItem('pb360_user', JSON.stringify({email}));
+    setUser({email}); alert('Compte créé (démo).');
+  } else alert('Email/mot de passe invalide (min 6).');
+};
+demoSignin.onclick = ()=>{
+  const email = demoEmail.value.trim(), pass = demoPass.value.trim();
+  const s = localStorage.getItem('pb360_user');
+  if(s){ const u = JSON.parse(s); if(u.email===email && pass.length>=6){ setUser(u); alert('Connecté.'); } else alert('Identifiants incorrects (démo).'); }
+  else alert('Aucun compte (démo). Cliquez “Créer”.');
+};
+demoSignout.onclick = ()=>{ localStorage.removeItem('pb360_user'); setUser(null); };
+
+/* ========== CONTACT (simulation) ========== */
+document.getElementById('contactForm').addEventListener('submit',(e)=>{
+  e.preventDefault();
+  document.getElementById('contactOk').style.display='block';
+  e.target.reset();
+});
+
+/* ========== DIVERS ========== */
+document.getElementById('btnCatalogue').addEventListener('click',()=>{/* toggle géré dans show() */});
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* Rendu initial */
+renderGrid();
+</script>
+</body>
+</html>
