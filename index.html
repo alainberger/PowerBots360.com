@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PowerBots360 — Catalogue de services</title>
+<meta name="theme-color" content="#0b1020"/>
+<link rel="manifest" href="#app-manifest">
+<style>
+  /* ====== Reset / Base ====== */
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{height:100%}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, sans-serif;
+    color:#e5e7eb;
+    background:#0b1020 url('https://i.postimg.cc/0j8Jbgfg/IMG-3217.jpg') center/cover fixed no-repeat;
+  }
+  a{color:inherit;text-decoration:none}
+  button,select,input,textarea{font:inherit}
+  :root{
+    --panel: rgba(8,12,24,.72);
+    --panel-strong: rgba(8,12,24,.88);
+    --border: rgba(255,255,255,.16);
+    --muted:#9aa4b2;
+    --brand:#22d3ee;
+    --accent:#38bdf8;
+    --ok:#22c55e;
+    --warn:#ef4444;
+  }
+
+  /* ====== Overlay pour lisibilité ====== */
+  .bg-overlay{position:fixed;inset:0;background:linear-gradient(180deg, rgba(2,6,23,.55), rgba(2,6,23,.25) 35%, rgba(2,6,23,.65)); pointer-events:none; z-index:0;}
+
+  /* ====== Layout ====== */
+  .container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:16px}
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+
+  /* ====== Header / Nav (compact et pro) ====== */
+  header{position:sticky;top:0;z-index:10;background:var(--panel-strong);backdrop-filter: blur(12px);border-bottom:1px solid var(--border)}
+  .nav{display:flex;align-items:center;gap:10px;justify-content:space-between;max-width:1200px;margin:0 auto;padding:10px 12px}
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .logo{width:34px;height:34px;border-radius:50%;background:
+    radial-gradient(circle at 30% 30%, #22d3ee, #2563eb 60%, #0ea5e9);
+    box-shadow:0 0 16px rgba(56,189,248,.55), inset 0 0 10px rgba(59,130,246,.45);
+    flex-shrink:0;
+  }
+  .brand h1{margin:0;font-size:18px;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .badge{border:1px solid var(--border);padding:3px 8px;border-radius:999px;font-size:12px;color:#cfe8ff}
+
+  .actions{
+    display:flex;align-items:center;gap:8px;flex-wrap:nowrap;overflow:auto;
+    scrollbar-width:none;
+  }
+  .actions::-webkit-scrollbar{display:none}
+
+  .btn{
+    border:1px solid var(--border);background:rgba(255,255,255,.06);
+    color:#e5e7eb;padding:8px 12px;border-radius:12px;cursor:pointer;transition:.2s;white-space:nowrap
+  }
+  .btn:hover{background:rgba(255,255,255,.12)}
+  .btn-ghost{background:transparent}
+  .btn-primary{background:linear-gradient(90deg,#22c55e,#16a34a);border:none;color:white}
+  .btn-danger{background:linear-gradient(90deg,#ef4444,#b91c1c);border:none;color:white}
+  .select{appearance:none;border:1px solid var(--border);background:rgba(255,255,255,.06);color:#e5e7eb;padding:8px 12px;border-radius:12px}
+
+  /* ====== Hero ====== */
+  .hero{display:grid;gap:14px}
+  .hero h2{margin:0;font-size:26px;color:#f8fafc}
+  .hero p{margin:0;color:var(--muted)}
+  .pillbar{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{background:rgba(255,255,255,.06);border:1px solid var(--border);padding:6px 10px;border-radius:999px;font-size:12px;color:#cfe8ff}
+
+  /* ====== Sections ====== */
+  section{margin:12px 0}
+  .hidden{display:none}
+
+  /* ====== Toolbar Catalogue ====== */
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .field{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.06)}
+  .field input,.field select{all:unset;color:#e5e7eb}
+  .field input::placeholder{color:#b6c0cc}
+
+  /* ====== Grille Catalogue ====== */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px}
+  .service{
+    background:rgba(8,12,24,.66);
+    border:1px solid var(--border);
+    border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;transition:.2s
+  }
+  .service:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  .service h3{margin:0;font-size:16px;color:#f8fafc}
+  .meta{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font-size:11px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--border);color:#e2e8f0}
+  .price{color:#86efac;font-weight:800}
+  .old{color:#a6b1bf;text-decoration:line-through;margin-left:6px;font-weight:500}
+  .row{display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap}
+  .qty{display:flex;align-items:center;gap:6px}
+  .qty input{all:unset;width:70px;text-align:center;background:rgba(255,255,255,.08);padding:6px;border-radius:8px;border:1px solid var(--border);color:#e5e7eb}
+  .flag{font-size:14px}
+
+  /* ====== Pagination ====== */
+  .pager{display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:10px}
+  .pager input[type="number"]{all:unset;width:52px;text-align:center;background:rgba(255,255,255,.08);padding:6px;border-radius:8px;border:1px solid var(--border)}
+
+  /* ====== Panier ====== */
+  .drawer{
+    position:fixed;right:0;top:0;height:100%;width:92%;max-width:420px;background:rgba(8,12,24,.98);
+    border-left:1px solid var(--border);transform:translateX(100%);transition:.25s;z-index:30;color:#e5e7eb;padding:16px 14px;overflow:auto
+  }
+  .drawer.open{transform:none}
+  .line{display:flex;justify-content:space-between;gap:10px;margin:6px 0}
+  .muted{color:var(--muted);font-size:13px}
+  .divider{height:1px;background:var(--border);margin:10px 0}
+  .total{font-size:18px;font-weight:800;color:#f8fafc}
+  .promo{display:flex;gap:6px;margin-top:8px}
+  .promo input{all:unset;background:rgba(255,255,255,.08);border:1px solid var(--border);padding:8px;border-radius:10px;color:#e5e7eb;flex:1}
+
+  /* ====== Modals ====== */
+  .modal{position:fixed;inset:0;background:rgba(2,6,23,.66);display:none;align-items:center;justify-content:center;z-index:40}
+  .modal.open{display:flex}
+  .modal .card{max-width:560px;width:92%}
+
+  /* ====== Footer ====== */
+  footer{color:#9fb0c2;text-align:center;padding:30px 16px}
+
+  /* ====== Responsive ====== */
+  @media (min-width:900px){
+    .hero{grid-template-columns:1.1fr .9fr;align-items:center}
+  }
+</style>
+</head>
+<body>
+<div class="bg-overlay"></div>
+
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <h1>PowerBots360</h1>
+      <span class="badge" id="langBadge">FR</span>
+    </div>
+    <div class="actions">
+      <button class="btn btn-ghost" id="btnBack">Retour</button>
+      <button class="btn" data-goto="home">Accueil</button>
+      <button class="btn" id="btnCatalogue" data-goto="catalogue">Catalogue</button>
+      <button class="btn" data-goto="contact">Contact</button>
+      <button class="btn" data-goto="legal">Légal</button>
+      <select class="select" id="currency">
+        <option value="EUR" selected>€ EUR</option>
+        <option value="USD">$ USD</option>
+        <option value="GBP">£ GBP</option>
+      </select>
+      <button class="btn" id="toggleLang">EN/FR</button>
+      <button class="btn" id="loginBtn">Connexion</button>
+      <button class="btn btn-primary" id="openCart">Panier (<span id="cartCount">0</span>)</button>
+    </div>
+  </nav>
+</header>
+
+<main class="container">
+  <!-- HERO -->
+  <section id="home" class="card">
+    <div class="hero">
+      <div>
+        <h2 id="heroTitle">Des services fiables pour développer vos réseaux — rapides, transparents, pro.</h2>
+        <p id="heroSubtitle">Catalogue précis avec drapeaux d’origine, panier sécurisé, coupons, multi-devises. Paiement par crypto (BTC/ETH/USDT) avec instructions claires.</p>
+        <div class="pillbar">
+          <div class="pill">600+ services</div>
+          <div class="pill">Multi-plateformes</div>
+          <div class="pill">Descriptions courtes</div>
+          <div class="pill">Support réactif</div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" data-goto="catalogue">Voir le catalogue</button>
+          <button class="btn" data-goto="contact">Contacter l’équipe</button>
+        </div>
+      </div>
+      <div class="card" style="background:rgba(8,12,24,.72)">
+        <div class="row"><strong>Espace client (démo locale)</strong><span class="muted">Remplaçable par Firebase plus tard.</span></div>
+        <div class="divider"></div>
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <input id="demoEmail" class="btn" placeholder="email@exemple.com" style="flex:1;min-width:220px;background:rgba(255,255,255,.08)"/>
+          <input id="demoPass" class="btn" placeholder="Mot de passe (min 6)" type="password" style="flex:1;min-width:160px;background:rgba(255,255,255,.08)"/>
+          <button class="btn" id="demoSignup">Créer</button>
+          <button class="btn" id="demoSignin">Connexion</button>
+          <button class="btn btn-danger" id="demoSignout">Déconnexion</button>
+        </div>
+        <div id="authState" class="muted" style="margin-top:8px">Statut : invité</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOGUE -->
+  <section id="catalogue" class="card hidden" aria-label="Catalogue">
+    <div class="toolbar">
+      <div class="field" style="flex:1"><span>🔎</span><input id="search" placeholder="Rechercher (ex : TikTok likes, FR, Premium)…"></div>
+      <div class="field"><span>🏷️</span>
+        <select id="platform">
+          <option value="all">Toutes plateformes</option>
+          <option>TikTok</option><option>Instagram</option><option>YouTube</option>
+          <option>Facebook</option><option>Twitter/X</option><option>Snapchat</option>
+          <option>Twitch</option><option>Reddit</option><option>LinkedIn</option>
+          <option>Telegram</option><option>Spotify</option><option>Discord</option>
+        </select>
+      </div>
+      <div class="field"><span>⚙️</span>
+        <select id="sort">
+          <option value="pop">Populaires</option>
+          <option value="priceAsc">Prix ↑</option>
+          <option value="priceDesc">Prix ↓</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="grid" class="grid"></div>
+
+    <!-- Pagination -->
+    <div class="pager">
+      <button class="btn" id="firstPage">⏮︎</button>
+      <button class="btn" id="prevPage">◀︎</button>
+      <span class="muted">Page <span id="pageNow">1</span> / <span id="pageTotal">—</span></span>
+      <input id="gotoPage" type="number" min="1" value="1" title="Aller à la page"/>
+      <button class="btn" id="jumpPage">Aller</button>
+      <button class="btn" id="nextPage">▶︎</button>
+      <button class="btn" id="lastPage">⏭︎</button>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="card hidden" aria-label="Contact">
+    <h3>Contact</h3>
+    <p class="muted">Nous répondons rapidement (jours ouvrés). Aucune donnée revendue.</p>
+    <form id="contactForm" class="grid">
+      <input class="btn" name="name" placeholder="Nom complet" required style="background:rgba(255,255,255,.08)"/>
+      <input class="btn" name="email" placeholder="Email" type="email" required style="background:rgba(255,255,255,.08)"/>
+      <textarea class="btn" name="msg" placeholder="Message" rows="4" required style="background:rgba(255,255,255,.08)"></textarea>
+      <button class="btn btn-primary" type="submit">Envoyer</button>
+    </form>
+    <div id="contactOk" class="muted" style="margin-top:8px;display:none">Merci, votre message a été envoyé (simulation côté client).</div>
+  </section>
+
+  <!-- LEGAL -->
+  <section id="legal" class="card hidden" aria-label="Pages légales">
+    <h3>Mentions légales & Conditions</h3>
+    <details open><summary>Mentions</summary><p class="muted">PowerBots360 — Contact: support@powerbots360.com</p></details>
+    <details><summary>Conditions</summary><p class="muted">Prestations numériques. Respect des règles des plateformes. Pas de promesse de résultat.</p></details>
+    <details><summary>Confidentialité</summary><p class="muted">Cookies techniques uniquement. Pas de revente.</p></details>
+  </section>
+</main>
+
+<!-- PANIER -->
+<aside id="cart" class="drawer" aria-label="Panier">
+  <div class="row"><h3 style="margin:0">Panier</h3><button class="btn" id="closeCart">Fermer</button></div>
+  <div class="divider"></div>
+  <div id="cartItems"></div>
+  <div class="divider"></div>
+  <div class="line"><span>Sous-total</span><span id="subTotal">0.00</span></div>
+  <div class="line"><span>Remise</span><span id="discount">0.00</span></div>
+  <div class="line"><span>Devise</span><span id="currencyView">EUR</span></div>
+  <div class="total line"><span>Total</span><span id="grandTotal">0.00</span></div>
+  <div class="promo">
+    <input id="coupon" placeholder="Code promo (WELCOME10 / VIP5)"/>
+    <button class="btn" id="applyCoupon">Appliquer</button>
+  </div>
+  <div class="divider"></div>
+  <button class="btn btn-primary" id="checkout">Payer en crypto</button>
+</aside>
+
+<!-- MODAL CHECKOUT CRYPTO -->
+<div class="modal" id="cryptoModal" role="dialog" aria-modal="true">
+  <div class="card">
+    <h3 style="margin-top:0">Paiement par crypto</h3>
+    <p class="muted">Choisissez un réseau et envoyez exactement le montant indiqué. Indiquez l’ID de commande en référence.</p>
+    <div class="divider"></div>
+    <div id="orderSummary" class="muted" style="margin-bottom:8px"></div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">
+      <div class="card" style="background:rgba(255,255,255,.05)">
+        <strong>BTC (Bitcoin)</strong>
+        <div class="muted" id="btcAddr">— à renseigner —</div>
+        <button class="btn" data-copy="#btcAddr">Copier</button>
+      </div>
+      <div class="card" style="background:rgba(255,255,255,.05)">
+        <strong>ETH (Ethereum)</strong>
+        <div class="muted" id="ethAddr">— à renseigner —</div>
+        <button class="btn" data-copy="#ethAddr">Copier</button>
+      </div>
+      <div class="card" style="background:rgba(255,255,255,.05)">
+        <strong>USDT (TRC20)</strong>
+        <div class="muted" id="usdtAddr">— à renseigner —</div>
+        <button class="btn" data-copy="#usdtAddr">Copier</button>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p class="muted">Besoin d’acheter des cryptos ? Consultez : <em>Binance, Coinbase, Kraken</em>. Achetez puis envoyez à l’adresse ci-dessus.</p>
+    <div class="row">
+      <button class="btn" id="cancelCrypto">Fermer</button>
+      <button class="btn btn-primary" id="confirmPaid">J’ai payé</button>
+    </div>
+  </div>
+</div>
+
+<!-- MANIFEST inline -->
+<link id="app-manifest" rel="manifest" href='data:application/json,{
+  "name":"PowerBots360",
+  "short_name":"PB360",
+  "start_url":".",
+  "display":"standalone",
+  "background_color":"#0b1020",
+  "theme_color":"#0b1020",
+  "icons":[]
+}'/>
+
+<script>
+/* =========================================================
+   ÉTAT GLOBAL
+========================================================= */
+const state = {
+  lang:'fr',
+  currency:'EUR',
+  rate:{EUR:1, USD:1.08, GBP:0.85}, // approx
+  catalog:[],
+  filtered:[],
+  page:1,
+  perPage:28, // ≈ 30 pages pour 800+ items
+  cart:[],
+  coupon:null,
+  user:null,
+};
+const FLAGS = {
+  FR:'🇫🇷', IN:'🇮🇳', BR:'🇧🇷', US:'🇺🇸', DE:'🇩🇪', ES:'🇪🇸', IT:'🇮🇹', GB:'🇬🇧', CN:'🇨🇳', JP:'🇯🇵', KR:'🇰🇷', RU:'🇷🇺',
+};
+const TIERS = [
+  {name:'Essentiel', tag:'Essentiel', desc:'Rapide et fiable pour démarrer.'},
+  {name:'Avancé', tag:'Avancé', desc:'Meilleur équilibre vitesse/risque.'},
+  {name:'Premium', tag:'Premium', desc:'Qualité, stabilité et support prioritaire.'},
+  {name:'Ultime', tag:'Ultime', desc:'Le plus stable et discret.'},
+];
+const PLATFORMS = ["TikTok","Instagram","YouTube","Facebook","Twitter/X","Snapchat","Twitch","Reddit","LinkedIn","Telegram","Spotify","Discord"];
+const FAMILIES = [
+  {slug:'likes', label:'Likes', min:100, max:50000, base:1.80},
+  {slug:'followers', label:'Abonnés', min:100, max:100000, base:2.40},
+  {slug:'views', label:'Vues', min:500, max:1000000, base:1.50},
+  {slug:'comments', label:'Commentaires', min:20, max:10000, base:3.90},
+  {slug:'shares', label:'Partages', min:50, max:50000, base:1.70},
+  {slug:'liveboost', label:'Boost Live', min:50, max:50000, base:2.90},
+];
+const COUNTRIES = ['FR','IN','BR','US','DE','ES','IT','GB','CN','JP','KR','RU'];
+
+/* =========================================================
+   NAVIGATION + ACCESSIBILITÉ
+========================================================= */
+function show(id, toggle=false){
+  const sec = document.getElementById(id);
+  const currentlyVisible = !sec.classList.contains('hidden');
+  document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
+  if(toggle && currentlyVisible){ document.getElementById('home').classList.remove('hidden'); return; }
+  sec.classList.remove('hidden');
+}
+document.querySelectorAll('[data-goto]').forEach(btn=>{
+  btn.addEventListener('click',()=>show(btn.dataset.goto, /*toggle*/btn.id==='btnCatalogue'));
+});
+document.getElementById('btnBack').addEventListener('click',()=>show('home'));
+
+/* Langues (titre/accroche) */
+const i18n = {
+  fr:{t:'Des services fiables pour développer vos réseaux — rapides, transparents, pro.',
+      s:'Catalogue précis avec drapeaux d’origine, panier sécurisé, coupons, multi-devises. Paiement par crypto (BTC/ETH/USDT).'},
+  en:{t:'Reliable services to grow your socials — fast, transparent, pro.',
+      s:'Precise catalog with origin flags, secure cart, coupons, multi-currency. Crypto payments (BTC/ETH/USDT).'}
+};
+const langBadge = document.getElementById('langBadge');
+document.getElementById('toggleLang').addEventListener('click',()=>{
+  state.lang = state.lang==='fr'?'en':'fr';
+  langBadge.textContent = state.lang.toUpperCase();
+  document.getElementById('heroTitle').textContent = i18n[state.lang].t;
+  document.getElementById('heroSubtitle').textContent = i18n[state.lang].s;
+});
+
+/* Devise */
+const currencySel = document.getElementById('currency');
+currencySel.addEventListener('change',()=>{ state.currency = currencySel.value; renderGrid(); renderCart(); });
+
+/* Anti sélection / long-press */
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('selectstart', e => e.preventDefault());
+
+/* =========================================================
+   CATALOGUE — génération ≈ 12*6*12*~1 = 864 entrées
+   Noms PRO : p.ex. “TikTok Likes — FR • Essentiel”
+========================================================= */
+function buildCatalog(){
+  const items = [];
+  let id = 1;
+  for(const p of PLATFORMS){
+    for(const fam of FAMILIES){
+      for(const c of COUNTRIES){
+        const tier = TIERS[Math.floor(Math.random()*TIERS.length)];
+        const price = fam.base * (1 + (Object.keys(FLAGS).indexOf(c)%4)*0.12) * (1 + (TIERS.indexOf(tier)*0.15));
+        items.push({
+          id:id++,
+          platform:p,
+          family:fam.slug,
+          title:`${p} ${fam.label} — ${c} • ${tier.name}`,
+          country:c,
+          tier:tier.name,
+          tierDesc:tier.desc,
+          speed:["Instant","Rapide","Progressif"][Math.floor(Math.random()*3)],
+          refill: Math.random()<0.65,
+          priceEUR:+(price + Math.random()*0.6).toFixed(2),
+          oldEUR: Math.random()<0.22 ? +(price*1.25).toFixed(2) : null,
+          min:fam.min, max:fam.max,
+          popular: Math.random()<0.45
+        });
+      }
+    }
+  }
+  state.catalog = items;
+}
+buildCatalog();
+
+/* =========================================================
+   Rendu Catalogue + Recherche + Pagination
+========================================================= */
+const grid   = document.getElementById('grid');
+const pageNow= document.getElementById('pageNow');
+const pageTotal= document.getElementById('pageTotal');
+const gotoPage= document.getElementById('gotoPage');
+
+function priceInCurrency(eur){
+  const r = state.rate[state.currency] || 1;
+  const val = eur * (state.currency==='EUR'?1:r);
+  return {num:val, txt: formatMoney(val, state.currency)};
+}
+function formatMoney(n,cur){
+  const sym = cur==='EUR'?'€':cur==='USD'?'$':'£';
+  return `${sym} ${(+n).toFixed(2)}`;
+}
+function renderCard(item){
+  const p = priceInCurrency(item.priceEUR);
+  const old = item.oldEUR ? priceInCurrency(item.oldEUR).txt : null;
+  const flag = FLAGS[item.country]||'🌐';
+  return `
+    <div class="service" data-id="${item.id}">
+      <h3 title="${item.tierDesc}">${flag} <span class="flag">${item.title}</span></h3>
+      <div class="meta">
+        <span class="chip">${item.platform}</span>
+        <span class="chip">${item.tier}</span>
+        <span class="chip">${item.speed}</span>
+        ${item.refill?'<span class="chip">Refill</span>':''}
+        ${item.popular?'<span class="chip">Populaire</span>':''}
+      </div>
+      <div class="row">
+        <div>
+          <span class="price">${p.txt}</span>
+          ${old? `<span class="old">${old}</span>`:''}
+        </div>
+        <small class="muted">Min ${item.min} / Max ${item.max} (prix pour 1000)</small>
+      </div>
+      <div class="row">
+        <div class="qty">
+          <input class="qtyInput" type="number" min="${item.min}" max="${item.max}" step="${Math.ceil(item.min/5)}" value="${item.min}">
+        </div>
+        <button class="btn addBtn">Ajouter</button>
+        <button class="btn" data-more="${item.id}" title="Voir détails">Détails</button>
+      </div>
+    </div>
+  `;
+}
+function applyFilter(){
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const pf = document.getElementById('platform').value;
+  const sort = document.getElementById('sort').value;
+
+  let list = state.catalog.filter(s=>{
+    const okP = (pf==='all') || (s.platform===pf);
+    const inTitle = s.title.toLowerCase().includes(q);
+    const inCountry = s.country.toLowerCase().includes(q);
+    const inTier = s.tier.toLowerCase().includes(q);
+    return okP && (!q || inTitle || inCountry || inTier);
+  });
+
+  if(sort==='priceAsc') list.sort((a,b)=>a.priceEUR-b.priceEUR);
+  if(sort==='priceDesc') list.sort((a,b)=>b.priceEUR-a.priceEUR);
+  if(sort==='pop') list.sort((a,b)=> (b.popular|0) - (a.popular|0));
+
+  state.filtered = list;
+  state.page = 1;
+}
+function renderGrid(){
+  applyFilterIfNeeded();
+  const total = state.filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total/state.perPage));
+  state.page = Math.min(state.page, totalPages);
+  const from = (state.page-1)*state.perPage;
+  const to   = state.page*state.perPage;
+  const slice = state.filtered.slice(from,to);
+  grid.innerHTML = slice.map(renderCard).join('');
+  pageNow.textContent = state.page;
+  pageTotal.textContent = totalPages;
+  gotoPage.max = totalPages;
+  gotoPage.value = state.page;
+}
+let _needsFilter=true;
+function applyFilterIfNeeded(){ if(_needsFilter){ applyFilter(); _needsFilter=false; } }
+
+document.getElementById('search').addEventListener('input',()=>{_needsFilter=true; renderGrid();});
+document.getElementById('platform').addEventListener('change',()=>{_needsFilter=true; renderGrid();});
+document.getElementById('sort').addEventListener('change',()=>{_needsFilter=true; renderGrid();});
+
+document.getElementById('firstPage').addEventListener('click',()=>{state.page=1; renderGrid();});
+document.getElementById('prevPage').addEventListener('click',()=>{state.page=Math.max(1,state.page-1); renderGrid();});
+document.getElementById('nextPage').addEventListener('click',()=>{const t=Math.ceil(state.filtered.length/state.perPage); state.page=Math.min(t,state.page+1); renderGrid();});
+document.getElementById('lastPage').addEventListener('click',()=>{state.page=Math.ceil(state.filtered.length/state.perPage)||1; renderGrid();});
+document.getElementById('jumpPage').addEventListener('click',()=>{const n=+gotoPage.value||1; const t=Math.ceil(state.filtered.length/state.perPage)||1; state.page=Math.min(Math.max(1,n),t); renderGrid();});
+
+grid.addEventListener('click',(e)=>{
+  const add = e.target.closest('.addBtn');
+  const more= e.target.closest('[data-more]');
+  if(add){
+    const card = e.target.closest('.service');
+    const id = +card.dataset.id;
+    const qty = +card.querySelector('.qtyInput').value;
+    const item = state.catalog.find(s=>s.id===id);
+    const q = Math.min(Math.max(qty,item.min),item.max);
+    const exist = state.cart.find(c=>c.id===id);
+    if(exist){ exist.qty += q; } else { state.cart.push({id,title:item.title,platform:item.platform,priceEUR:item.priceEUR,qty:q}); }
+    bumpCart(); renderCart();
+    return;
+  }
+  if(more){
+    const id = +more.dataset.more;
+    const item = state.catalog.find(s=>s.id===id);
+    if(!item) return;
+    alert(`${item.title}\n\n• Pays d’origine : ${item.country}\n• Niveau : ${item.tier}\n• Délai : ${item.speed}\n• Refill : ${item.refill?'Oui':'Non'}\n• Min/Max : ${item.min}/${item.max}\n• Conseils : ${item.tierDesc}`);
+  }
+});
+
+/* =========================================================
+   PANIER + COUPONS + CHECKOUT CRYPTO
+========================================================= */
+const cartDrawer = document.getElementById('cart');
+const cartCount  = document.getElementById('cartCount');
+document.getElementById('openCart').addEventListener('click',()=>cartDrawer.classList.add('open'));
+document.getElementById('closeCart').addEventListener('click',()=>cartDrawer.classList.remove('open'));
+
+function bumpCart(){
+  cartCount.textContent = state.cart.reduce((a,b)=>a+b.qty,0);
+  cartCount.animate([{transform:'scale(1)'},{transform:'scale(1.2)'},{transform:'scale(1)'}],{duration:250});
+}
+function computeDiscount(subEUR){
+  const code = (state.coupon||'').toUpperCase();
+  if(code==='WELCOME10') return subEUR*0.10;
+  if(code==='VIP5') return subEUR*0.05;
+  return 0;
+}
+function renderCart(){
+  const wrap = document.getElementById('cartItems'); wrap.innerHTML='';
+  let subEUR = 0;
+  for(const c of state.cart){
+    subEUR += c.priceEUR * c.qty / 1000; // prix pour 1000 unités
+    const line = document.createElement('div'); line.className='line';
+    line.innerHTML = `
+      <div>
+        <div><strong>${c.title}</strong></div>
+        <div class="muted">${c.qty} unités · ${formatMoney(c.priceEUR,'EUR')}/1000</div>
+      </div>
+      <div><button class="btn rm" data-id="${c.id}">✕</button></div>`;
+    wrap.appendChild(line);
+  }
+  const discount = computeDiscount(subEUR);
+  const subC = priceInCurrency(subEUR);
+  const discC= priceInCurrency(discount);
+  const totalC= priceInCurrency(subEUR - discount);
+  document.getElementById('subTotal').textContent = subC.txt;
+  document.getElementById('discount').textContent = discC.txt;
+  document.getElementById('grandTotal').textContent = totalC.txt;
+  document.getElementById('currencyView').textContent = state.currency;
+
+  wrap.querySelectorAll('.rm').forEach(b=>{
+    b.addEventListener('click',()=>{
+      state.cart = state.cart.filter(x=>x.id!==+b.dataset.id);
+      bumpCart(); renderCart();
+    });
+  });
+}
+document.getElementById('applyCoupon').addEventListener('click',()=>{
+  const v = document.getElementById('coupon').value.trim();
+  state.coupon = v || null;
+  renderCart();
+});
+
+/* Checkout -> ouvre modal crypto avec résumé */
+const cryptoModal = document.getElementById('cryptoModal');
+document.getElementById('checkout').addEventListener('click',()=>{
+  if(!state.cart.length){ alert('Panier vide.'); return; }
+  let subEUR=0; for(const c of state.cart) subEUR += c.priceEUR * c.qty / 1000;
+  const discount = computeDiscount(subEUR);
+  let totalEUR = Math.max(0, subEUR - discount);
+  if(state.currency!=='EUR'){ totalEUR = totalEUR / (state.rate[state.currency]||1); }
+  const orderId = 'PB' + Date.now().toString(36).toUpperCase();
+  const sum = `Commande ${orderId}\nTotal: ${formatMoney(totalEUR,'EUR')} (paiement en BTC/ETH/USDT au cours du moment).\nAprès envoi, envoyer la preuve + l’ID par le formulaire de contact.`;
+  document.getElementById('orderSummary').textContent = sum;
+  cryptoModal.classList.add('open');
+});
+document.getElementById('cancelCrypto').addEventListener('click',()=>cryptoModal.classList.remove('open'));
+document.getElementById('confirmPaid').addEventListener('click',()=>{
+  cryptoModal.classList.remove('open');
+  alert('Merci ! Nous vérifierons la transaction et traiterons votre commande.');
+});
+document.querySelectorAll('[data-copy]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const sel = btn.getAttribute('data-copy');
+    const el = document.querySelector(sel);
+    if(!el) return;
+    const text = el.textContent.trim();
+    navigator.clipboard.writeText(text).then(()=>{ btn.textContent='Copié ✓'; setTimeout(()=>btn.textContent='Copier',1200); });
+  });
+});
+
+/* =========================================================
+   CONTACT (simulation) + TOAST
+========================================================= */
+document.getElementById('contactForm').addEventListener('submit',(e)=>{
+  e.preventDefault();
+  document.getElementById('contactOk').style.display='block';
+  e.target.reset();
+});
+
+/* =========================================================
+   AUTH DEMO LOCALE (remplaçable)
+========================================================= */
+function setUser(u){
+  state.user = u;
+  document.getElementById('authState').textContent = u ? `Connecté : ${u.email}` : 'Statut : invité';
+  document.getElementById('loginBtn').textContent = u ? 'Mon compte' : 'Connexion';
+}
+const demoSignup = document.getElementById('demoSignup');
+const demoSignin = document.getElementById('demoSignin');
+const demoSignout= document.getElementById('demoSignout');
+const demoEmail  = document.getElementById('demoEmail');
+const demoPass   = document.getElementById('demoPass');
+
+demoSignup.addEventListener('click',()=>{
+  const email = demoEmail.value.trim();
+  const pass  = demoPass.value.trim();
+  if(email && pass.length>=6){
+    localStorage.setItem('pb360_user', JSON.stringify({email}));
+    setUser({email});
+    alert('Compte créé (démo locale).');
+  } else alert('Email/mot de passe invalide (min 6).');
+});
+demoSignin.addEventListener('click',()=>{
+  const email = demoEmail.value.trim();
+  const pass  = demoPass.value.trim();
+  const stored = localStorage.getItem('pb360_user');
+  if(stored){
+    const u = JSON.parse(stored);
+    if(email===u.email && pass.length>=6){ setUser(u); alert('Connecté.'); }
+    else alert('Identifiants incorrects (démo).');
+  } else alert('Aucun compte (démo). Cliquez “Créer”.');
+});
+demoSignout.addEventListener('click',()=>{ localStorage.removeItem('pb360_user'); setUser(null); });
+
+/* =========================================================
+   INITIALISATION
+========================================================= */
+function applyFilter(){ /* redéfini plus haut — gardé ici pour l’ordre */ }
+window.addEventListener('load',()=>{
+  _needsFilter=true;
+  renderGrid();
+});
+
+/* =========================================================
+   PWA SW (cache de base)
+========================================================= */
+if('serviceWorker' in navigator){
+  const sw = `
+    const CACHE='pb360-v1';
+    const CORE=['./'];
+    self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE))); self.skipWaiting();});
+    self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim())});
+    self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});
+  `;
+  const blob=new Blob([sw],{type:'text/javascript'});
+  const url=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url);
+}
+</script>
+
+<!-- ==== (OPTION) Firebase auth à brancher plus tard ====
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  const firebaseConfig = { apiKey:"", authDomain:"", projectId:"", appId:"" };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  demoSignup.onclick = async ()=>{ await createUserWithEmailAndPassword(auth, demoEmail.value.trim(), demoPass.value.trim()); };
+  demoSignin.onclick = async ()=>{ await signInWithEmailAndPassword(auth, demoEmail.value.trim(), demoPass.value.trim()); };
+  demoSignout.onclick = ()=> signOut(auth);
+  onAuthStateChanged(auth,(user)=> setUser(user?{email:user.email}:null));
+</script>
+========================================================= -->
+
+</body>
+</html>
