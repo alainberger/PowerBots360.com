@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
+<title>PowerBots360 — Catalogue & Paiement</title>
+<meta name="theme-color" content="#0b1020"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1020;
+  --glass:rgba(13,18,34,.62);
+  --glass-strong:rgba(13,18,34,.92);
+  --border:rgba(255,255,255,.12);
+  --text:#e5e7eb; --muted:#94a3b8;
+  --accent:#22c55e; --accent-2:#0ea5e9; --danger:#ef4444;
+  --shadow:0 12px 36px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box} html,body{height:100%}
+body{
+  margin:0;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;color:var(--text);
+  background:#0b1020 url('https://i.postimg.cc/qRzJKc7j/IMG-3273.jpg') center/cover fixed no-repeat;
+}
+a{color:inherit;text-decoration:none} button{font:inherit} img{max-width:100%;display:block}
+input,select,textarea{font:inherit;color:var(--text)}
+.bg-overlay{position:fixed;inset:0;background:linear-gradient(to bottom, rgba(2,6,23,.72), rgba(2,6,23,.36) 35%, rgba(2,6,23,.72));pointer-events:none;z-index:0}
+.container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:16px}
+
+/* Header */
+header{position:sticky;top:0;z-index:30;background:var(--glass-strong);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav{max-width:1200px;margin:0 auto;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:34px;height:34px;border-radius:10px;background:radial-gradient(55% 55% at 30% 30%, #22d3ee, #2563eb 60%, #0ea5e9);box-shadow:0 0 18px rgba(56,189,248,.45), inset 0 0 12px rgba(59,130,246,.50)}
+.brand h1{margin:0;font-size:18px;letter-spacing:.02em}
+.badge{font-size:11px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid var(--border)}
+.actions{display:flex;align-items:center;gap:8px}
+.btn{border:1px solid var(--border);background:rgba(255,255,255,.08);color:var(--text);padding:9px 14px;border-radius:999px;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{background:rgba(255,255,255,.14)} .btn-primary{background:linear-gradient(90deg,#22c55e,#16a34a);border:none}
+.btn-danger{background:linear-gradient(90deg,#ef4444,#b91c1c);border:none}
+.icon{width:18px;height:18px;display:inline-block}
+
+/* Hamburger drawer */
+.hamb{display:flex;flex-direction:column;gap:4px;cursor:pointer;padding:8px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.06)}
+.hamb span{width:22px;height:2px;background:#fff;border-radius:2px}
+.drawer{position:fixed;right:0;top:0;height:100%;width:92%;max-width:420px;background:rgba(6,10,22,.96);border-left:1px solid var(--border);transform:translateX(100%);transition:.25s;z-index:40;color:var(--text);padding:18px 14px;overflow:auto;box-shadow:var(--shadow)}
+.drawer.open{transform:none}
+.menu-head{display:flex;align-items:center;justify-content:space-between}
+.menu-section{margin:12px 0;padding:12px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.1)}
+.menu-list{display:grid;grid-template-columns:repeat(2,minmax(120px,1fr));gap:8px}
+.menu-list a,.menu-list button{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid var(--border)}
+.menu-list a:hover{background:rgba(255,255,255,.12)}
+.langbox{display:flex;gap:8px} .langbox button{flex:1}
+
+/* Cards & sections */
+.card{background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+section{margin:14px 0} .hidden{display:none}
+
+/* Hero */
+.hero{display:grid;gap:12px}
+.hero h2{margin:0;font-size:28px} .hero p{margin:0;color:var(--muted)}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{font-size:12px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--border)}
+
+/* Catalogue toolbar */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
+.field{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.12)}
+.field input,.field select{all:unset;color:var(--text)} .field input::placeholder{color:#cbd5e1}
+
+/* Grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.service{display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:14px;background:rgba(2,6,23,.55);border:1px solid var(--border);transition:.2s}
+.service:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.28)}
+.service h3{margin:0;font-size:16px}
+.meta{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:11px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid var(--border);color:#e2e8f0}
+.price{color:#86efac;font-weight:800} .old{color:#94a3b8;text-decoration:line-through;margin-left:6px;font-weight:500}
+.row{display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap}
+.qty{display:flex;align-items:center;gap:6px}
+.qty input{all:unset;width:76px;text-align:center;background:rgba(255,255,255,.08);padding:6px;border-radius:8px;border:1px solid var(--border);color:var(--text)}
+.flag{font-size:16px}
+
+/* Pagination */
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin:12px 0;flex-wrap:wrap}
+.pagination button{padding:8px 12px;border-radius:10px}
+.page-jump{display:flex;align-items:center;gap:6px}
+
+/* Drawer Panier */
+.cart{position:fixed;left:0;top:0;height:100%;width:92%;max-width:420px;background:rgba(6,10,22,.96);border-right:1px solid var(--border);transform:translateX(-100%);transition:.25s;z-index:40;color:var(--text);padding:18px 14px;overflow:auto;box-shadow:var(--shadow)}
+.cart.open{transform:none}
+.line{display:flex;justify-content:space-between;gap:10px;margin:6px 0}
+.muted{color:var(--muted);font-size:13px} .divider{height:1px;background:var(--border);margin:10px 0}
+.total{font-size:18px;font-weight:800}
+.promo{display:flex;gap:6px;margin-top:8px}
+.promo input{all:unset;background:rgba(255,255,255,.08);border:1px solid var(--border);padding:8px;border-radius:10px;flex:1}
+
+/* Modals */
+.modal{position:fixed;inset:0;background:rgba(2,6,23,.72);display:none;align-items:center;justify-content:center;z-index:45;padding:16px}
+.modal.open{display:flex}
+.modal .card{max-width:560px;width:100%}
+
+/* Footer */
+footer{color:#94a3b8;text-align:center;padding:30px 16px}
+
+/* Responsive */
+@media (min-width:820px){ .hero{grid-template-columns:1.25fr .75fr;align-items:center} }
+</style>
+</head>
+<body>
+<div class="bg-overlay"></div>
+
+<header>
+  <div class="nav">
+    <div class="brand" role="banner">
+      <div class="logo" aria-hidden="true"></div>
+      <h1>PowerBots360</h1>
+      <span class="badge" id="langBadge">FR</span>
+    </div>
+    <div class="actions" role="navigation" aria-label="Top actions">
+      <button class="btn" id="openCart">Panier (<span id="cartCount">0</span>)</button>
+      <div class="hamb" id="openMenu" aria-label="Ouvrir le menu" aria-controls="sideMenu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Drawer MENU -->
+<aside id="sideMenu" class="drawer" aria-label="Menu latéral">
+  <div class="menu-head">
+    <strong>Menu</strong>
+    <button class="btn" id="closeMenu">Fermer</button>
+  </div>
+
+  <div class="menu-section">
+    <div class="menu-list">
+      <a href="#" data-goto="home">🏠 Accueil</a>
+      <a href="#" data-goto="catalogue">🗂️ Catalogue</a>
+      <a href="#" data-goto="messages">💌 Messages exclusifs</a>
+      <a href="#" data-goto="payment">💳 Paiement</a>
+      <a href="#" data-goto="games">🎮 Créations de jeu</a>
+      <a href="#" data-goto="faq">❓ FAQ</a>
+      <a href="#" data-goto="contact">✉️ Contact</a>
+      <a href="#" data-goto="legal">⚖️ Légal</a>
+      <a href="#" data-goto="account">👤 Connexion / Inscription</a>
+    </div>
+  </div>
+
+  <div class="menu-section">
+    <strong style="display:block;margin-bottom:8px">Catégories</strong>
+    <div class="menu-list">
+      <button data-platform="all">🌐 Toutes</button>
+      <button data-platform="TikTok">🎵 TikTok</button>
+      <button data-platform="Instagram">📸 Instagram</button>
+      <button data-platform="YouTube">▶️ YouTube</button>
+      <button data-platform="Facebook">📘 Facebook</button>
+      <button data-platform="Twitter/X">🐦 X</button>
+      <button data-platform="Snapchat">👻 Snapchat</button>
+      <button data-platform="Twitch">🟣 Twitch</button>
+      <button data-platform="Reddit">👽 Reddit</button>
+      <button data-platform="LinkedIn">💼 LinkedIn</button>
+      <button data-platform="Telegram">✈️ Telegram</button>
+      <button data-platform="Spotify">🎧 Spotify</button>
+      <button data-platform="Discord">💬 Discord</button>
+      <button data-platform="OnlyFans">⭐ OnlyFans</button>
+      <button data-platform="MYM">🟦 MYM</button>
+      <button data-platform="Kick">🟩 Kick</button>
+    </div>
+  </div>
+
+  <div class="menu-section">
+    <strong style="display:block;margin-bottom:8px">Langue</strong>
+    <div class="langbox">
+      <button class="btn" data-lang="fr">Français</button>
+      <button class="btn" data-lang="en">English</button>
+    </div>
+  </div>
+</aside>
+
+<!-- Drawer PANIER -->
+<aside id="cart" class="cart" aria-label="Panier">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <h3 style="margin:0">Panier</h3>
+    <button class="btn" id="closeCart">Fermer</button>
+  </div>
+  <div class="divider"></div>
+  <div id="cartItems"></div>
+  <div class="divider"></div>
+  <div class="line"><span>Sous-total</span><span id="subTotal">0.00</span></div>
+  <div class="line"><span>Remise</span><span id="discount">0.00</span></div>
+  <div class="line"><span>Devise</span><span id="currencyView">EUR</span></div>
+  <div class="total line"><span>Total</span><span id="grandTotal">0.00</span></div>
+  <div class="promo">
+    <input id="coupon" placeholder="Code promo (WELCOME10 / VIP5)"/>
+    <button class="btn" id="applyCoupon">Appliquer</button>
+  </div>
+  <div class="divider"></div>
+  <button class="btn btn-primary" id="checkout">Payer (PayPal)</button>
+  <div class="muted" style="margin-top:8px">Paiement crypto : <strong>Bientôt disponible</strong>.</div>
+</aside>
+
+<main class="container">
+  <!-- HERO -->
+  <section id="home" class="card">
+    <div class="hero">
+      <div>
+        <h2 id="heroTitle">Des outils conformes pour développer votre audience — pros, rapides, transparents.</h2>
+        <p id="heroSubtitle">Recherche avancée, panier sécurisé, checkout PayPal — multi-langues, multi-devises, codes promo & support réactif.</p>
+        <div class="pills" aria-label="atouts">
+          <div class="pill">PayPal sécurisé</div>
+          <div class="pill">900+ offres</div>
+          <div class="pill">Multi-plateformes (TikTok → Kick)</div>
+          <div class="pill">Support 24/7</div>
+          <div class="pill">Alert-only — no auto-action</div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" data-goto="catalogue">Voir le catalogue</button>
+          <button class="btn" data-goto="contact">Parler à un conseiller</button>
+        </div>
+      </div>
+      <div class="card" style="background:rgba(2,6,23,.55);border-color:var(--border)">
+        <div class="row"><strong>Connexion rapide (Démo)</strong><span class="muted">Aucune donnée sensible stockée côté serveur.</span></div>
+        <div class="divider"></div>
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <input id="demoEmail" class="btn" placeholder="email@exemple.com" style="flex:1;min-width:220px;background:rgba(255,255,255,.08)"/>
+          <input id="demoPass" class="btn" placeholder="Mot de passe" type="password" style="flex:1;min-width:160px;background:rgba(255,255,255,.08)"/>
+          <button class="btn" id="demoSignup">Créer</button>
+          <button class="btn" id="demoSignin">Se connecter</button>
+          <button class="btn btn-danger" id="demoSignout">Se déconnecter</button>
+        </div>
+        <div id="authState" class="muted" style="margin-top:8px">Statut : invité</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOGUE -->
+  <section id="catalogue" class="card hidden" aria-label="Catalogue">
+    <div class="toolbar">
+      <div class="field" style="flex:1"><span>🔎</span><input id="search" placeholder="Rechercher un service (ex : TikTok Alerts)…"></div>
+      <div class="field"><span>🏷️</span>
+        <select id="platform">
+          <option value="all">Toutes plateformes</option>
+        </select>
+      </div>
+      <div class="field"><span>⚙️</span>
+        <select id="sort">
+          <option value="pop">Populaires</option>
+          <option value="priceAsc">Prix ↑</option>
+          <option value="priceDesc">Prix ↓</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="grid" class="grid"></div>
+
+    <div class="pagination" id="pager">
+      <button class="btn" id="prevPage">Précédent</button>
+      <span id="pageInfo" class="badge">Page 1/1</span>
+      <button class="btn" id="nextPage">Suivant</button>
+      <div class="page-jump">
+        <input class="btn" id="jumpInput" placeholder="Aller à (ex 12)" style="width:120px;background:rgba(255,255,255,.08)">
+        <button class="btn" id="jumpBtn">Aller</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MESSAGES EXCLUSIFS -->
+  <section id="messages" class="card hidden">
+    <h3>Messages exclusifs</h3>
+    <p class="muted">Envoyez des annonces ciblées à vos abonnés (opt-in). Campagnes conformes, segmentation simple & analytics.</p>
+    <div class="row"><button class="btn btn-primary">Créer une campagne</button><button class="btn">Importer une liste opt-in</button></div>
+  </section>
+
+  <!-- PAIEMENT -->
+  <section id="payment" class="card hidden">
+    <h3>Paiement</h3>
+    <p class="muted">Nous utilisons PayPal pour encaisser vos commandes en toute sécurité.</p>
+    <div class="card">
+      <div class="row" style="align-items:center">
+        <div>
+          <strong>PayPal.me</strong><br/>
+          <span class="muted">Cliquez pour ouvrir votre récapitulatif dans PayPal.</span>
+        </div>
+        <a class="btn btn-primary" href="https://www.paypal.me/BotMarketPlus?locale.x=fr_FR" target="_blank" rel="noopener">Payer via PayPal</a>
+      </div>
+    </div>
+    <div class="card" style="margin-top:10px">
+      <strong>Crypto — bientôt disponible</strong>
+      <p class="muted">Paiement en crypto à venir (USDT/USDC). L’option apparaîtra ici automatiquement quand activée.</p>
+    </div>
+  </section>
+
+  <!-- JEUX -->
+  <section id="games" class="card hidden">
+    <h3>Créations de jeu</h3>
+    <p class="muted">Aperçus réservés aux comptes connectés. Vous pourrez tester nos mini-jeux exclusifs directement dans le navigateur.</p>
+    <div class="row"><button class="btn btn-primary" id="requireLoginGames">Se connecter pour accéder</button></div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="card hidden">
+    <h3>FAQ</h3>
+    <details open><summary>Vos outils effectuent-ils des actions automatiques ?</summary>
+      <p class="muted">Non. Nos “Watch/Alerts” sont <strong>alert-only</strong> : ils surveillent et vous préviennent. L’action (signaler, masquer, répondre) reste <strong>manuelle</strong> via les outils officiels des plateformes.</p>
+    </details>
+    <details><summary>Proposez-vous des fonctionnalités interdites par les CGU ?</summary>
+      <p class="muted">Non. Nous respectons strictement les CGU et la loi. Pas d’engagement artificiel, pas de mass-report, pas de spam.</p>
+    </details>
+    <details><summary>Quels réseaux supportez-vous ?</summary>
+      <p class="muted">TikTok, Instagram, YouTube, Facebook, X, Snapchat, Twitch, Reddit, LinkedIn, Telegram, Spotify, Discord, <strong>OnlyFans</strong>, <strong>MYM</strong>, <strong>Kick</strong>, et plus.</p>
+    </details>
+    <details><summary>Comment fonctionnent les paiements ?</summary>
+      <p class="muted">Le paiement se fait par PayPal. La crypto (USDT/USDC) arrive bientôt.</p>
+    </details>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="card hidden" aria-label="Contact">
+    <h3>Contact</h3>
+    <p class="muted">Besoin d’aide ? Laissez-nous un message — réponse rapide.</p>
+    <form id="contactForm" class="grid">
+      <input class="btn" name="name" placeholder="Nom complet" required style="background:rgba(255,255,255,.08)"/>
+      <input class="btn" name="email" placeholder="Email" type="email" required style="background:rgba(255,255,255,.08)"/>
+      <textarea class="btn" name="msg" placeholder="Message" rows="4" required style="background:rgba(255,255,255,.08)"></textarea>
+      <button class="btn btn-primary" type="submit">Envoyer</button>
+    </form>
+    <div id="contactOk" class="muted" style="margin-top:8px;display:none">Merci, votre message a été envoyé (simulation).</div>
+  </section>
+
+  <!-- LEGAL -->
+  <section id="legal" class="card hidden">
+    <h3>Mentions légales & CGU</h3>
+    <p class="muted">Exemple — à adapter à votre activité et juridiction.</p>
+    <details open><summary>Mentions légales</summary><p class="muted">PowerBots360 – Contact : support@powerbots360.com</p></details>
+    <details><summary>CGU</summary><p class="muted">Services numériques conformes aux CGU des plateformes. Pas d’automatisation d’actions, pas de promesse de résultat, usage licite uniquement.</p></details>
+    <details><summary>Confidentialité</summary><p class="muted">Cookies techniques uniquement. Aucune revente de données.</p></details>
+  </section>
+
+  <!-- COMPTE -->
+  <section id="account" class="card hidden">
+    <h3>Mon compte</h3>
+    <p class="muted">Connexion/Inscription démo (localStorage). Remplacez par Firebase/Auth quand vous voulez.</p>
+    <div class="row" style="gap:8px;flex-wrap:wrap">
+      <input id="accEmail" class="btn" placeholder="email@exemple.com" style="flex:1;min-width:220px;background:rgba(255,255,255,.08)"/>
+      <input id="accPass" class="btn" placeholder="Mot de passe" type="password" style="flex:1;min-width:160px;background:rgba(255,255,255,.08)"/>
+      <button class="btn" id="accSignup">Créer</button>
+      <button class="btn" id="accSignin">Se connecter</button>
+      <button class="btn btn-danger" id="accSignout">Se déconnecter</button>
+    </div>
+    <div id="accState" class="muted" style="margin-top:8px">Statut : invité</div>
+  </section>
+</main>
+
+<footer>
+  © <span id="year"></span> PowerBots360 — Tous droits réservés
+</footer>
+
+<!-- Manifest inline -->
+<link rel="manifest" href='data:application/json,{
+  "name":"PowerBots360",
+  "short_name":"PB360",
+  "start_url":".",
+  "display":"standalone",
+  "background_color":"#0b1020",
+  "theme_color":"#0b1020",
+  "icons":[]
+}' />
+
+<!-- Modale de confirmation paiement -->
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true">
+  <div class="card">
+    <h3 style="margin-top:0">Confirmer votre commande</h3>
+    <p class="muted" id="confirmText">Un récapitulatif va s’ouvrir avant le paiement PayPal.</p>
+    <div class="divider"></div>
+    <div class="row">
+      <button class="btn" id="cancelConfirm">Annuler</button>
+      <button class="btn btn-primary" id="goPay">Payer avec PayPal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   STATE
+========================= */
+const state = {
+  lang:'fr',
+  currency:'EUR',
+  rate:{EUR:1, USD:1.08, GBP:0.85},
+  catalog:[],
+  page:1,
+  pageSize:30, // 30 cartes / page ≈ 30 pages pour 900 offres
+  cart:[],
+  coupon:null,
+  user:null
+};
+const PAYPAL_ME = 'https://www.paypal.me/BotMarketPlus?locale.x=fr_FR';
+
+/* =========================
+   NAV + DRAWERS
+========================= */
+function show(id){
+  document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  closeMenu();
+}
+document.querySelectorAll('[data-goto]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();show(el.dataset.goto)}));
+
+const sideMenu=document.getElementById('sideMenu');
+document.getElementById('openMenu').addEventListener('click',()=>{ sideMenu.classList.add('open'); });
+document.getElementById('closeMenu').addEventListener('click',()=> closeMenu());
+function closeMenu(){ sideMenu.classList.remove('open'); }
+document.querySelectorAll('#sideMenu [data-platform]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.getElementById('platform').value = b.dataset.platform;
+    show('catalogue'); renderGrid(true);
+  });
+});
+
+/* Langues */
+const i18n={
+  fr:{
+    heroTitle:'Des outils conformes pour développer votre audience — pros, rapides, transparents.',
+    heroSubtitle:'Recherche avancée, panier sécurisé, checkout PayPal — multi-langues, multi-devises, codes promo & support réactif.'
+  },
+  en:{
+    heroTitle:'Compliant tools to grow your audience — pro, fast, transparent.',
+    heroSubtitle:'Advanced search, secure cart, PayPal checkout — multilingual, multi-currency, coupons & responsive support.'
+  }
+};
+document.querySelectorAll('[data-lang]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    state.lang=b.dataset.lang;
+    document.getElementById('langBadge').textContent=state.lang.toUpperCase();
+    document.getElementById('heroTitle').textContent=i18n[state.lang].heroTitle;
+    document.getElementById('heroSubtitle').textContent=i18n[state.lang].heroSubtitle;
+  });
+});
+
+/* Cart */
+const cartDrawer=document.getElementById('cart');
+document.getElementById('openCart').addEventListener('click',()=>cartDrawer.classList.add('open'));
+document.getElementById('closeCart').addEventListener('click',()=>cartDrawer.classList.remove('open'));
+function bumpCart(){ document.getElementById('cartCount').textContent=state.cart.reduce((a,b)=>a+b.qty,0); }
+
+function renderCart(){
+  const wrap=document.getElementById('cartItems'); wrap.innerHTML='';
+  let subEUR=0;
+  state.cart.forEach(c=>{
+    subEUR += c.priceEUR * c.qty;
+    const line=document.createElement('div'); line.className='line';
+    line.innerHTML=`
+      <div>
+        <div><strong>${c.title}</strong></div>
+        <div class="muted">${c.qty} licence(s) · ${formatMoney(c.priceEUR,'EUR')} / licence</div>
+      </div>
+      <div><button class="btn rm" data-id="${c.id}">✕</button></div>`;
+    wrap.appendChild(line);
+  });
+  wrap.querySelectorAll('.rm').forEach(b=>b.addEventListener('click',()=>{
+    state.cart=state.cart.filter(x=>x.id!==+b.dataset.id); bumpCart(); renderCart();
+  }));
+  const discount=computeDiscount(subEUR);
+  const subC=priceInCurrency(subEUR), discC=priceInCurrency(discount), totalC=priceInCurrency(subEUR-discount);
+  document.getElementById('subTotal').textContent=subC.txt;
+  document.getElementById('discount').textContent=discC.txt;
+  document.getElementById('grandTotal').textContent=totalC.txt;
+  document.getElementById('currencyView').textContent=state.currency;
+}
+
+function computeDiscount(subEUR){
+  const code=(state.coupon||'').toUpperCase();
+  if(code==='WELCOME10') return subEUR*0.10;
+  if(code==='VIP5') return subEUR*0.05;
+  return 0;
+}
+document.getElementById('applyCoupon').addEventListener('click',()=>{
+  state.coupon=document.getElementById('coupon').value.trim()||null; renderCart();
+});
+
+/* Checkout */
+const confirmModal=document.getElementById('confirmModal');
+document.getElementById('checkout').addEventListener('click',()=>{
+  if(!state.cart.length) return alert('Panier vide.');
+  confirmModal.classList.add('open');
+});
+document.getElementById('cancelConfirm').addEventListener('click',()=>confirmModal.classList.remove('open'));
+document.getElementById('goPay').addEventListener('click',()=>{
+  // Total en EUR (prix déjà en EUR)
+  let totalEUR=0; state.cart.forEach(c=> totalEUR += c.priceEUR * c.qty);
+  totalEUR -= computeDiscount(totalEUR);
+  const amount=Math.max(1,+totalEUR.toFixed(2));
+  window.open(`${PAYPAL_ME}`, '_blank'); // ouverture page PayPal.me
+  confirmModal.classList.remove('open');
+});
+
+/* =========================
+   AUTH (Démo locale)
+========================= */
+function setUser(u){
+  state.user=u;
+  document.getElementById('authState').textContent = u ? `Connecté : ${u.email}` : 'Statut : invité';
+  document.getElementById('accState').textContent   = u ? `Connecté : ${u.email}` : 'Statut : invité';
+}
+document.getElementById('demoSignup').onclick=()=>handleSignup('demoEmail','demoPass');
+document.getElementById('demoSignin').onclick=()=>handleSignin('demoEmail','demoPass');
+document.getElementById('demoSignout').onclick=()=>handleSignout();
+
+document.getElementById('accSignup').onclick=()=>handleSignup('accEmail','accPass');
+document.getElementById('accSignin').onclick=()=>handleSignin('accEmail','accPass');
+document.getElementById('accSignout').onclick=()=>handleSignout();
+
+function handleSignup(idE,idP){
+  const email=document.getElementById(idE).value.trim(), pass=document.getElementById(idP).value.trim();
+  if(email && pass.length>=6){ localStorage.setItem('pb360_user',JSON.stringify({email})); setUser({email}); alert('Compte créé (démo).'); }
+  else alert('Email/mot de passe invalide (min 6).');
+}
+function handleSignin(idE,idP){
+  const email=document.getElementById(idE).value.trim(), pass=document.getElementById(idP).value.trim();
+  const stored=localStorage.getItem('pb360_user');
+  if(stored){
+    const u=JSON.parse(stored);
+    if(email===u.email && pass.length>=6){ setUser(u); alert('Connecté.'); }
+    else alert('Identifiants incorrects (démo).');
+  }else alert('Aucun compte (démo). Cliquez “Créer”.');
+}
+function handleSignout(){ localStorage.removeItem('pb360_user'); setUser(null); }
+document.getElementById('requireLoginGames').onclick=()=>show('account');
+
+/* =========================
+   CONTACT (simulation)
+========================= */
+document.getElementById('contactForm').addEventListener('submit',(e)=>{
+  e.preventDefault(); document.getElementById('contactOk').style.display='block'; e.target.reset();
+});
+
+/* =========================
+   CATALOGUE BUILDER (≈900 offres)
+   — Conforme : pas d’auto-actions, pas d’engagement frauduleux.
+========================= */
+const PLATFORMS=["TikTok","Instagram","YouTube","Facebook","Twitter/X","Snapchat","Twitch","Reddit","LinkedIn","Telegram","Spotify","Discord","OnlyFans","MYM","Kick"];
+const PLATFORM_BG = { // images d’entête (optionnel si tu veux plus tard)
+  "TikTok":"🎵","Instagram":"📸","YouTube":"▶️","Facebook":"📘","Twitter/X":"🐦","Snapchat":"👻","Twitch":"🟣","Reddit":"👽","LinkedIn":"💼","Telegram":"✈️","Spotify":"🎧","Discord":"💬","OnlyFans":"⭐","MYM":"🟦","Kick":"🟩"
+};
+const SERVICES = [
+  {code:"watch", name:"Compliance Watch", desc:"Scan de conformité & mots-clés. Alert-only (no auto-action).", base:4.90, tag:"Nouveau"},
+  {code:"alerts", name:"Smart Alerts", desc:"Alertes temps réel (hashtags, mentions, DM opt-in).", base:3.90, tag:"Pro"},
+  {code:"scheduler", name:"Post Scheduler", desc:"Programmation de posts & rappels multi-plateformes.", base:2.90, tag:"Pro"},
+  {code:"inbox", name:"Inbox Assist", desc:"Boîte de réception unifiée & réponses rapides (modèles).", base:3.20, tag:"Essentiel"},
+  {code:"analytics", name:"Audience Insights", desc:"Analytics avancés, suivi des liens & conversions.", base:3.60, tag:"Premium"}
+];
+// variantes par plateforme (texte adapté OnlyFans/MYM/Kick)
+const VARIANT_DESC = {
+  "OnlyFans":{
+    watch:"Veille DM/Posts publics pour contenus non autorisés. Alert-only.",
+    alerts:"Alertes nouveaux tips/DM & keywords personnalisés.",
+    scheduler:"Rappels de publication (push) & brouillons.",
+    inbox:"Tri DM, modèles de réponse, étiquettes fans.",
+    analytics:"Revenus, rétention & sources référentes."
+  },
+  "MYM":{
+    watch:"Surveillance profils & mentions publiques. Alert-only.",
+    alerts:"Alertes mentions, nouveaux abonnés, mots-clés.",
+    scheduler:"Planification de teasers & rappels privés.",
+    inbox:"Réponses modèles & suivi demandes.",
+    analytics:"Tendances abonnements & campagnes lien-in-bio."
+  },
+  "Kick":{
+    watch:"Veille chat & mentions pendant live. Alert-only.",
+    alerts:"Alertes mots toxiques & mentions VIP.",
+    scheduler:"Rappels de live & annonces planifiées.",
+    inbox:"Messages communauté & modération assistée.",
+    analytics:"Stats viewers, chat & rétention."
+  }
+};
+// drapeaux (émoji pays)
+const FLAGS=["🇫🇷","🇧🇷","🇮🇳","🇺🇸","🇬🇧","🇲🇦","🇩🇪","🇪🇸","🇮🇹","🇨🇦","🇵🇹","🇹🇳"];
+
+function countryFlag(i){ return FLAGS[i % FLAGS.length]; }
+
+function buildCatalog(){
+  const items=[]; let id=1;
+  for(const p of PLATFORMS){
+    // mettre Watch en tête
+    items.push(makeItem(id++,p,SERVICES[0],0,true));
+    // variantes
+    for(const s of SERVICES){
+      for(let v=0; v<12; v++){ // 12 variantes ≈ 15*5*12 = 900
+        items.push(makeItem(id++,p,s,v,false));
+      }
+    }
+  }
+  state.catalog=items;
+}
+function makeItem(id,platform,service,variant,isFeatured){
+  const f=countryFlag(id);
+  const vLabel = (variant+1).toString().padStart(2,'0'); // pas de “V2” visible
+  const title=`${platform} — ${service.name} #${vLabel} ${f}`;
+  const speed=["Instant","Rapide","Progressif"][variant%3];
+  const refill=true;
+  const priceEUR= +(service.base + (variant*0.07) + Math.random()*0.35).toFixed(2);
+  const oldEUR = Math.random()<0.2 ? +(priceEUR*1.18).toFixed(2) : null;
+  const min=1, max=1; // licence logicielle (par espace de travail)
+  const tag = service.tag;
+  const popular = isFeatured || Math.random()<0.35;
+  const customDesc=(VARIANT_DESC[platform] && VARIANT_DESC[platform][service.code])? VARIANT_DESC[platform][service.code] : service.desc;
+  const details = `${PLATFORM_BG[platform]||''} ${customDesc} — “Alert-only (no auto-action)”.`
+  return {id,platform,title,speed,refill,priceEUR,oldEUR,min,max,tag,popular,flag:f,details};
+}
+buildCatalog();
+
+/* Rendu catalogue + pagination */
+const grid=document.getElementById('grid');
+const pagerInfo=document.getElementById('pageInfo');
+const prevBtn=document.getElementById('prevPage');
+const nextBtn=document.getElementById('nextPage');
+const jumpInput=document.getElementById('jumpInput');
+const jumpBtn=document.getElementById('jumpBtn');
+const PAGE_SIZE=state.pageSize;
+
+function priceInCurrency(eur){ const r=state.rate[state.currency]||1; const val=eur*(state.currency==='EUR'?1:r); return {num:val, txt:formatMoney(val,state.currency)}; }
+function formatMoney(n,cur){ const sym=cur==='EUR'?'€':cur==='USD'?'$':'£'; return `${sym} ${n.toFixed(2)}`; }
+
+function renderCard(item){
+  const p=priceInCurrency(item.priceEUR);
+  const old=item.oldEUR? priceInCurrency(item.oldEUR).txt : null;
+  return `
+    <div class="service" data-id="${item.id}">
+      <h3>${item.title}</h3>
+      <div class="meta">
+        <span class="chip">${item.platform}</span>
+        <span class="chip">${item.speed}</span>
+        ${item.refill? '<span class="chip">Refill</span>':''}
+        ${item.tag? `<span class="chip">${item.tag}</span>`:''}
+        ${item.popular? '<span class="chip">Populaire</span>':''}
+        <span class="chip">Alert-only</span>
+      </div>
+      <div class="row">
+        <div>
+          <span class="price">${p.txt}</span>
+          ${old? `<span class="old">${old}</span>`:''}
+        </div>
+        <div class="qty">
+          <small class="muted">Licence par espace · ${item.flag}</small>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn detailBtn">Détails</button>
+        <button class="btn addBtn">Ajouter</button>
+      </div>
+    </div>
+  `;
+}
+
+let filtered=[], totalPages=1;
+function applyFilters(){
+  const q=document.getElementById('search').value.trim().toLowerCase();
+  const pf=document.getElementById('platform').value;
+  const sort=document.getElementById('sort').value;
+  filtered=state.catalog.filter(s=>{
+    const okP=(pf==='all')||(s.platform===pf);
+    const okQ=!q || s.title.toLowerCase().includes(q);
+    return okP && okQ;
+  });
+  if(sort==='priceAsc') filtered.sort((a,b)=>a.priceEUR-b.priceEUR);
+  if(sort==='priceDesc') filtered.sort((a,b)=>b.priceEUR-a.priceEUR);
+  if(sort==='pop') filtered.sort((a,b)=>(b.popular|0)-(a.popular|0));
+  totalPages=Math.max(1, Math.ceil(filtered.length/PAGE_SIZE));
+  state.page=Math.min(state.page,totalPages);
+}
+
+function renderGrid(reset){
+  if(reset) state.page=1;
+  applyFilters();
+  grid.innerHTML='';
+  const start=(state.page-1)*PAGE_SIZE, end=start+PAGE_SIZE;
+  filtered.slice(start,end).forEach(item=> grid.insertAdjacentHTML('beforeend',renderCard(item)));
+  pagerInfo.textContent=`Page ${state.page}/${totalPages}`;
+  attachCardHandlers();
+}
+function attachCardHandlers(){
+  grid.querySelectorAll('.addBtn').forEach(btn=>{
+    btn.onclick=(e)=>{
+      const card=e.target.closest('.service'); const id=+card.dataset.id;
+      const item=state.catalog.find(s=>s.id===id); if(!item) return;
+      const exist=state.cart.find(c=>c.id===id);
+      if(exist){ exist.qty+=1; } else { state.cart.push({id,title:item.title,priceEUR:item.priceEUR,qty:1}); }
+      bumpCart(); renderCart();
+    };
+  });
+  grid.querySelectorAll('.detailBtn').forEach(btn=>{
+    btn.onclick=(e)=>{
+      const card=e.target.closest('.service'); const id=+card.dataset.id;
+      const item=state.catalog.find(s=>s.id===id); if(!item) return;
+      alert(`${item.title}\n\n${item.details}\n\nTarif: ${formatMoney(item.priceEUR,'EUR')} / licence`);
+    };
+  });
+}
+
+/* Pagination controls */
+prevBtn.onclick=()=>{ if(state.page>1){ state.page--; renderGrid(false);} };
+nextBtn.onclick=()=>{ if(state.page<totalPages){ state.page++; renderGrid(false);} };
+jumpBtn.onclick=()=>{ const n=parseInt(jumpInput.value,10); if(n && n>=1 && n<=totalPages){ state.page=n; renderGrid(false);} };
+
+/* Platform select list */
+const platformSel=document.getElementById('platform');
+(function fillPlatforms(){
+  PLATFORMS.forEach(p=>{
+    const o=document.createElement('option'); o.value=p; o.textContent=p; platformSel.appendChild(o);
+  });
+})();
+document.getElementById('search').addEventListener('input',()=>renderGrid(true));
+platformSel.addEventListener('change',()=>renderGrid(true));
+document.getElementById('sort').addEventListener('change',()=>renderGrid(true));
+
+/* =========================
+   INIT
+========================= */
+document.getElementById('year').textContent=new Date().getFullYear();
+renderGrid(true);
+setUser(null);
+
+/* =========================
+   PWA (cache simple)
+========================= */
+if('serviceWorker' in navigator){
+  const sw = `
+    const CACHE='pb360-v2';
+    const CORE=['./'];
+    self.addEventListener('install',e=>{
+      e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)));
+      self.skipWaiting();
+    });
+    self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim())});
+    self.addEventListener('fetch',e=>{
+      e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));
+    });
+  `;
+  const blob=new Blob([sw],{type:'text/javascript'});
+  const url=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url);
+}
+</script>
+</body>
+</html>
