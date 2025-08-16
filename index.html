@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PowerBots360 — Catalogues et Services</title>
+  <meta name="description" content="PowerBots360 — Services d'automatisation pour réseaux sociaux. Paiement crypto à venir. Support réactif.">
+  <style>
+    /* ========= Design system (sobre & pro) ========= */
+    :root{
+      --bg: #0e1116;          /* fond dark élégant */
+      --bg-soft:#151a21;
+      --card:#0f1319;
+      --txt:#e7eef7;
+      --muted:#9fb0c3;
+      --brand:#2c7dfa;        /* bleu moderne */
+      --accent:#22c55e;       /* vert badge panier */
+      --border:#1f2833;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:14px;
+      --gap:1rem;
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{
+      margin:0; font:500 16px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;
+      color:var(--txt); background: radial-gradient(1200px 800px at 90% -200px,#16345c33,transparent) , var(--bg);
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    a{color:inherit; text-decoration:none}
+    .container{max-width:1200px; margin:0 auto; padding:0 16px}
+
+    /* ========= Header sticky ========= */
+    .navbar{
+      position:sticky; top:0; z-index:1000;
+      backdrop-filter:saturate(1.2) blur(8px);
+      background:color-mix(in hsl, var(--bg-soft) 70%, transparent);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-inner{display:flex; align-items:center; justify-content:space-between; height:64px}
+    .brand{display:flex; align-items:center; gap:.6rem}
+    .brand-logo{width:28px; height:28px; border-radius:50%; background: radial-gradient(circle at 30% 30%, #6bd5ff, #177aea 60%, #0a4fb8); box-shadow:0 6px 20px #0a56d955}
+    .brand-name{font-weight:700; letter-spacing:.2px}
+
+    /* Primary nav (desktop) */
+    .nav-links{display:flex; align-items:center; gap:.6rem; margin-left:24px}
+    .nav-links a{
+      padding:8px 12px; border-radius:10px; color:var(--muted);
+    }
+    .nav-links a:hover, .nav-links a[aria-current="page"]{color:var(--txt); background:#1a2230}
+
+    /* Right actions */
+    .actions{display:flex; align-items:center; gap:.5rem}
+    .btn, .chip{
+      display:inline-flex; align-items:center; gap:.5rem; border:1px solid var(--border);
+      background:#121821; color:var(--txt); padding:8px 12px; border-radius:10px; cursor:pointer;
+    }
+    .btn.icon{padding:8px}
+    .btn.primary{background:#1a4fbf; border-color:#1a4fbf}
+    .btn.primary:hover{filter:brightness(1.05)}
+    .badge{
+      min-width:18px; height:18px; padding:0 6px; border-radius:9px; background:var(--accent); color:#07210f;
+      font-size:12px; font-weight:800; display:inline-flex; align-items:center; justify-content:center;
+    }
+    .caret{border:solid currentColor; border-width:0 2px 2px 0; display:inline-block; padding:3px; transform:rotate(45deg)}
+    .divider{width:1px; height:28px; background:var(--border); margin:0 .25rem}
+
+    /* Hamburger */
+    .hamburger{display:none; position:relative; width:42px; height:42px; border-radius:10px; border:1px solid var(--border); background:#121821}
+    .hamburger span, .hamburger::before, .hamburger::after{
+      content:""; position:absolute; left:10px; right:10px; height:2px; background:var(--txt); transition:.25s;
+    }
+    .hamburger span{top:20px} .hamburger::before{top:13px} .hamburger::after{top:27px}
+    .hamburger.active span{opacity:0} 
+    .hamburger.active::before{transform:translateY(7px) rotate(45deg)}
+    .hamburger.active::after{transform:translateY(-7px) rotate(-45deg)}
+
+    /* Drawer (mobile menu) */
+    .drawer{
+      position:fixed; inset:0; display:none;
+      background:rgba(0,0,0,.4);
+    }
+    .drawer.open{display:block}
+    .sheet{
+      position:absolute; top:0; left:0; width:min(86vw,360px); height:100%;
+      background:var(--bg); border-right:1px solid var(--border); box-shadow:var(--shadow);
+      transform:translateX(-100%); transition:transform .28s ease;
+      display:flex; flex-direction:column; padding:18px;
+    }
+    .drawer.open .sheet{transform:translateX(0)}
+    .sheet .sheet-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px}
+    .sheet nav a{display:flex; align-items:center; justify-content:space-between; padding:12px 10px; border-radius:10px; color:var(--txt)}
+    .sheet nav a:hover{background:#162030}
+    .sheet .sheet-actions{margin-top:auto; display:grid; gap:8px}
+
+    /* Dropdowns */
+    .dropdown{position:relative}
+    .menu{
+      position:absolute; right:0; top:calc(100% + 8px); min-width:200px; padding:6px;
+      background:var(--bg); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); display:none;
+    }
+    .menu.open{display:block}
+    .menu button, .menu a{
+      width:100%; text-align:left; padding:10px 12px; border-radius:10px; background:transparent; border:0; color:var(--txt); cursor:pointer;
+    }
+    .menu button:hover, .menu a:hover{background:#162030}
+
+    /* Hero */
+    .hero{padding:72px 0 40px; background:linear-gradient(180deg, #0f1623 0%, #0e1116 100%)}
+    .hero .content{display:grid; grid-template-columns:1.2fr .8fr; gap:32px}
+    .hero h1{font-size:clamp(28px, 4.2vw, 46px); line-height:1.15; margin:0 0 12px}
+    .hero p{color:var(--muted); margin:0 0 20px}
+    .hero .panel{background:linear-gradient(180deg,#122033,#0f141b); border:1px solid var(--border); border-radius:var(--radius); padding:18px}
+
+    /* Sections */
+    section{padding:56px 0}
+    h2{font-size: clamp(22px, 3.2vw, 30px); margin:0 0 16px}
+    .grid{display:grid; gap:16px}
+    .grid.cards{grid-template-columns:repeat(3, 1fr)}
+    .card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px}
+    .card h3{margin:0 0 6px; font-size:18px}
+    .flag{width:18px; height:18px; border-radius:50%; overflow:hidden; box-shadow:0 0 0 1px #0006; display:inline-flex}
+    .flag img{width:100%; height:100%; object-fit:cover}
+
+    /* Footer */
+    footer{padding:24px 0; border-top:1px solid var(--border); color:var(--muted); font-size:14px}
+
+    /* Responsive */
+    @media (max-width: 992px){
+      .nav-links{display:none}
+      .hamburger{display:inline-block}
+      .hero .content{grid-template-columns:1fr}
+      .grid.cards{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width: 600px){
+      .grid.cards{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========= NAVBAR ========= -->
+  <header class="navbar" role="banner">
+    <div class="container nav-inner">
+      <button class="hamburger" id="btnHamburger" aria-label="Ouvrir le menu" aria-controls="drawer" aria-expanded="false">
+        <span></span>
+      </button>
+
+      <a class="brand" href="#home" aria-label="Retour à l'accueil">
+        <span class="brand-logo" aria-hidden="true"></span>
+        <span class="brand-name">PowerBots360</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Navigation principale">
+        <a href="#home" aria-current="page">Accueil</a>
+        <a href="#catalogue">Catalogue</a>
+        <a href="#contact">Contact</a>
+        <a href="#legal">Légal</a>
+      </nav>
+
+      <div class="actions">
+        <div class="dropdown" id="ddCurrency">
+          <button class="btn" aria-haspopup="menu" aria-expanded="false">
+            <span>€ EUR</span><i class="caret"></i>
+          </button>
+          <div class="menu" role="menu" aria-label="Choisir la devise">
+            <button data-currency="EUR">€ Euro (EUR)</button>
+            <button data-currency="USD">$ Dollar (USD)</button>
+            <button data-currency="GBP">£ Livre (GBP)</button>
+          </div>
+        </div>
+
+        <div class="dropdown" id="ddLang">
+          <button class="btn" aria-haspopup="menu" aria-expanded="false">
+            <span>🇫🇷 FR</span><i class="caret"></i>
+          </button>
+          <div class="menu" role="menu" aria-label="Choisir la langue">
+            <button data-lang="fr">🇫🇷 Français</button>
+            <button data-lang="en">🇬🇧 English</button>
+          </div>
+        </div>
+
+        <span class="divider" aria-hidden="true"></span>
+
+        <a class="btn" href="#login">Connexion</a>
+
+        <button class="btn icon" id="btnCart" aria-label="Ouvrir le panier">
+          <!-- shopping cart icon -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6h15l-1.5 9h-12L6 3H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="9.5" cy="20" r="1.5" fill="currentColor"/><circle cx="17.5" cy="20" r="1.5" fill="currentColor"/>
+          </svg>
+          <span class="badge" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========= MOBILE DRAWER ========= -->
+  <div class="drawer" id="drawer" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="Menu">
+      <div class="sheet-head">
+        <strong>Menu</strong>
+        <button class="btn icon" id="btnCloseDrawer" aria-label="Fermer le menu">✕</button>
+      </div>
+      <nav>
+        <a href="#home" class="link-dw">Accueil</a>
+        <a href="#catalogue" class="link-dw">Catalogue</a>
+        <a href="#contact" class="link-dw">Contact</a>
+        <a href="#legal" class="link-dw">Légal</a>
+      </nav>
+      <div class="sheet-actions">
+        <div class="dropdown" id="ddCurrencyM">
+          <button class="btn" aria-haspopup="menu" aria-expanded="false">€ EUR <i class="caret"></i></button>
+          <div class="menu" role="menu">
+            <button data-currency="EUR">€ Euro (EUR)</button>
+            <button data-currency="USD">$ Dollar (USD)</button>
+            <button data-currency="GBP">£ Livre (GBP)</button>
+          </div>
+        </div>
+        <div class="dropdown" id="ddLangM">
+          <button class="btn" aria-haspopup="menu" aria-expanded="false">🇫🇷 FR <i class="caret"></i></button>
+          <div class="menu" role="menu">
+            <button data-lang="fr">🇫🇷 Français</button>
+            <button data-lang="en">🇬🇧 English</button>
+          </div>
+        </div>
+        <a class="btn primary" href="#login">Connexion</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= MAIN ========= -->
+  <main id="home" class="hero">
+    <div class="container content">
+      <div>
+        <h1 data-i18n="hero_title">Des bots fiables pour booster vos réseaux — pro, rapides, transparents.</h1>
+        <p data-i18n="hero_sub">Recherche avancée, panier sécurisé, multi-langues, multi-devises. Support réactif.</p>
+        <div style="display:flex; gap:.6rem; flex-wrap:wrap">
+          <a href="#catalogue" class="btn primary">Voir le catalogue</a>
+          <a href="#contact" class="btn">Parler à un conseiller</a>
+        </div>
+      </div>
+      <div class="panel">
+        <strong style="display:block; margin-bottom:6px">Aperçu du panier</strong>
+        <div id="miniCart" style="color:var(--muted)">Votre panier est vide.</div>
+      </div>
+    </div>
+  </main>
+
+  <section id="catalogue">
+    <div class="container">
+      <h2 data-i18n="cat_title">Catalogue — Exemples</h2>
+      <p class="muted" style="color:var(--muted); margin-bottom:14px" data-i18n="cat_hint">
+        Démo avec quelques cartes. Les catégories complètes et la pagination seront branchées sur vos vrais produits.
+      </p>
+      <div class="grid cards">
+        <!-- Exemple TikTok -->
+        <article class="card">
+          <header style="display:flex; align-items:center; justify-content:space-between">
+            <h3>TikTok Likes — FR <span class="flag"><img alt="France" src="https://flagcdn.com/w20/fr.png"></span></h3>
+            <small style="color:var(--muted)">Qualité Premium</small>
+          </header>
+          <p style="color:var(--muted)">Livraison rapide, profils réalistes. Garantie de complétion.</p>
+          <div style="display:flex; gap:.5rem">
+            <button class="btn add" data-item="tiktok-like-fr">Ajouter</button>
+            <a class="btn" href="#details-tiktok">Détails</a>
+          </div>
+        </article>
+        <!-- Exemple Instagram -->
+        <article class="card">
+          <header style="display:flex; align-items:center; justify-content:space-between">
+            <h3>Instagram Followers — BR <span class="flag"><img alt="Brésil" src="https://flagcdn.com/w20/br.png"></span></h3>
+            <small style="color:var(--muted)">Essentiel</small>
+          </header>
+          <p style="color:var(--muted)">Croissance progressive et naturelle. Sans pertes soudaines.</p>
+          <div style="display:flex; gap:.5rem">
+            <button class="btn add" data-item="ig-follow-br">Ajouter</button>
+            <a class="btn" href="#details-ig">Détails</a>
+          </div>
+        </article>
+        <!-- Exemple Telegram -->
+        <article class="card">
+          <header style="display:flex; align-items:center; justify-content:space-between">
+            <h3>Telegram Members — IN <span class="flag"><img alt="Inde" src="https://flagcdn.com/w20/in.png"></span></h3>
+            <small style="color:var(--muted)">Avancé</small>
+          </header>
+          <p style="color:var(--muted)">Membres ciblés par langue et région. Engagement stable.</p>
+          <div style="display:flex; gap:.5rem">
+            <button class="btn add" data-item="tg-members-in">Ajouter</button>
+            <a class="btn" href="#details-tg">Détails</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="container">
+      <h2>Contact</h2>
+      <div class="grid" style="grid-template-columns:1.1fr .9fr">
+        <form class="card" id="contactForm">
+          <h3 style="margin-top:0">Écrivez-nous</h3>
+          <label>Nom<br><input required name="name" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:#0c1117;color:var(--txt)"></label><br><br>
+          <label>Email<br><input required type="email" name="email" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:#0c1117;color:var(--txt)"></label><br><br>
+          <label>Message<br><textarea required name="msg" rows="4" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:#0c1117;color:var(--txt)"></textarea></label><br><br>
+          <button class="btn primary" type="submit">Envoyer</button>
+          <small id="contactStatus" style="margin-left:10px;color:var(--muted)"></small>
+        </form>
+        <aside class="card">
+          <h3 style="margin-top:0">Support</h3>
+          <p style="color:var(--muted)">Réponse sous 24h, 7j/7.<br>Canaux : email & Telegram.</p>
+          <p><strong>Email</strong> : support@powerbots360.com<br>
+             <strong>Telegram</strong> : @PowerBots360</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="legal">
+    <div class="container">
+      <h2>Mentions légales & Confiance</h2>
+      <div class="card">
+        <p style="margin:0;color:var(--muted)">
+          PowerBots360 est un fournisseur d’outils marketing destinés à améliorer la portée organique et payante.
+          Nous respectons les conditions d’utilisation des plateformes et n’exigeons jamais vos mots de passe.
+          Les paiements crypto seront intégrés lorsque votre portefeuille sera prêt.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="login">
+    <div class="container">
+      <h2>Connexion</h2>
+      <div class="grid" style="grid-template-columns:1fr 1fr">
+        <form class="card" id="loginForm">
+          <label>Email<br><input required type="email" name="email" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:#0c1117;color:var(--txt)"></label><br><br>
+          <label>Mot de passe<br><input required type="password" name="pwd" minlength="6" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:#0c1117;color:var(--txt)"></label><br><br>
+          <button class="btn primary" type="submit">Se connecter</button>
+          <small id="loginStatus" style="margin-left:10px;color:var(--muted)"></small>
+        </form>
+        <div class="card">
+          <h3 style="margin-top:0">Pas encore de compte ?</h3>
+          <p style="color:var(--muted)">L’inscription sera activée une fois la passerelle crypto prête.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div>© <span id="year"></span> PowerBots360. Tous droits réservés.</div>
+      <div style="color:var(--muted)">FR / EN • € / $ / £ • Sécurisé</div>
+    </div>
+  </footer>
+
+  <script>
+    // ===== Helpers
+    const $ = (s, p=document)=>p.querySelector(s);
+    const $$ = (s, p=document)=>[...p.querySelectorAll(s)];
+
+    // ===== Year
+    $('#year').textContent = new Date().getFullYear();
+
+    // ===== Hamburger + Drawer
+    const drawer = $('#drawer'), btnHam = $('#btnHamburger');
+    const closeDrawer = ()=>{ drawer.classList.remove('open'); btnHam.classList.remove('active'); btnHam.setAttribute('aria-expanded','false'); drawer.setAttribute('aria-hidden','true'); };
+    const openDrawer  = ()=>{ drawer.classList.add('open'); btnHam.classList.add('active'); btnHam.setAttribute('aria-expanded','true'); drawer.setAttribute('aria-hidden','false'); };
+    btnHam.addEventListener('click', ()=> drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+    $('#btnCloseDrawer').addEventListener('click', closeDrawer);
+    drawer.addEventListener('click', e=>{ if(e.target===drawer) closeDrawer(); });
+    $$('.link-dw', drawer).forEach(a=>a.addEventListener('click', closeDrawer));
+
+    // ===== Dropdowns (lang & currency)
+    function dropdown(rootId, onPick){
+      const root = document.getElementById(rootId);
+      const btn = $('button.btn', root), menu = $('.menu', root);
+      btn.addEventListener('click', (e)=>{ e.stopPropagation(); menu.classList.toggle('open'); btn.setAttribute('aria-expanded', menu.classList.contains('open')); });
+      menu.addEventListener('click', (e)=>{
+        const b = e.target.closest('[data-lang],[data-currency]');
+        if(!b) return;
+        const val = b.dataset.lang || b.dataset.currency;
+        onPick(val, btn); menu.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+      });
+      document.addEventListener('click', ()=> menu.classList.remove('open'));
+    }
+
+    // Currency (UI only)
+    dropdown('ddCurrency', (v,btn)=> btn.firstElementChild.textContent = (v==='USD'?'$ USD': v==='GBP'?'£ GBP':'€ EUR'));
+    dropdown('ddCurrencyM', (v,btn)=> btn.innerHTML = (v==='USD'?'$ USD': v==='GBP'?'£ GBP':'€ EUR') + ' <i class="caret"></i>');
+
+    // Language (very light i18n demo)
+    const i18n = {
+      fr:{hero_title:"Des bots fiables pour booster vos réseaux — pro, rapides, transparents.", hero_sub:"Recherche avancée, panier sécurisé, multi-langues, multi-devises. Support réactif.", cat_title:"Catalogue — Exemples", cat_hint:"Démo avec quelques cartes. Les catégories complètes et la pagination seront branchées sur vos vrais produits."},
+      en:{hero_title:"Reliable bots to grow your socials — pro, fast, transparent.", hero_sub:"Advanced search, secure cart, multi-language, multi-currency. Responsive support.", cat_title:"Catalog — Samples", cat_hint:"Demo with a few cards. Full categories & pagination will connect to your real inventory."}
+    };
+    function setLang(lang){
+      const dict = i18n[lang] || i18n.fr;
+      $$('[data-i18n]').forEach(n=> n.textContent = dict[n.getAttribute('data-i18n')]);
+      // Buttons label
+      $('#ddLang button span').textContent = lang==='en' ? '🇬🇧 EN' : '🇫🇷 FR';
+      $('#ddLangM button').innerHTML = (lang==='en'?'🇬🇧 EN':'🇫🇷 FR') + ' <i class="caret"></i>';
+      document.documentElement.lang = lang;
+    }
+    dropdown('ddLang', (v)=> setLang(v));
+    dropdown('ddLangM', (v)=> setLang(v));
+    setLang('fr');
+
+    // ===== Back / Panier / Mini interactions
+    const cart = new Set();
+    $$('.add').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        cart.add(b.dataset.item);
+        $('#cartCount').textContent = cart.size;
+        $('#miniCart').textContent = cart.size ? `${cart.size} article(s) dans votre panier` : 'Votre panier est vide.';
+        // petite pulsation
+        const badge = $('#cartCount'); badge.animate([{transform:'scale(1)'},{transform:'scale(1.2)'},{transform:'scale(1)'}], {duration:300});
+      });
+    });
+    $('#btnCart').addEventListener('click', ()=>{
+      alert(cart.size ? `Panier:\n- ${[...cart].join('\n- ')}` : 'Votre panier est vide.');
+    });
+
+    // ===== Forms (demo OK)
+    $('#contactForm').addEventListener('submit', e=>{
+      e.preventDefault(); $('#contactStatus').textContent='Message envoyé (démo). Nous revenons vers vous vite !';
+    });
+    $('#loginForm').addEventListener('submit', e=>{
+      e.preventDefault(); $('#loginStatus').textContent='Connexion simulée (démo).';
+    });
+
+    // ===== Improve anchor scrolling
+    $$('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); history.pushState({}, "", '#'+id); }
+      });
+    });
+
+    // ===== "Retour" logic (if you add a back link later)
+    // Example: <a href="#" class="btn" onclick="goBack()">← Retour</a>
+    window.goBack = function(){
+      if(document.referrer) history.back(); else document.getElementById('home').scrollIntoView({behavior:'smooth'});
+    }
+  </script>
+</body>
+</html>
