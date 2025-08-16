@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>PowerBots360 — Catalogue & Paiement Crypto</title>
+<meta name="theme-color" content="#0b0f19">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0f19;
+    --glass: rgba(255,255,255,.08);
+    --glass-2: rgba(255,255,255,.12);
+    --txt:#e6edf6;
+    --muted:#9fb0c3;
+    --brand:#59d3ff;
+    --brand-2:#7cf7cf;
+    --ok:#22c55e;
+    --warn:#ef4444;
+    --border: rgba(255,255,255,.18);
+    --shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;font-family:Poppins,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--txt);
+    background: var(--bg) url('https://i.postimg.cc/qRzJKc7j/IMG-3273.jpg') center/cover fixed no-repeat;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* Backdrop to improve readability while keeping the image visible */
+  .bg-overlay{position:fixed;inset:0;pointer-events:none;
+    background:linear-gradient(to bottom, rgba(11,15,25,.68), rgba(11,15,25,.35) 30%, rgba(11,15,25,.68));
+    z-index:0;
+  }
+
+  /* Layout helpers */
+  .container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:16px}
+  .card{background:var(--glass); backdrop-filter: blur(8px); border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:var(--shadow)}
+  .grid{display:grid;gap:12px}
+  @media (min-width:1024px){ .grid-cols-2{grid-template-columns:1.2fr .8fr} }
+
+  /* Header + Nav */
+  header{position:sticky;top:0;z-index:20;background:rgba(11,15,25,.65);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+  .nav{max-width:1200px;margin:0 auto;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand .logo{width:34px;height:34px;border-radius:50%;background:
+    radial-gradient(circle at 30% 30%, #59d3ff, #7cf7cf 60%, #59d3ff); box-shadow:0 0 22px rgba(124,247,207,.45), inset 0 0 14px rgba(89,211,255,.5)}
+  .brand h1{font-size:18px;letter-spacing:.02em;margin:0}
+  .badge{padding:3px 8px;border-radius:999px;border:1px solid var(--border);font-size:12px;color:#081018;background:linear-gradient(90deg,#7cf7cf,#59d3ff)}
+
+  /* Desktop menu */
+  .menu{display:flex;align-items:center;gap:8px}
+  .btn{border:1px solid var(--border);background:var(--glass);color:var(--txt);padding:8px 12px;border-radius:999px;cursor:pointer;transition:.2s;font:inherit}
+  .btn:hover{background:var(--glass-2)}
+  .btn-primary{border:0;background:linear-gradient(90deg,#7cf7cf,#59d3ff);color:#081018;font-weight:700}
+  .btn-danger{border:0;background:linear-gradient(90deg,#ef4444,#b91c1c);color:#fff}
+  .btn-icon{display:inline-flex;align-items:center;gap:6px}
+  .select{appearance:none;border:1px solid var(--border);background:var(--glass);color:var(--txt);padding:8px 28px 8px 12px;border-radius:999px;position:relative}
+  .select-wrap{position:relative}
+  .select-wrap:after{content:"▾";position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--muted);font-size:12px}
+
+  /* Hamburger (mobile) */
+  .hamburger{display:inline-flex;flex-direction:column;gap:4px;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--glass)}
+  .hamburger span{width:22px;height:2px;background:var(--txt);display:block}
+  .drawer{position:fixed;inset:0 0 0 auto;width:86%;max-width:380px;background:rgba(11,15,25,.97);transform:translateX(100%);transition:.25s;z-index:25;border-left:1px solid var(--border);padding:14px;overflow:auto}
+  .drawer.open{transform:none}
+  .drawer .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .divider{height:1px;background:var(--border);margin:10px 0}
+  .muted{color:var(--muted);font-size:13px}
+
+  /* Hero */
+  .hero h2{margin:0 0 6px 0;font-size:26px}
+  .hero p{margin:0;color:#cfe2f3}
+  .pillbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .pill{background:rgba(255,255,255,.08);border:1px solid var(--border);padding:6px 10px;border-radius:999px;font-size:12px}
+
+  /* Catalogue toolbar */
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
+  .field{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:12px;border:1px solid var(--border);background:var(--glass)}
+  .field input,.field select{all:unset;color:var(--txt)}
+  .field input::placeholder{color:var(--muted)}
+
+  /* Cards */
+  .catalog{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+  .card-svc{background:rgba(11,15,25,.55);border:1px solid var(--border);border-radius:14px;padding:12px;transition:.2s}
+  .card-svc:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  .card-svc h3{margin:0 0 6px 0;font-size:16px}
+  .chip{font-size:11px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.09);border:1px solid var(--border);color:#dbe8f5;margin-right:6px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .price{color:#a7f3d0;font-weight:700}
+  .old{color:#9fb0c3;text-decoration:line-through;margin-left:6px}
+  .qty{display:flex;align-items:center;gap:6px}
+  .qty input{all:unset;width:72px;text-align:center;background:rgba(255,255,255,.08);padding:6px;border-radius:8px;border:1px solid var(--border)}
+
+  /* Pagination */
+  .pagination{display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:10px}
+  .page-btn{border:1px solid var(--border);background:var(--glass);padding:6px 10px;border-radius:8px;cursor:pointer}
+  .page-btn[aria-current="page"]{background:linear-gradient(90deg,#7cf7cf,#59d3ff);color:#081018;border:0;font-weight:700}
+
+  /* Modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:30}
+  .modal.open{display:flex}
+  .modal .card{max-width:560px;width:92%}
+
+  /* Footer */
+  footer{color:var(--muted);text-align:center;padding:24px}
+
+  /* Responsive rules */
+  @media (max-width:980px){
+    .menu-desktop{display:none}
+    .menu-mobile{display:flex}
+  }
+  @media (min-width:981px){
+    .menu-mobile{display:none}
+    .menu-desktop{display:flex}
+  }
+</style>
+</head>
+<body>
+<div class="bg-overlay"></div>
+
+<header>
+  <div class="nav">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <h1>PowerBots360</h1>
+      <span class="badge" id="langBadge">FR</span>
+    </div>
+
+    <!-- Desktop menu -->
+    <div class="menu menu-desktop" role="navigation" aria-label="Navigation principale">
+      <button class="btn" data-goto="home" id="btnHome">Accueil</button>
+      <button class="btn" data-goto="catalogue" id="btnCatalogue">Catalogue</button>
+      <button class="btn" data-goto="contact">Contact</button>
+      <button class="btn" data-goto="legal">Légal</button>
+
+      <div class="select-wrap">
+        <select class="select" id="currency">
+          <option value="EUR" selected>€ EUR</option>
+          <option value="USD">$ USD</option>
+          <option value="GBP">£ GBP</option>
+        </select>
+      </div>
+
+      <div class="select-wrap">
+        <select class="select" id="langSelect" aria-label="Choisir la langue">
+          <option value="fr" selected>Français</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+
+      <button class="btn" id="loginBtn">Connexion</button>
+      <button class="btn btn-primary" id="openCart">Panier (<span id="cartCount">0</span>)</button>
+    </div>
+
+    <!-- Mobile menu (hamburger) -->
+    <div class="menu menu-mobile">
+      <button class="hamburger" id="openDrawer" aria-label="Ouvrir le menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Drawer (mobile) -->
+<aside class="drawer" id="drawer" aria-label="Menu mobile">
+  <div class="row">
+    <strong>Menu</strong>
+    <button class="btn" id="closeDrawer">Fermer</button>
+  </div>
+  <div class="divider"></div>
+  <button class="btn" data-goto="home">Accueil</button>
+  <button class="btn" data-goto="catalogue">Catalogue</button>
+  <button class="btn" data-goto="contact">Contact</button>
+  <button class="btn" data-goto="legal">Légal</button>
+  <div class="divider"></div>
+  <label class="muted">Devise</label>
+  <div class="select-wrap" style="margin-top:4px;margin-bottom:8px">
+    <select class="select" id="currencyMobile">
+      <option value="EUR" selected>€ EUR</option>
+      <option value="USD">$ USD</option>
+      <option value="GBP">£ GBP</option>
+    </select>
+  </div>
+  <label class="muted">Langue</label>
+  <div class="select-wrap" style="margin-top:4px;margin-bottom:8px">
+    <select class="select" id="langMobile">
+      <option value="fr" selected>Français</option>
+      <option value="en">English</option>
+    </select>
+  </div>
+  <div class="divider"></div>
+  <button class="btn" id="drawerLogin">Connexion</button>
+  <button class="btn btn-primary" id="drawerCart">Panier (<span id="cartCountMobile">0</span>)</button>
+</aside>
+
+<main class="container">
+  <!-- HERO -->
+  <section id="home" class="card">
+    <div class="grid grid-cols-2 hero">
+      <div>
+        <h2 id="heroTitle">Des services fiables pour booster vos réseaux — pro, rapides, transparents.</h2>
+        <p id="heroSubtitle">Recherche, panier, paiement crypto, multi-langues/devises, preuves sociales et assistance réactive.</p>
+        <div class="pillbar">
+          <span class="pill">Paiement crypto</span>
+          <span class="pill">800+ services</span>
+          <span class="pill">Multi-plateformes</span>
+          <span class="pill">Support 24/7</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+          <button class="btn btn-primary" data-goto="catalogue">Voir le catalogue</button>
+          <button class="btn" data-goto="contact">Parler à un conseiller</button>
+        </div>
+      </div>
+      <div class="card" style="background:rgba(11,15,25,.55)">
+        <div class="row"><strong>Connexion (démo locale)</strong><span class="muted">Aucune donnée stockée côté serveur.</span></div>
+        <div class="divider"></div>
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <input id="demoEmail" class="btn" placeholder="email@exemple.com" style="flex:1;min-width:220px;background:var(--glass)"/>
+          <input id="demoPass" class="btn" placeholder="Mot de passe (min 6)" type="password" style="flex:1;min-width:160px;background:var(--glass)"/>
+          <button class="btn" id="demoSignup">Créer</button>
+          <button class="btn" id="demoSignin">Se connecter</button>
+          <button class="btn btn-danger" id="demoSignout">Se déconnecter</button>
+        </div>
+        <div id="authState" class="muted" style="margin-top:8px">Statut : invité</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOGUE -->
+  <section id="catalogue" class="card" aria-label="Catalogue" style="display:none">
+    <div class="row" style="align-items:stretch;gap:8px;flex-wrap:wrap">
+      <div class="field" style="flex:1"><span>🔎</span><input id="search" placeholder="Rechercher un service…"></div>
+      <div class="field"><span>🏷️</span>
+        <select id="platform">
+          <option value="all">Toutes plateformes</option>
+          <option>TikTok</option><option>Instagram</option><option>YouTube</option>
+          <option>Facebook</option><option>Twitter/X</option><option>Snapchat</option>
+          <option>Twitch</option><option>Reddit</option><option>LinkedIn</option>
+          <option>Telegram</option><option>Spotify</option><option>Discord</option>
+        </select>
+      </div>
+      <div class="field"><span>⚙️</span>
+        <select id="sort">
+          <option value="pop">Populaires</option>
+          <option value="priceAsc">Prix ↑</option>
+          <option value="priceDesc">Prix ↓</option>
+        </select>
+      </div>
+      <button class="btn" id="toggleCatalogue">Masquer</button>
+    </div>
+
+    <div class="catalog" id="grid"></div>
+    <div class="pagination" id="pagination"></div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="card" aria-label="Contact" style="display:none">
+    <h3>Contact</h3>
+    <p class="muted">Besoin d’aide ? Laisse-nous un message — réponse rapide.</p>
+    <form id="contactForm" class="grid">
+      <input class="btn" name="name" placeholder="Nom complet" required style="background:var(--glass)"/>
+      <input class="btn" name="email" placeholder="Email" type="email" required style="background:var(--glass)"/>
+      <textarea class="btn" name="msg" placeholder="Message" rows="4" required style="background:var(--glass)"></textarea>
+      <button class="btn btn-primary" type="submit">Envoyer</button>
+    </form>
+    <div id="contactOk" class="muted" style="margin-top:8px;display:none">Merci, votre message a été envoyé (simulation).</div>
+  </section>
+
+  <!-- LEGAL/FAQ -->
+  <section id="legal" class="card" aria-label="Légal & FAQ" style="display:none">
+    <h3>Mentions légales, CGV & FAQ</h3>
+    <details open>
+      <summary><strong>Mentions légales</strong></summary>
+      <p class="muted">PowerBots360 (marque commerciale). Contact : support@powerbots360.com. Activité : vente de prestations numériques. TVA/Registre : à compléter selon ta juridiction.</p>
+    </details>
+    <details>
+      <summary><strong>Conditions générales de vente</strong></summary>
+      <ul class="muted">
+        <li>Prestations numériques livrées après paiement confirmé en crypto.</li>
+        <li>Délais indicatifs par service (voir fiche). Pas de promesse de résultat spécifique sur plateformes tierces.</li>
+        <li>Respect des règles de chaque plateforme par le client. Usage nuisible interdit.</li>
+        <li>Remboursement : au cas par cas si la commande n’a pas démarré sous 72h ou en cas d’échec imputable au service.</li>
+        <li>Support client disponible 7j/7 par email.</li>
+      </ul>
+    </details>
+    <details>
+      <summary><strong>Confidentialité</strong></summary>
+      <p class="muted">Cookies strictement nécessaires (session). Données minimales collectées (email, historique de commandes). Aucune revente de données. Droit d’accès/suppression sur demande.</p>
+    </details>
+    <details>
+      <summary><strong>FAQ</strong></summary>
+      <p><strong>Comment payer ?</strong> Via crypto (BTC, ETH, USDT, USDC). Voir “Payer” dans le panier, puis suis les instructions réseau/adresse.</p>
+      <p><strong>Je n’ai pas de crypto.</strong> Achète sur un échange fiable (exemples : Coinbase, Kraken, Binance) puis envoie à l’adresse indiquée. Nous n’avons aucun partenariat ni affiliation avec eux.</p>
+      <p><strong>Délais de livraison ?</strong> Chaque fiche mentionne “Instant”, “Rapide” ou “Progressif”.</p>
+      <p><strong>Facture ?</strong> Oui, facture PDF sur demande après paiement confirmé on-chain.</p>
+    </details>
+  </section>
+</main>
+
+<!-- PANIER -->
+<aside id="cart" class="drawer" aria-label="Panier">
+  <div class="row"><h3 style="margin:0">Panier</h3><button class="btn" id="closeCart">Fermer</button></div>
+  <div class="divider"></div>
+  <div id="cartItems"></div>
+  <div class="divider"></div>
+  <div class="row"><span class="muted">Devise affichée</span><span id="currencyView">EUR</span></div>
+  <div class="row"><span>Sous-total</span><span id="subTotal">0.00</span></div>
+  <div class="row"><span>Remise</span><span id="discount">0.00</span></div>
+  <div class="row" style="font-weight:700"><span>Total</span><span id="grandTotal">0.00</span></div>
+  <div class="divider"></div>
+  <div class="row">
+    <input id="coupon" class="btn" style="flex:1" placeholder="Code promo (WELCOME10 / VIP5)"/>
+    <button class="btn" id="applyCoupon">Appliquer</button>
+  </div>
+  <div class="divider"></div>
+  <button class="btn btn-primary" id="checkout">Payer en crypto</button>
+</aside>
+
+<!-- MODAL CONFIRMATION PAIEMENT CRYPTO -->
+<div class="modal" id="cryptoModal" role="dialog" aria-modal="true">
+  <div class="card">
+    <h3 style="margin-top:0">Paiement crypto</h3>
+    <p class="muted">Choisis la crypto et le réseau. L’adresse de réception s’affichera. (Tu pourras configurer tes adresses dans WALLET_CONFIG.)</p>
+    <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:6px">
+      <div class="select-wrap" style="flex:1;min-width:180px">
+        <select class="select" id="coinSel">
+          <option value="USDT-TRC20">USDT (TRC20)</option>
+          <option value="USDT-ERC20">USDT (ERC20)</option>
+          <option value="USDC-ERC20">USDC (ERC20)</option>
+          <option value="ETH-ERC20">ETH (ERC20)</option>
+          <option value="BTC-LN">BTC (Lightning)</option>
+          <option value="BTC-OnChain">BTC (On-chain)</option>
+        </select>
+      </div>
+      <input id="payAmount" class="btn" placeholder="Montant à payer (en devise affichée)" style="flex:1;min-width:200px;background:var(--glass)"/>
+    </div>
+    <div class="divider"></div>
+    <div id="payDetails" class="muted">Sélectionne une option pour afficher l’adresse.</div>
+    <div class="divider"></div>
+    <div class="row">
+      <button class="btn" id="cryptoCancel">Annuler</button>
+      <button class="btn btn-primary" id="cryptoConfirm">J’ai payé</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETAILS SERVICE -->
+<div class="modal" id="detailModal" role="dialog" aria-modal="true">
+  <div class="card">
+    <h3 id="detailTitle" style="margin-top:0">Détails du service</h3>
+    <p id="detailDesc" class="muted"></p>
+    <ul class="muted" id="detailBullets" style="padding-left:18px;margin-top:8px"></ul>
+    <div class="divider"></div>
+    <div class="row">
+      <button class="btn" id="closeDetail">Fermer</button>
+      <button class="btn btn-primary" id="detailAdd">Ajouter au panier</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   ÉTAT GLOBAL
+========================= */
+const state = {
+  lang: 'fr',
+  currency: 'EUR',
+  rate: { EUR:1, USD:1.08, GBP:0.85 }, // conversion simple pour l’affichage
+  catalog: [],
+  page: 1,
+  PAGE_SIZE: 28, // ~29 pages pour 800 items
+  cart: [],
+  coupon: null,
+  lastFiltered: [],
+  selectedService: null
+};
+
+/* =========================
+   NAVIGATION + TOGGLES
+========================= */
+const sections = ['home','catalogue','contact','legal'];
+function show(id){
+  sections.forEach(s=> document.getElementById(s).style.display = (s===id?'block':'none'));
+  // bouton Catalogue : 2e clic -> toggle
+  if(id==='catalogue'){ catalogueVisible=true; toggleBtn.textContent = i18n[state.lang].hide; }
+}
+document.querySelectorAll('[data-goto]').forEach(b => {
+  b.addEventListener('click', ()=> {
+    show(b.dataset.goto);
+    drawer.classList.remove('open');
+  });
+});
+
+const drawer = document.getElementById('drawer');
+document.getElementById('openDrawer').onclick = ()=> drawer.classList.add('open');
+document.getElementById('closeDrawer').onclick = ()=> drawer.classList.remove('open');
+document.getElementById('drawerCart').onclick = ()=> { drawer.classList.remove('open'); cartDrawer.classList.add('open'); };
+document.getElementById('drawerLogin').onclick = ()=> alert('Démo : connexion locale (voir Accueil).');
+
+/* =========================
+   I18N
+========================= */
+const i18n = {
+  fr:{
+    heroTitle:'Des services fiables pour booster vos réseaux — pro, rapides, transparents.',
+    heroSubtitle:'Recherche, panier, paiement crypto, multi-langues/devises, preuves sociales et assistance réactive.',
+    show:'Afficher', hide:'Masquer',
+    added:'Ajouté au panier.',
+    empty:'Aucun résultat.',
+    payTitle:'Paiement crypto',
+    addressMissing:'Adresse non configurée. Ajoute ton wallet dans WALLET_CONFIG.',
+  },
+  en:{
+    heroTitle:'Reliable services to grow your socials — pro, fast, transparent.',
+    heroSubtitle:'Search, cart, crypto checkout, multi-language/currency, social proof & responsive support.',
+    show:'Show', hide:'Hide',
+    added:'Added to cart.',
+    empty:'No results.',
+    payTitle:'Crypto payment',
+    addressMissing:'No address configured. Add your wallet in WALLET_CONFIG.',
+  }
+};
+const langBadge = document.getElementById('langBadge');
+const langSelect = document.getElementById('langSelect');
+const langMobile = document.getElementById('langMobile');
+function setLang(l){
+  state.lang = l;
+  langBadge.textContent = l.toUpperCase();
+  langSelect.value = l; langMobile.value = l;
+  document.getElementById('heroTitle').textContent = i18n[l].heroTitle;
+  document.getElementById('heroSubtitle').textContent = i18n[l].heroSubtitle;
+  toggleBtn.textContent = catalogueVisible ? i18n[l].hide : i18n[l].show;
+}
+langSelect.onchange = ()=> setLang(langSelect.value);
+langMobile.onchange = ()=> setLang(langMobile.value);
+
+/* =========================
+   CURRENCY
+========================= */
+const currencySel = document.getElementById('currency');
+const currencyMobile = document.getElementById('currencyMobile');
+currencySel.onchange = ()=>{ state.currency = currencySel.value; currencyMobile.value=state.currency; render(); renderCart(); };
+currencyMobile.onchange = ()=>{ state.currency = currencyMobile.value; currencySel.value=state.currency; render(); renderCart(); };
+function fxEUR(n){ // convert from EUR to selected currency
+  const r = state.rate[state.currency] || 1;
+  return n*(state.currency==='EUR'?1:r);
+}
+function money(n){
+  const sym = state.currency==='EUR'?'€':state.currency==='USD'?'$':'£';
+  return `${sym} ${n.toFixed(2)}`;
+}
+
+/* =========================
+   CATALOGUE (800 items)
+========================= */
+const PLATFORMS = ["TikTok","Instagram","YouTube","Facebook","Twitter/X","Snapchat","Twitch","Reddit","LinkedIn","Telegram","Spotify","Discord"];
+const SERVICE_TYPES = [
+  {slug:'likes', label:'Likes', base:1.80, desc:'Apports progressifs, profils mélangés, stabilité priorisée.'},
+  {slug:'followers', label:'Followers', base:2.30, desc:'Croissance régulière, profils diversifiés, risque réduit.'},
+  {slug:'views', label:'Vues', base:1.50, desc:'Déclenchement rapide, cadence lissée, rétention optimisée.'},
+  {slug:'comments', label:'Commentaires', base:3.90, desc:'Rédaction naturelle, variété sémantique, anti-spam.'},
+  {slug:'live', label:'Live boost', base:2.80, desc:'Présence en direct, démarrage rapide, impact social.'},
+  {slug:'shares', label:'Partages', base:1.70, desc:'Diffusion organique simulée, rythme controlé.'}
+];
+// pays (flag + label)
+const COUNTRIES = [
+  {cc:'🇫🇷', label:'France'}, {cc:'🇧🇷', label:'Brésil'}, {cc:'🇮🇳', label:'Inde'},
+  {cc:'🇺🇸', label:'USA'}, {cc:'🇪🇸', label:'Espagne'}, {cc:'🇮🇹', label:'Italie'},
+  {cc:'🇩🇪', label:'Allemagne'}, {cc:'🇨🇳', label:'Chine'}, {cc:'🇲🇦', label:'Maroc'},
+  {cc:'🇹🇷', label:'Turquie'}, {cc:'🇲🇽', label:'Mexique'}, {cc:'🇬🇧', label:'UK'}
+];
+// “catégories de qualité” (au lieu de V2/V3)
+const QUALITY = [
+  {tier:'Essentiel', tag:'Essentiel', mult:1.00},
+  {tier:'Avancé', tag:'Avancé', mult:1.12},
+  {tier:'Premium', tag:'Premium', mult:1.25},
+  {tier:'Ultime', tag:'Ultime', mult:1.45}
+];
+
+// Construire ~800 services (plateformes × types × variantes limitées)
+function buildCatalog(){
+  const items = [];
+  let id=1;
+  for(const p of PLATFORMS){
+    for(const t of SERVICE_TYPES){
+      for(let v=0; v<3; v++){ // 3 variantes par type
+        // qualité + pays tournants
+        const q = QUALITY[v % QUALITY.length];
+        const c = COUNTRIES[(id + v) % COUNTRIES.length];
+        const base = t.base + v*0.15 + (Math.random()*0.4);
+        const price = +(base*q.mult).toFixed(2);
+        items.push({
+          id: id++,
+          platform: p,
+          type: t.slug,
+          title: `${p} ${t.label} — ${q.tier} (${c.cc})`,
+          flag: c.cc, country: c.label,
+          speed: ["Instant","Rapide","Progressif"][Math.floor(Math.random()*3)],
+          refill: Math.random()<0.6,
+          priceEUR: price,
+          oldEUR: Math.random()<0.25 ? +(price*1.18).toFixed(2) : null,
+          min: [50,100,200][Math.floor(Math.random()*3)],
+          max: [5000,10000,20000][Math.floor(Math.random()*3)],
+          tag: q.tag,
+          popular: Math.random()<0.45,
+          desc: t.desc
+        });
+      }
+    }
+  }
+  // Si trop/moins que 800, tronque ou complète
+  state.catalog = items.slice(0,800);
+}
+buildCatalog();
+
+/* Rendu + pagination */
+const grid = document.getElementById('grid');
+const pager = document.getElementById('pagination');
+const toggleBtn = document.getElementById('toggleCatalogue');
+let catalogueVisible = true;
+
+function filterAndSort(){
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const pf = document.getElementById('platform').value;
+  const sort = document.getElementById('sort').value;
+  let list = state.catalog.filter(s=>{
+    const okP = (pf==='all') || (s.platform===pf);
+    const okQ = !q || (s.title.toLowerCase().includes(q) || s.platform.toLowerCase().includes(q) || s.type.toLowerCase().includes(q));
+    return okP && okQ;
+  });
+  if(sort==='priceAsc') list.sort((a,b)=>a.priceEUR-b.priceEUR);
+  if(sort==='priceDesc') list.sort((a,b)=>b.priceEUR-a.priceEUR);
+  if(sort==='pop') list.sort((a,b)=> (b.popular|0) - (a.popular|0));
+  state.lastFiltered = list;
+}
+
+function renderPage(){
+  grid.innerHTML='';
+  const list = state.lastFiltered;
+  const start = (state.page-1)*state.PAGE_SIZE;
+  const slice = list.slice(start, start+state.PAGE_SIZE);
+  if(!slice.length){
+    grid.innerHTML = `<div class="muted">${i18n[state.lang].empty}</div>`;
+    pager.innerHTML=''; return;
+  }
+  grid.insertAdjacentHTML('beforeend', slice.map(renderCard).join(''));
+  renderPager(list.length);
+}
+
+function renderCard(item){
+  const price = money(fxEUR(item.priceEUR));
+  const old = item.oldEUR ? money(fxEUR(item.oldEUR)) : null;
+  return `
+    <div class="card-svc" data-id="${item.id}">
+      <h3>${item.flag} ${item.title}</h3>
+      <div style="margin-bottom:6px">
+        <span class="chip">${item.platform}</span>
+        <span class="chip">${item.speed}</span>
+        ${item.refill?'<span class="chip">Refill</span>':''}
+        <span class="chip">${item.tag}</span>
+      </div>
+      <div class="row">
+        <div>
+          <span class="price">${price}</span>
+          ${old?`<span class="old">${old}</span>`:''}
+        </div>
+        <small class="muted">Min ${item.min} / Max ${item.max}</small>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <div class="qty">
+          <input class="qtyInput" type="number" min="${item.min}" max="${item.max}" value="${item.min}">
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn detailBtn">Détails</button>
+          <button class="btn btn-primary addBtn">Ajouter</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderPager(total){
+  const pages = Math.ceil(total/state.PAGE_SIZE)||1;
+  const cur = state.page;
+  let buttons = [];
+  const push = (label, page, current=false, disabled=false)=>{
+    buttons.push(`<button class="page-btn" ${current?'aria-current="page"':''} ${disabled?'disabled':''} data-p="${page}">${label}</button>`);
+  };
+  push('«',1,false,cur===1);
+  push('‹',Math.max(1,cur-1),false,cur===1);
+  // pages window
+  const windowSize = 5;
+  let start = Math.max(1, cur - Math.floor(windowSize/2));
+  let end = Math.min(pages, start + windowSize - 1);
+  start = Math.max(1, end - windowSize + 1);
+  for(let p=start; p<=end; p++) push(p,p, p===cur, false);
+  push('›',Math.min(pages,cur+1),false,cur===pages);
+  push('»',pages,false,cur===pages);
+  pager.innerHTML = buttons.join('');
+  pager.querySelectorAll('.page-btn').forEach(b=>{
+    b.onclick = ()=>{ state.page = parseInt(b.dataset.p,10); renderPage(); window.scrollTo({top:0,behavior:'smooth'}); };
+  });
+}
+
+/* Toggle catalogue (double-clic sur le bouton “Catalogue”) */
+toggleBtn.onclick = ()=>{
+  catalogueVisible = !catalogueVisible;
+  document.getElementById('grid').style.display = catalogueVisible?'grid':'none';
+  document.getElementById('pagination').style.display = catalogueVisible?'flex':'none';
+  toggleBtn.textContent = catalogueVisible ? i18n[state.lang].hide : i18n[state.lang].show;
+};
+document.getElementById('btnCatalogue').addEventListener('click', ()=>{
+  if(sections.find(s=>document.getElementById(s).style.display==='block')==='catalogue'){
+    toggleBtn.click(); // si déjà ouvert, toggle
+  } else {
+    show('catalogue');
+  }
+});
+
+/* Interactions catalogue */
+document.getElementById('search').oninput = ()=>{ state.page=1; filterAndSort(); renderPage(); };
+document.getElementById('platform').onchange = ()=>{ state.page=1; filterAndSort(); renderPage(); };
+document.getElementById('sort').onchange = ()=>{ state.page=1; filterAndSort(); renderPage(); };
+grid.addEventListener('click', (e)=>{
+  const card = e.target.closest('.card-svc'); if(!card) return;
+  const item = state.lastFiltered.find(s=>s.id===+card.dataset.id); if(!item) return;
+  if(e.target.classList.contains('addBtn')){
+    const q = Math.min(Math.max(+card.querySelector('.qtyInput').value, item.min), item.max);
+    addToCart(item, q);
+    alert(i18n[state.lang].added);
+  }
+  if(e.target.classList.contains('detailBtn')){
+    openDetail(item, card.querySelector('.qtyInput'));
+  }
+});
+
+/* =========================
+   DETAILS SERVICE
+========================= */
+const detailModal = document.getElementById('detailModal');
+const detailTitle = document.getElementById('detailTitle');
+const detailDesc  = document.getElementById('detailDesc');
+const bulletList  = document.getElementById('detailBullets');
+const closeDetail = document.getElementById('closeDetail');
+const detailAdd   = document.getElementById('detailAdd');
+let detailQtyInputRef = null;
+
+function openDetail(item, qtyInput){
+  state.selectedService = item;
+  detailQtyInputRef = qtyInput;
+  detailTitle.textContent = `${item.flag} ${item.title}`;
+  detailDesc.textContent  = item.desc;
+  bulletList.innerHTML = `
+    <li>Démarrage: ${item.speed}</li>
+    <li>Plage: min ${item.min} / max ${item.max}</li>
+    <li>Refill: ${item.refill?'Oui':'Non'}</li>
+    <li>Pays de priorité: ${item.country}</li>
+  `;
+  detailModal.classList.add('open');
+}
+closeDetail.onclick = ()=> detailModal.classList.remove('open');
+detailAdd.onclick = ()=>{
+  if(!state.selectedService) return;
+  const q = Math.min(Math.max(+detailQtyInputRef.value, state.selectedService.min), state.selectedService.max);
+  addToCart(state.selectedService, q);
+  detailModal.classList.remove('open');
+};
+
+/* =========================
+   PANIER & COUPONS
+========================= */
+const cartDrawer = document.getElementById('cart');
+const cartCount  = document.getElementById('cartCount');
+const cartCountMobile = document.getElementById('cartCountMobile');
+document.getElementById('openCart').onclick = ()=> cartDrawer.classList.add('open');
+document.getElementById('closeCart').onclick = ()=> cartDrawer.classList.remove('open');
+
+function addToCart(item, qty){
+  const exist = state.cart.find(c=>c.id===item.id);
+  if(exist) exist.qty += qty;
+  else state.cart.push({id:item.id, title:item.title, priceEUR:item.priceEUR, qty});
+  renderCart();
+}
+function renderCart(){
+  const wrap = document.getElementById('cartItems'); wrap.innerHTML='';
+  let subEUR = 0;
+  for(const c of state.cart){
+    subEUR += (c.priceEUR * c.qty) / 1000; // prix / 1000 unités (exemple)
+    const line = document.createElement('div'); line.className='row';
+    line.innerHTML = `
+      <div>
+        <div><strong>${c.title}</strong></div>
+        <div class="muted">${c.qty} unités · € ${c.priceEUR.toFixed(2)}/1000</div>
+      </div>
+      <button class="btn rm" data-id="${c.id}">✕</button>`;
+    wrap.appendChild(line);
+  }
+  wrap.querySelectorAll('.rm').forEach(b=>{
+    b.onclick = ()=>{ state.cart = state.cart.filter(x=>x.id!==+b.dataset.id); renderCart(); };
+  });
+  const discount = computeDiscount(subEUR);
+  const subC = money(fxEUR(subEUR));
+  const discC = money(fxEUR(discount));
+  const totalC = money(fxEUR(Math.max(0, subEUR - discount)));
+  document.getElementById('subTotal').textContent = subC;
+  document.getElementById('discount').textContent = discC;
+  document.getElementById('grandTotal').textContent = totalC;
+  document.getElementById('currencyView').textContent = state.currency;
+  const count = state.cart.reduce((a,b)=>a+b.qty,0);
+  cartCount.textContent = count; cartCountMobile.textContent = count;
+}
+function computeDiscount(subEUR){
+  const code = (state.coupon||'').toUpperCase();
+  if(code==='WELCOME10') return subEUR*0.10;
+  if(code==='VIP5') return subEUR*0.05;
+  return 0;
+}
+document.getElementById('applyCoupon').onclick = ()=>{
+  state.coupon = document.getElementById('coupon').value.trim() || null;
+  renderCart();
+};
+
+/* =========================
+   CHECKOUT CRYPTO (PLACEHOLDER CONFIG)
+========================= */
+// Renseigne tes adresses ici quand tu es prêt
+const WALLET_CONFIG = {
+  'USDT-TRC20': '',   // ex: T... (Tron)
+  'USDT-ERC20': '',   // ex: 0x...
+  'USDC-ERC20': '',   // ex: 0x...
+  'ETH-ERC20':  '',   // ex: 0x...
+  'BTC-LN':     '',   // invoice server (Lightning) si dispo
+  'BTC-OnChain':''    // ex: bc1...
+};
+
+const cryptoModal = document.getElementById('cryptoModal');
+const payDetails  = document.getElementById('payDetails');
+document.getElementById('checkout').onclick = ()=>{
+  if(!state.cart.length){ alert('Panier vide.'); return; }
+  cryptoModal.classList.add('open');
+  payDetails.textContent = 'Sélectionne la crypto et le réseau.';
+};
+document.getElementById('cryptoCancel').onclick = ()=> cryptoModal.classList.remove('open');
+
+document.getElementById('coinSel').onchange = updatePayDetails;
+document.getElementById('payAmount').oninput = updatePayDetails;
+
+function updatePayDetails(){
+  const key = document.getElementById('coinSel').value;
+  const amount = document.getElementById('payAmount').value.trim();
+  const addr = WALLET_CONFIG[key] || '';
+  if(!addr){
+    payDetails.innerHTML = `<span class="muted">${i18n[state.lang].addressMissing}</span>`;
+    return;
+  }
+  // Affiche l’adresse + montant
+  payDetails.innerHTML = `
+    <div style="word-break:break-all">
+      <strong>Adresse :</strong><br>${addr}
+    </div>
+    <div style="margin-top:6px">
+      <strong>Montant :</strong> ${amount||'(à saisir)'}
+    </div>
+    <div class="muted" style="margin-top:6px">Après envoi, clique “J’ai payé”.</div>
+  `;
+}
+document.getElementById('cryptoConfirm').onclick = ()=>{
+  cryptoModal.classList.remove('open');
+  alert('Merci. Nous vérifierons la transaction on-chain et te notifierons par email (démo).');
+};
+
+/* =========================
+   AUTH (démo locale)
+========================= */
+function setUser(u){
+  state.user = u;
+  document.getElementById('authState').textContent = u ? `Connecté : ${u.email}` : 'Statut : invité';
+  document.getElementById('loginBtn').textContent = u ? 'Mon compte' : 'Connexion';
+}
+document.getElementById('loginBtn').onclick = ()=> alert('Démo : utilise le bloc de connexion sur Accueil 😉');
+
+const demoSignup = document.getElementById('demoSignup');
+const demoSignin = document.getElementById('demoSignin');
+const demoSignout= document.getElementById('demoSignout');
+demoSignup.onclick = ()=>{
+  const email = document.getElementById('demoEmail').value.trim();
+  const pass  = document.getElementById('demoPass').value.trim();
+  if(email && pass.length>=6){
+    localStorage.setItem('pb360_user', JSON.stringify({email}));
+    setUser({email});
+    alert('Compte créé (démo).');
+  } else alert('Email/mot de passe invalide (min 6).');
+};
+demoSignin.onclick = ()=>{
+  const email = document.getElementById('demoEmail').value.trim();
+  const pass  = document.getElementById('demoPass').value.trim();
+  const stored = localStorage.getItem('pb360_user');
+  if(stored){
+    const u = JSON.parse(stored);
+    if(email===u.email && pass.length>=6){ setUser(u); alert('Connecté.'); }
+    else alert('Identifiants incorrects (démo).');
+  } else alert('Aucun compte (démo). Cliquez “Créer”.');
+};
+demoSignout.onclick = ()=>{ localStorage.removeItem('pb360_user'); setUser(null); };
+
+/* =========================
+   CONTACT (simulation)
+========================= */
+document.getElementById('contactForm').addEventListener('submit',(e)=>{
+  e.preventDefault();
+  document.getElementById('contactOk').style.display='block';
+  e.target.reset();
+});
+
+/* =========================
+   INIT
+========================= */
+function render(){
+  filterAndSort();
+  renderPage();
+}
+setLang('fr');
+filterAndSort();
+renderPage();
+renderCart();
+show('home');
+
+</script>
+
+<footer>
+  © <span id="year"></span> PowerBots360 — Tous droits réservés.
+</footer>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+</body>
+</html>
