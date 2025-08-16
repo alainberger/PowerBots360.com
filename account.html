@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mon Compte - PowerBots360</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="account-container">
+    <h1>Bienvenue sur ton compte 🎉</h1>
+    <p id="user-info">Chargement des infos...</p>
+    <button id="logoutBtn">Déconnexion</button>
+  </div>
+
+  <script type="module">
+    import { auth, logout, onUserStateChanged } from "./firebase.js";
+
+    // Vérifier si l’utilisateur est connecté
+    onUserStateChanged((user) => {
+      if (user) {
+        document.getElementById("user-info").innerText =
+          `Connecté en tant que : ${user.email || user.phoneNumber || "Utilisateur Google"}`;
+      } else {
+        window.location.href = "login.html"; // si pas connecté → redirigé
+      }
+    });
+
+    // Déconnexion
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await logout();
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>
