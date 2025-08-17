@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PowerBots360 — Catalogue & Paiement</title>
+<meta name="theme-color" content="#0f172a">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b1020; --panel:rgba(8,12,24,.82); --panel-strong:rgba(6,10,20,.94);
+    --panel-soft:rgba(255,255,255,.06); --border:rgba(255,255,255,.12);
+    --text:#e5e7eb; --muted:#94a3b8; --brand:#22d3ee; --mario:#E60012;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+    color:var(--text);
+    background:var(--bg) url('https://i.postimg.cc/DZ82bYVY/IMG-3217.jpg') center/cover fixed no-repeat;
+  }
+  a{color:inherit;text-decoration:none} button{font:inherit;cursor:pointer} img{max-width:100%;display:block}
+  .bg-overlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(2,6,23,.55),rgba(2,6,23,.25) 35%,rgba(2,6,23,.55));pointer-events:none;z-index:0}
+
+  /* HEADER = même gabarit que hot.html */
+  header{position:sticky;top:0;z-index:30;background:var(--panel-strong);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+  .nav{
+    max-width:1100px;margin:0 auto;
+    padding-block:16px;                       /* hauteur identique à hot.html */
+    padding-inline:clamp(14px,4vw,28px);
+    display:flex;align-items:center;gap:14px;justify-content:space-between;min-width:0
+  }
+  .brand{display:flex;align-items:center;gap:12px;min-width:0}
+  .brand img.logo{
+    width:44px;height:44px;border-radius:12px;object-fit:contain;background:transparent;border:none;
+    -webkit-mask-image:radial-gradient(ellipse at 50% 50%, black 72%, transparent 92%);mask-image:radial-gradient(ellipse at 50% 50%, black 72%, transparent 92%);
+  }
+  .brand .name{font-weight:700;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand .mario{font-family:'Press Start 2P', cursive;color:var(--mario);text-shadow:2px 2px 4px #000;font-size:15px;display:block}
+  .pill{border:1px solid var(--border);background:var(--panel-soft);border-radius:999px;padding:6px 10px;font-size:12px}
+  .actions{display:flex;align-items:center;gap:8px}
+  .btn{border:1px solid var(--border);background:var(--panel-soft);color:var(--text);padding:8px 12px;border-radius:10px;transition:.2s}
+  .btn:hover{background:rgba(255,255,255,.12)}
+  .btn-primary{background:linear-gradient(90deg,#22c55e,#16a34a);border-color:transparent}
+  .btn-warning{background:linear-gradient(90deg,#f59e0b,#d97706);border-color:transparent}
+  .hamburger{display:none;border:1px solid var(--border);background:var(--panel-soft);border-radius:10px;padding:8px 10px}
+  @media (max-width:900px){ .hamburger{display:block} .desktop-only{display:none} }
+
+  /* Drawer mobile (nav) — plus pro, sans titre “Navigation” */
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:min(92%,380px);background:var(--panel-strong);border-left:1px solid var(--border);
+    transform:translateX(100%);transition:transform .25s ease;z-index:40;overflow-y:auto}
+  .drawer.open{transform:none}
+  .drawer .head{position:sticky;top:0;padding:12px;display:flex;align-items:center;justify-content:space-between;background:var(--panel-strong);border-bottom:1px solid var(--border);z-index:2}
+  .drawer .head .brand{gap:10px}
+  .drawer .head .brand img.logo{width:34px;height:34px;border-radius:10px;background:transparent;border:none}
+  .drawer .wrap{padding:12px}
+  .drawer .grp{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+  .drawer .caption{font-size:11px;color:#9aa7bd;letter-spacing:.08em;text-transform:uppercase;margin:6px 2px 2px}
+  .drawer .separator{height:1px;background:var(--border);margin:8px 0}
+
+  .container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:14px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  section{margin:12px 0}
+  .hidden{display:none}
+  .hero{display:grid;gap:14px}
+  .hero h2{margin:0 0 6px 0;font-size:28px}
+  .hero p{margin:0;color:var(--muted)}
+  @media (min-width:900px){ .hero{grid-template-columns:1.25fr .75fr;align-items:center} }
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+  .field{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.08)}
+  .field input,.field select{all:unset;color:var(--text)} .field input::placeholder{color:#cbd5e1}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+  .service{display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:14px;border:1px solid var(--border);background:rgba(2,6,23,.72);transition:.2s}
+  .service:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+  .service h3{margin:0;font-size:15px;display:flex;align-items:center;gap:8px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .qtyInput{all:unset;width:72px;text-align:center;background:rgba(255,255,255,.08);padding:6px;border-radius:8px;border:1px solid var(--border)}
+  .ico{width:18px;height:18px;border-radius:4px;border:1px solid var(--border);background:#0b1223;object-fit:contain}
+  .brand-ico{width:22px;height:22px;border:none;background:transparent}
+  .imgpf{width:100%;height:120px;border-radius:10px;border:1px solid var(--border);object-fit:cover;background:#0b1223}
+
+  .drawer-cart{position:fixed;right:0;top:0;height:100%;width:min(92%,420px);background:var(--panel-strong);border-left:1px solid var(--border);transform:translateX(100%);transition:.25s;z-index:45;padding:14px;overflow:auto}
+  .drawer-cart.open{transform:none}
+  .line{display:flex;justify-content:space-between;margin:6px 0;gap:8px}
+  .divider{height:1px;background:var(--border);margin:10px 0}
+  .total{font-size:18px;font-weight:800}
+
+  .modal{position:fixed;inset:0;background:rgba(2,6,23,.65);display:none;align-items:center;justify-content:center;z-index:60}
+  .modal.open{display:flex}
+  .modal .card{max-width:560px;width:92%}
+
+  footer{text-align:center;color:var(--muted);padding:30px 10px}
+
+  .lang-wrap{position:relative}
+  .lang-menu{position:absolute;top:110%;right:0;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:6px;display:none;min-width:130px;z-index:50}
+  .lang-wrap.open .lang-menu{display:block}
+
+  .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(2,6,23,.92);border:1px solid var(--border);padding:10px 14px;border-radius:12px;z-index:70;display:none}
+  .toast.show{display:block;animation:fade .2s ease-out}
+  @keyframes fade{from{opacity:.3;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+
+  .skeleton{background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.12),rgba(255,255,255,.06));background-size:200% 100%;animation:sk 1s infinite}
+  @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+<div class="bg-overlay"></div>
+
+<header>
+  <nav class="nav" aria-label="Navigation principale">
+    <div class="brand">
+      <img class="logo" id="siteLogo" src="https://i.postimg.cc/rydywLzW/retarded-bender-by-act52-dh91kz1.png" alt="Logo PowerBots360">
+      <span class="name"><span class="mario">PowerBots360</span></span>
+      <span class="pill" id="langBadge">FR</span>
+    </div>
+    <div class="actions desktop-only">
+      <a class="btn" data-goto="home">Accueil</a>
+      <a class="btn" data-goto="catalogue">Catalogue</a>
+      <a class="btn" href="auth.html">Compte</a>
+      <a class="btn" data-goto="faq">FAQ</a>
+      <a class="btn" data-goto="legal">Légal</a>
+      <select class="btn" id="currencySel" aria-label="Devise">
+        <option value="EUR" selected>€ EUR</option><option value="USD">$ USD</option><option value="GBP">£ GBP</option>
+      </select>
+      <div class="lang-wrap">
+        <button class="btn" id="langBtn" aria-haspopup="true" aria-expanded="false">Langue</button>
+        <div class="lang-menu" id="langMenu" role="menu" aria-label="Choisir la langue">
+          <button class="btn" data-lang="fr">Français</button>
+          <button class="btn" data-lang="en">English</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="openCart" aria-label="Ouvrir le panier">Panier (<span id="cartCount">0</span>)</button>
+    </div>
+    <button class="hamburger" id="openNav" aria-label="Ouvrir le menu">☰</button>
+  </nav>
+</header>
+
+<!-- Drawer mobile (nav) -->
+<aside class="drawer" id="drawerNav" aria-label="Menu" role="dialog" aria-modal="true">
+  <div class="head">
+    <div class="brand">
+      <img class="logo" src="https://i.postimg.cc/rydywLzW/retarded-bender-by-act52-dh91kz1.png" alt="">
+      <span class="name">PowerBots360</span>
+    </div>
+    <button class="hamburger" id="closeNav" aria-label="Fermer">✕</button>
+  </div>
+  <div class="wrap">
+    <!-- On supprime le gros titre “Navigation” pour un look pro -->
+    <div class="grp">
+      <div class="caption">Menu</div>
+      <a class="btn" data-goto="home">Accueil</a>
+      <a class="btn" data-goto="catalogue">Catalogue</a>
+      <a class="btn" href="auth.html">Compte</a>
+      <a class="btn" data-goto="faq">FAQ</a>
+      <a class="btn" data-goto="legal">Légal</a>
+    </div>
+    <div class="separator"></div>
+    <div class="grp">
+      <div class="caption">Préférences</div>
+      <div class="field"><span>Devise</span>
+        <select id="currencySelM">
+          <option value="EUR" selected>€ EUR</option><option value="USD">$ USD</option><option value="GBP">£ GBP</option>
+        </select>
+      </div>
+      <div class="field"><span>Langue</span>
+        <select id="langSelM"><option value="fr" selected>Français</option><option value="en">English</option></select>
+      </div>
+    </div>
+    <div class="separator"></div>
+    <div class="grp">
+      <div class="caption">Panier</div>
+      <button class="btn btn-primary" id="openCartM">Panier (<span id="cartCountM">0</span>)</button>
+    </div>
+    <div style="height:24vh"></div>
+  </div>
+</aside>
+
+<main class="container">
+  <!-- HERO -->
+  <section id="home" class="card">
+    <div class="hero">
+      <div>
+        <h2 id="heroTitle">Des bots fiables pour booster vos réseaux — pro, rapides, transparents.</h2>
+        <p id="heroSubtitle">Recherche avancée, 800+ services filtrables, panier sécurisé (PayPal), coupons, multi-devises et support réactif.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <span class="pill">Paiement PayPal</span><span class="pill">800+ services</span>
+          <span class="pill">Multi-plateformes</span><span class="pill">Support 24/7</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn btn-primary" data-goto="catalogue">Voir le catalogue</button>
+          <a class="btn" href="auth.html">Espace compte</a>
+        </div>
+      </div>
+      <div class="card" style="background:rgba(2,6,23,.78)">
+        <div class="row"><strong>Raccourcis</strong></div>
+        <div class="divider"></div>
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <button class="btn" data-goto="faq">FAQ</button>
+          <button class="btn" data-goto="legal">Mentions légales</button>
+          <a class="btn" href="auth.html">Connexion / Inscription</a>
+        </div>
+        <div class="pill" style="margin-top:8px;background:rgba(255,255,255,.08)">Auth complète sur page dédiée (Firebase).</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOGUE -->
+  <section id="catalogue" class="card" aria-label="Catalogue" style="scroll-margin-top:70px">
+    <div class="toolbar">
+      <div class="field" style="flex:1"><span>🔎</span><input id="search" placeholder="Rechercher (ex : TikTok likes)…" aria-label="Rechercher"></div>
+      <div class="field"><span>🏷️</span>
+        <select id="platform" aria-label="Plateforme">
+          <option value="all">Toutes plateformes</option>
+          <option>TikTok</option><option>Instagram</option><option>YouTube</option>
+          <option>Facebook</option><option>Twitter/X</option><option>Snapchat</option>
+          <option>Twitch</option><option>Reddit</option><option>LinkedIn</option>
+          <option>Telegram</option><option>Spotify</option><option>Discord</option>
+          <option>OnlyFans</option><option>MYM</option><option>Kick</option>
+        </select>
+      </div>
+      <div class="field"><span>⚙️</span>
+        <select id="sort" aria-label="Tri">
+          <option value="pop">Populaires</option>
+          <option value="priceAsc">Prix ↑</option>
+          <option value="priceDesc">Prix ↓</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;background:rgba(2,6,23,.78)">
+      <div class="row">
+        <div style="display:flex;align-items:center;gap:10px">
+          <img id="bannerIcon" alt="logo" class="ico brand-ico" loading="lazy">
+          <strong id="bannerTitle">Toutes plateformes</strong>
+        </div>
+        <span class="muted" id="bannerHint">Astuce : filtre par plateforme et utilise le tri.</span>
+      </div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="row" style="justify-content:center;margin-top:10px">
+      <button class="btn" id="prevPage">← Précédent</button>
+      <div class="pill" id="pageInfo">Page 1 / 1</div>
+      <button class="btn" id="nextPage">Suivant →</button>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="card" aria-label="FAQ">
+    <h3 style="margin-top:0">FAQ & bonnes pratiques</h3>
+    <details open><summary>Livraison & délais</summary><p class="muted">La plupart des services démarrent sous 0–30 min. Certains sont progressifs par design.</p></details>
+    <details><summary>Paiement</summary><p class="muted">PayPal est accepté via règlement sécurisé. Les montants sont affichés en €/$/£.</p></details>
+    <details><summary>Conformité plateformes</summary><p class="muted">Respectez les CGU de chaque plateforme. Utilisez les options “Safe / Graduel”.</p></details>
+    <details><summary>Assistance</summary><p class="muted">Support par email 7j/7.</p></details>
+  </section>
+
+  <!-- LEGAL -->
+  <section id="legal" class="card" aria-label="Légal">
+    <h3 style="margin-top:0">Mentions légales & CGV</h3>
+    <details open><summary>Mentions légales</summary><p class="muted">PowerBots360 — Contact : support@powerbots360.com — Hébergement : GitHub Pages / Firebase Hosting.</p></details>
+    <details><summary>CGU/CGV</summary><p class="muted">Prestations numériques. Pas de garantie de performance. Remboursements avant lancement.</p></details>
+    <details><summary>Confidentialité</summary><p class="muted">Cookies techniques uniquement. Aucune revente de données.</p></details>
+  </section>
+</main>
+
+<!-- PANIER -->
+<aside id="cart" class="drawer-cart" aria-label="Panier" role="dialog" aria-modal="true">
+  <div class="row"><h3 style="margin:0">Panier</h3><button class="btn" id="closeCart">Fermer</button></div>
+  <div class="divider"></div>
+  <div id="cartItems"></div>
+  <div class="divider"></div>
+  <div class="line"><span>Sous-total</span><span id="subTotal">€ 0.00</span></div>
+  <div class="line"><span>Remise</span><span id="discount">€ 0.00</span></div>
+  <div class="total line"><span>Total</span><span id="grandTotal">€ 0.00</span></div>
+  <div class="divider"></div>
+  <div class="row"><input id="coupon" class="btn" placeholder="Code promo (WELCOME10 / VIP5)" style="flex:1"><button class="btn" id="applyCoupon">Appliquer</button></div>
+  <div class="divider"></div>
+  <button class="btn btn-primary" id="checkout">Payer via PayPal</button>
+  <div class="muted" style="margin-top:6px">Paiement opéré par PayPal.</div>
+</aside>
+
+<!-- MODAL: CONFIRM COMMANDE -->
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true" aria-label="Confirmer la commande">
+  <div class="card">
+    <h3 style="margin:0 0 6px 0">Confirmer la commande</h3>
+    <p class="muted">Un nouvel onglet PayPal s’ouvrira avec le montant exact.</p>
+    <div id="orderSummary" class="pill" style="margin:8px 0;display:block"></div>
+    <div class="divider"></div>
+    <div class="row">
+      <button class="btn" id="cancelConfirm">Annuler</button>
+      <button class="btn btn-primary" id="goPay">Payer avec PayPal</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: DETAILS SERVICE -->
+<div class="modal" id="detailsModal" role="dialog" aria-modal="true" aria-label="Détails du service">
+  <div class="card">
+    <div class="row"><h3 id="dTitle" style="margin:0">Détails</h3><button class="btn" id="closeDetails">✕</button></div>
+    <div class="divider"></div>
+    <div id="dBody" class="muted"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>© <span id="year"></span> PowerBots360 — Tous droits réservés</footer>
+
+<script>
+/* ========= CONFIG ========= */
+const state = {
+  lang:'fr', currency:'EUR', rate:{EUR:1, USD:1.08, GBP:0.85},
+  catalog:[], perPage:28, page:1, cart:[], coupon:null
+};
+const PAYPAL_ME='https://www.paypal.me/BotMarketPlus?locale.x=fr_FR';
+
+/* ========= UTILS ========= */
+const $=sel=>document.querySelector(sel);
+const $$=sel=>document.querySelectorAll(sel);
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+function moneySymbol(c){return c==='EUR'?'€':c==='USD'?'$':'£'}
+function fmtMoney(v){return `${moneySymbol(state.currency)} ${v.toFixed(2)}`;}
+function toCurrency(eur){const r=state.rate[state.currency]||1;return eur*r;}
+function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+
+/* ========= NAV ========= */
+function show(id){
+  document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
+  const target = document.getElementById(id);
+  if(target){ target.classList.remove('hidden'); }
+  drawerNav.classList.remove('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('[data-goto]').forEach(el=>el.addEventListener('click',()=>show(el.dataset.goto)));
+
+const drawerNav=$('#drawerNav');
+$('#openNav').onclick=()=>drawerNav.classList.add('open');
+$('#closeNav').onclick=()=>drawerNav.classList.remove('open');
+
+/* Drawer swipe to close */
+let touchX=null;
+drawerNav.addEventListener('touchstart',e=>{touchX=e.touches[0].clientX;},{passive:true});
+drawerNav.addEventListener('touchmove',e=>{ if(touchX===null) return; const dx=e.touches[0].clientX - touchX; if(dx>60){ drawerNav.classList.remove('open'); touchX=null; } },{passive:true});
+drawerNav.addEventListener('touchend',()=>{touchX=null});
+
+/* ========= I18N ========= */
+const i18n={
+  fr:{heroTitle:'Des bots fiables pour booster vos réseaux — pro, rapides, transparents.',
+      heroSubtitle:'Recherche avancée, 800+ services filtrables, panier sécurisé (PayPal), coupons, multi-devises et support réactif.',
+      payBtn:'Payer via PayPal'},
+  en:{heroTitle:'Reliable bots to grow your socials — pro, fast, transparent.',
+      heroSubtitle:'Advanced search, 800+ filterable services, secure cart (PayPal), coupons, multi-currency and responsive support.',
+      payBtn:'Pay with PayPal'}
+};
+function setLang(l){
+  state.lang=l; $('#langBadge').textContent=l.toUpperCase();
+  $('#heroTitle').textContent=i18n[l].heroTitle; $('#heroSubtitle').textContent=i18n[l].heroSubtitle; $('#checkout').textContent=i18n[l].payBtn;
+}
+$('#langBtn').onclick=()=>{ document.querySelector('.lang-wrap').classList.toggle('open');
+  $('#langBtn').setAttribute('aria-expanded', document.querySelector('.lang-wrap').classList.contains('open')); };
+$('#langMenu').querySelectorAll('button[data-lang]').forEach(b=>b.onclick=()=>{setLang(b.dataset.lang);document.querySelector('.lang-wrap').classList.remove('open');});
+$('#langSelM').onchange=(e)=>setLang(e.target.value);
+
+/* ========= CURRENCY ========= */
+$('#currencySel').onchange=(e)=>{state.currency=e.target.value;renderGrid();renderCart();}
+$('#currencySelM').onchange=(e)=>{state.currency=e.target.value;$('#currencySel').value=state.currency;renderGrid();renderCart();};
+
+/* ========= ICONS ========= */
+const ICONS={
+  "TikTok":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg",
+  "Instagram":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg",
+  "YouTube":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg",
+  "Facebook":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg",
+  "Twitter/X":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg",
+  "Snapchat":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/snapchat.svg",
+  "Twitch":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitch.svg",
+  "Reddit":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/reddit.svg",
+  "LinkedIn":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg",
+  "Telegram":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg",
+  "Spotify":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/spotify.svg",
+  "Discord":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/discord.svg",
+  "OnlyFans":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/onlyfans.svg",
+  "MYM":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/star.svg",
+  "Kick":"https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/kick.svg"
+};
+function updateBanner(pf){
+  $('#bannerIcon').src = ICONS[pf] || ICONS['TikTok'];
+  $('#bannerTitle').textContent = (pf==='all'?'Toutes plateformes':pf);
+  $('#bannerHint').textContent = (pf==='all'?'Astuce : filtre par plateforme et utilise le tri.':'Choisis un service, règle quantité et ajoute au panier.');
+}
+
+/* ========= CAPABILITIES ========= */
+const CAPABILITIES={
+  "TikTok":["Likes","Followers","Views","Comments","Shares","Live Boost"],
+  "Instagram":["Likes","Followers","Views","Comments","Shares"],
+  "YouTube":["Views","Comments","Shares"],
+  "Facebook":["Likes","Followers","Views","Comments","Shares"],
+  "Twitter/X":["Likes","Followers","Views","Comments","Shares"],
+  "Snapchat":["Views","Shares"],
+  "Twitch":["Followers","Views","Live Boost"],
+  "Reddit":["Comments","Shares","Views"],
+  "LinkedIn":["Followers","Views","Comments","Shares"],
+  "Telegram":["Followers","Views","Comments","Shares"],
+  "Spotify":["Views","Followers"],
+  "Discord":["Followers","Views"],
+  "OnlyFans":["Followers","Views","Comments"],
+  "MYM":["Followers","Views","Comments"],
+  "Kick":["Followers","Views","Live Boost"]
+};
+
+/* ========= FALLBACK CATALOGUE ========= */
+const FLAGS=[{label:"🇫🇷 FR"},{label:"🇧🇷 BR"},{label:"🇺🇸 US"},{label:"🇲🇦 MA"},{label:"🇮🇳 IN"},{label:"🇩🇪 DE"}];
+const BASE=[
+  {code:"Likes",min:50,max:100000,base:1.7,desc:"Engagement fiable, profils diversifiés."},
+  {code:"Followers",min:100,max:200000,base:2.3,desc:"Croissance progressive, rétention optimisée."},
+  {code:"Views",min:500,max:1000000,base:1.4,desc:"Diffusion large, livraison rapide."},
+  {code:"Comments",min:20,max:10000,base:3.8,desc:"Commentaires naturels, personnalisables."},
+  {code:"Shares",min:50,max:50000,base:1.6,desc:"Amplification organique, diffusion réseau."},
+  {code:"Live Boost",min:20,max:50000,base:2.8,desc:"Audience live, maintien stable."}
+];
+const TIERS=[
+  {tier:"Essentiel",mult:1.00,tag:"Eco"},
+  {tier:"Avancé",mult:1.12,tag:"Safe"},
+  {tier:"Premium",mult:1.25,tag:"Pro"}
+];
+function buildFallback(){
+  const items=[]; let id=1;
+  for(const p of Object.keys(CAPABILITIES)){
+    for(const base of BASE){
+      if(!CAPABILITIES[p].includes(base.code)) continue;
+      for(const tier of TIERS){
+        const price=+(base.base*tier.mult + (Math.random()*0.4)).toFixed(2);
+        items.push({
+          id:id++, platform:p, sku:`${p}-${base.code}-${tier.tier}`,
+          title:`${p} ${base.code} — ${tier.tier}`,
+          desc:base.desc, speed:["Instant","Rapide","Graduel"][Math.floor(Math.random()*3)],
+          refill:Math.random()<0.6, priceEUR:price, oldEUR:Math.random()<0.15?+(price*1.18).toFixed(2):null,
+          min:base.min, max:base.max, flag:FLAGS[Math.floor(Math.random()*FLAGS.length)].label, tag:tier.tag, popular:Math.random()<0.45
+        });
+      }
+    }
+  }
+  return items.slice(0,180);
+}
+
+/* ========= CHARGEMENT SERVICES ========= */
+async function loadServices(){
+  grid.classList.add('skeleton'); grid.innerHTML = '';
+  try{
+    const res = await fetch('services.json',{cache:'no-store'});
+    if(!res.ok) throw 0;
+    const json = await res.json();
+    if(Array.isArray(json) && json.length){
+      state.catalog = json.map((s,i)=>({
+        id: s.id ?? (i+1),
+        platform: s.platform ?? 'Autre',
+        sku: s.sku ?? (s.platform+'-'+(s.nom||'Service')),
+        title: s.nom || 'Service',
+        desc: s.description || '',
+        speed: s.speed || 'Rapide',
+        refill: Boolean(s.refill),
+        priceEUR: Number(s.prixEUR ?? s.prix ?? 5),
+        oldEUR: s.oldEUR?Number(s.oldEUR):null,
+        min: Number(s.min ?? 100), max: Number(s.max ?? 10000),
+        flag: s.flag || '', tag: s.tag || '', popular: Boolean(s.popular),
+        image: s.image || null
+      }));
+      toast('Catalogue chargé');
+    }else{
+      state.catalog = buildFallback();
+      toast('Catalogue démo chargé (ajoute services.json)');
+    }
+  }catch(e){
+    state.catalog = buildFallback();
+    toast('Catalogue démo (services.json manquant)');
+  }finally{
+    grid.classList.remove('skeleton'); updateBanner('all'); renderGrid();
+  }
+}
+
+/* ========= RENDER GRID ========= */
+const grid=$('#grid'); const pageInfo=$('#pageInfo'); const prevPage=$('#prevPage'); const nextPage=$('#nextPage');
+function filteredList(){
+  const q=$('#search').value.trim().toLowerCase();
+  const pf=$('#platform').value; const sort=$('#sort').value;
+  let list=state.catalog.filter(s=>{
+    const okP=(pf==='all')||(s.platform===pf);
+    const okQ=!q||(s.title.toLowerCase().includes(q)||s.sku?.toLowerCase().includes(q)||(s.flag&&s.flag.toLowerCase().includes(q)));
+    return okP&&okQ;
+  });
+  if(sort==='priceAsc') list.sort((a,b)=>a.priceEUR-b.priceEUR);
+  else if(sort==='priceDesc') list.sort((a,b)=>b.priceEUR-a.priceEUR);
+  else list.sort((a,b)=>(b.popular|0)-(a.popular|0));
+  return list;
+}
+function renderCard(it){
+  const price=toCurrency(it.priceEUR); const old=it.oldEUR?toCurrency(it.oldEUR):null;
+  const ico = ICONS[it.platform] || ICONS['TikTok'];
+  const img = it.image ? `<img class="imgpf" loading="lazy" src="${it.image}" alt="${it.platform}">` : '';
+  return `
+  <div class="service" data-id="${it.id}">
+    ${img}
+    <h3 title="${it.sku}">
+      <img class="ico brand-ico" src="${ico}" alt="${it.platform}" loading="lazy" onerror="this.style.display='none'"> ${it.title}
+    </h3>
+    <div class="row" style="gap:6px">
+      <span class="pill">${it.platform}</span>
+      <span class="pill">${it.speed}</span>
+      ${it.refill?'<span class="pill">Refill</span>':''}
+      ${it.tag?`<span class="pill">${it.tag}</span>`:''}
+      ${it.popular?'<span class="pill">Populaire</span>':''}
+      ${it.flag?`<span class="pill">${it.flag}</span>`:''}
+    </div>
+    <p class="muted" style="margin:0">${it.desc||''}</p>
+    <div class="row">
+      <div>
+        <strong>${fmtMoney(price)}</strong>
+        ${old?` <span style="color:#94a3b8;text-decoration:line-through">${fmtMoney(old)}</span>`:''}
+      </div>
+      <small class="muted">Min ${it.min} / Max ${it.max}</small>
+    </div>
+    <div class="row">
+      <input class="qtyInput" type="number" min="${it.min}" max="${it.max}" step="${Math.ceil(it.min/5)}" value="${it.min}" aria-label="Quantité">
+      <button class="btn addBtn">Ajouter</button>
+      <button class="btn detailsBtn">Détails</button>
+    </div>
+  </div>`;
+}
+function renderGrid(){
+  const list=filteredList();
+  const totalPages=Math.max(1,Math.ceil(list.length/state.perPage));
+  if(state.page>totalPages) state.page=totalPages;
+  const start=(state.page-1)*state.perPage;
+  const slice=list.slice(start,start+state.perPage);
+  grid.innerHTML=slice.map(renderCard).join('');
+  pageInfo.textContent=`Page ${state.page} / ${totalPages}`;
+  prevPage.disabled=(state.page<=1); nextPage.disabled=(state.page>=totalPages);
+  $('#cartCountM').textContent=$('#cartCount').textContent;
+}
+$('#search').oninput=()=>{state.page=1;renderGrid();}
+$('#platform').onchange=(e)=>{updateBanner(e.target.value);state.page=1;renderGrid();}
+$('#sort').onchange=()=>renderGrid();
+prevPage.onclick=()=>{state.page=Math.max(1,state.page-1);renderGrid();window.scrollTo({top:0,behavior:'smooth'})}
+nextPage.onclick=()=>{state.page=state.page+1;renderGrid();window.scrollTo({top:0,behavior:'smooth'})}
+
+/* ========= DETAILS ========= */
+const detailsModal=$('#detailsModal'); $('#closeDetails').onclick=()=>detailsModal.classList.remove('open');
+function openDetails(it){
+  $('#dTitle').textContent=it.title;
+  const perK = `${moneySymbol(state.currency)} ${(toCurrency(it.priceEUR)).toFixed(2)}/1000`;
+  const eta = it.speed==='Instant'?'0–15 min':(it.speed==='Rapide'?'15–60 min':'Progressif (heures/jours)');
+  $('#dBody').innerHTML = `
+    <p><strong>SKU :</strong> ${it.sku||'-'}</p>
+    <p><strong>Plateforme :</strong> ${it.platform} &nbsp; <strong>Origine :</strong> ${it.flag||'-'}</p>
+    <p><strong>Quantité min/max :</strong> ${it.min} / ${it.max}</p>
+    <p><strong>Vitesse :</strong> ${it.speed} • <strong>ETA :</strong> ${eta}</p>
+    <p><strong>Tarif :</strong> ${perK} (par 1000 unités)</p>
+    <p style="margin-top:10px">${it.desc||''}</p>
+    <div class="divider"></div>
+    <p class="muted"><strong>Conseils Safe :</strong> évitez les pics brusques, privilégiez ${it.speed==='Graduel'?'une montée étalée':'un mix Graduel/Avancé'} ; respectez les CGU de la plateforme.</p>`;
+  detailsModal.classList.add('open');
+}
+
+/* ========= PANIER ========= */
+const cartDrawer=$('#cart'); $('#openCart').onclick=()=>cartDrawer.classList.add('open'); $('#openCartM').onclick=()=>cartDrawer.classList.add('open'); $('#closeCart').onclick=()=>cartDrawer.classList.remove('open');
+grid.addEventListener('click', (e)=>{
+  const card=e.target.closest('.service'); if(!card) return;
+  const id=+card.dataset.id; const it=state.catalog.find(s=>s.id===id); if(!it) return;
+  if(e.target.classList.contains('addBtn')){
+    const q=clamp(+card.querySelector('.qtyInput').value||it.min, it.min, it.max);
+    const exist=state.cart.find(c=>c.id===id);
+    if(exist) exist.qty+=q; else state.cart.push({id,title:it.title,priceEUR:it.priceEUR,qty:q});
+    bumpCart(); renderCart(); toast('Ajouté au panier');
+  }
+  if(e.target.classList.contains('detailsBtn')) openDetails(it);
+});
+function bumpCart(){ const c=state.cart.reduce((a,b)=>a+b.qty,0); $('#cartCount').textContent=c; $('#cartCountM').textContent=c; }
+function computeDiscount(subEUR){ const code=(state.coupon||'').toUpperCase(); if(code==='WELCOME10')return subEUR*0.10; if(code==='VIP5')return subEUR*0.05; return 0; }
+function renderCart(){
+  const wrap=$('#cartItems'); wrap.innerHTML='';
+  let subEUR=0;
+  for(const c of state.cart){
+    subEUR+=c.priceEUR*c.qty/1000;
+    const line=document.createElement('div'); line.className='line';
+    line.innerHTML=`<div><div><strong>${c.title}</strong></div><div class="muted">${c.qty} unités · € ${(c.priceEUR).toFixed(2)}/1000</div></div><button class="btn rm" data-id="${c.id}">✕</button>`;
+    wrap.appendChild(line);
+  }
+  const discount=computeDiscount(subEUR);
+  const total=Math.max(0,subEUR-discount);
+  $('#subTotal').textContent=fmtMoney(toCurrency(subEUR));
+  $('#discount').textContent=fmtMoney(toCurrency(discount));
+  $('#grandTotal').textContent=fmtMoney(toCurrency(total));
+  wrap.querySelectorAll('.rm').forEach(b=>{ b.onclick=()=>{ state.cart=state.cart.filter(x=>x.id!==+b.dataset.id); bumpCart(); renderCart(); }; });
+}
+$('#applyCoupon').onclick=()=>{ state.coupon=$('#coupon').value.trim(); renderCart(); };
+
+/* CONFIRM + PAYPAL.ME */
+const confirmModal=$('#confirmModal'); $('#checkout').onclick=()=>{
+  if(!state.cart.length){ toast('Panier vide.'); return; }
+  let subEUR=0; for(const c of state.cart) subEUR+=c.priceEUR*c.qty/1000;
+  const discount=computeDiscount(subEUR); let totalEUR=Math.max(0,subEUR-discount);
+  const lines=state.cart.map(c=>`• ${c.title} × ${c.qty}`).join('<br>');
+  $('#orderSummary').innerHTML = `${lines}<br><br><strong>Total estimé :</strong> ${fmtMoney(toCurrency(totalEUR))}`;
+  confirmModal.classList.add('open');
+};
+$('#cancelConfirm').onclick=()=>confirmModal.classList.remove('open');
+$('#goPay').onclick=()=>{
+  let subEUR=0; for(const c of state.cart) subEUR+=c.priceEUR*c.qty/1000;
+  const discount=computeDiscount(subEUR); let totalEUR=Math.max(0,subEUR-discount);
+  if(state.currency!=='EUR'){ totalEUR=totalEUR/(state.rate[state.currency]||1); }
+  const amount=Math.max(1,+totalEUR.toFixed(2)); window.open(`${PAYPAL_ME}/${amount}`,'_blank');
+  confirmModal.classList.remove('open'); toast('Redirection vers PayPal…');
+};
+
+/* ========= ACCESSIBILITÉ ========= */
+document.addEventListener('keydown',(e)=>{ if(e.key==='Escape'){ drawerNav.classList.remove('open'); $('#cart').classList.remove('open'); $('#confirmModal').classList.remove('open'); $('#detailsModal').classList.remove('open'); document.querySelector('.lang-wrap')?.classList.remove('open'); }});
+document.addEventListener('click',(e)=>{ if(!document.querySelector('.lang-wrap')?.contains(e.target)) document.querySelector('.lang-wrap')?.classList.remove('open'); });
+
+/* ========= FIX LOGO ========= */
+const logoEl = document.getElementById('siteLogo');
+logoEl.onerror = function(){ this.src='https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/star.svg'; this.alt='Logo'; };
+
+/* ========= INIT ========= */
+$('#year').textContent=new Date().getFullYear(); updateBanner('all'); loadServices();
+
+/* ========= SERVICE WORKER ========= */
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
+</script>
+</body>
+</html>
