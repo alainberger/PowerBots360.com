@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth - BadRobot</title>
+  <style>
+    body{
+      margin:0; font-family:Arial, sans-serif; background:#f1f5f9; color:#1e293b;
+      display:flex; align-items:center; justify-content:center; height:100vh; transition:background .3s,color .3s;
+    }
+    body.dark{ background:#0f172a; color:#f8fafc; }
+
+    .card{
+      background:#fff; padding:2rem; border-radius:12px;
+      box-shadow:0 6px 16px rgba(0,0,0,.12); width:360px; text-align:center;
+      transition:background .3s,color .3s;
+    }
+    body.dark .card{ background:#1e293b; color:#f1f5f9; }
+
+    .logo{
+      width:80px; margin-bottom:1rem; filter:drop-shadow(0 0 6px rgba(56,189,248,.6));
+      transition:filter .3s;
+    }
+    body.dark .logo{ filter:drop-shadow(0 0 10px rgba(56,189,248,.9)); }
+
+    h2{ margin-bottom:1rem; }
+
+    .input-group{ text-align:left; margin-bottom:1rem; }
+    label{ font-size:14px; display:block; margin-bottom:4px; }
+    input{
+      width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;
+      font-size:14px; transition:border .3s,background .3s,color .3s;
+    }
+    input:focus{ border-color:#38bdf8; outline:none; }
+    body.dark input{ background:#0f172a; border-color:#334155; color:#f1f5f9; }
+
+    .btn{
+      width:100%; padding:12px; border:none; border-radius:8px; font-size:15px;
+      background:#38bdf8; color:#fff; cursor:pointer; transition:background .3s;
+    }
+    .btn:hover{ background:#0ea5e9; }
+
+    .form-footer{
+      margin-top:16px;
+      padding-top:14px;
+      border-top:1px solid rgba(148,163,184,.25);
+      display:flex; flex-direction:column; gap:12px; align-items:center;
+    }
+    .link{
+      font-size:14px; color:#38bdf8; cursor:pointer; display:inline-flex; align-items:center; gap:6px;
+      transition:color .2s;
+    }
+    .link:hover{ color:#0ea5e9; text-decoration:underline; }
+    .alt-box{
+      font-size:15px; cursor:pointer; padding:8px 14px;
+      background:rgba(56,189,248,.08); border:1px solid rgba(56,189,248,.25);
+      border-radius:8px; color:#38bdf8; transition:background .25s,border .25s,color .25s;
+    }
+    .alt-box:hover{ background:rgba(56,189,248,.15); border-color:#0ea5e9; color:#0ea5e9; }
+
+    .msg{ margin-top:1rem; font-size:14px; color:#ef4444; }
+
+    .toggle-theme{
+      position:absolute; top:20px; right:20px;
+      background:none; border:1px solid #38bdf8; border-radius:50%; width:40px; height:40px;
+      cursor:pointer; color:#38bdf8; font-size:18px; display:flex; align-items:center; justify-content:center;
+      transition:background .3s,color .3s;
+    }
+    .toggle-theme:hover{ background:#38bdf8; color:#fff; }
+  </style>
+</head>
+<body>
+  <button class="toggle-theme" id="themeToggle">🌙</button>
+
+  <div class="card">
+    <img src="https://i.postimg.cc/v8qx5f6p/IMG-3286.png" alt="Logo" class="logo">
+    <h2 id="formTitle">Créer un compte</h2>
+
+    <div class="input-group">
+      <label for="email">Adresse e-mail</label>
+      <input type="email" id="email" placeholder="exemple@email.com" required>
+    </div>
+    <div class="input-group">
+      <label for="password">Mot de passe</label>
+      <input type="password" id="password" placeholder="Votre mot de passe" required>
+    </div>
+
+    <button class="btn" id="submitBtn">S’inscrire</button>
+
+    <div class="form-footer">
+      <span class="link" id="forgot">🔑 Mot de passe oublié ?</span>
+      <div class="alt-box" id="toggle">👤 Déjà un compte ? <strong>Se connecter</strong></div>
+    </div>
+
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <script type="module">
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', ()=>{
+      document.body.classList.toggle('dark');
+      themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+    });
+
+    const toggle = document.getElementById('toggle');
+    const formTitle = document.getElementById('formTitle');
+    const submitBtn = document.getElementById('submitBtn');
+    let mode = "signup";
+
+    toggle.addEventListener('click', ()=>{
+      if(mode==="signup"){
+        mode="login";
+        formTitle.textContent="Se connecter";
+        submitBtn.textContent="Connexion";
+        toggle.innerHTML="➕ Pas encore de compte ? <strong>S’inscrire</strong>";
+      } else {
+        mode="signup";
+        formTitle.textContent="Créer un compte";
+        submitBtn.textContent="S’inscrire";
+        toggle.innerHTML="👤 Déjà un compte ? <strong>Se connecter</strong>";
+      }
+    });
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "TA_CLE_API",
+      authDomain: "TON_PROJET.firebaseapp.com",
+      projectId: "TON_PROJET",
+      storageBucket: "TON_PROJET.appspot.com",
+      messagingSenderId: "XXXX",
+      appId: "XXXX"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const msg = document.getElementById('msg');
+    const forgot = document.getElementById('forgot');
+
+    submitBtn.addEventListener('click', async ()=>{
+      const email=emailInput.value, pass=passwordInput.value;
+      msg.style.color="red";
+      try{
+        if(mode==="signup"){
+          await createUserWithEmailAndPassword(auth,email,pass);
+          msg.style.color="green";
+          msg.textContent="✅ Inscription réussie ! Vérifiez vos mails.";
+        } else {
+          await signInWithEmailAndPassword(auth,email,pass);
+          msg.style.color="green";
+          msg.textContent="✅ Connexion réussie ! Redirection...";
+          setTimeout(()=> window.location.href="index.html",1500);
+        }
+      }catch(e){ msg.textContent=e.message; }
+    });
+
+    forgot.add
