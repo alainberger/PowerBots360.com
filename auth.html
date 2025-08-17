@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PowerBots360 — Connexion & Inscription</title>
+  <meta name="theme-color" content="#0f172a">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b1020; --panel:rgba(8,12,24,.82); --panel-strong:rgba(8,12,24,.92);
+      --panel-soft:rgba(255,255,255,.06); --border:rgba(255,255,255,.12);
+      --text:#e5e7eb; --muted:#94a3b8; --brand:#22d3ee; --accent:#16a34a; --danger:#ef4444;
+    }
+    html,body{height:100%}
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+      color:var(--text);
+      background:var(--bg) url('https://i.postimg.cc/qRzJKc7j/IMG-3273.jpg') center/cover fixed no-repeat;
+    }
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+    button{font:inherit; cursor:pointer}
+
+    .bg-overlay{position:fixed; inset:0; pointer-events:none; z-index:0;
+      background:linear-gradient(180deg,rgba(2,6,23,.65),rgba(2,6,23,.25) 35%,rgba(2,6,23,.7));}
+
+    header{position:sticky; top:0; z-index:20; background:var(--panel-strong); backdrop-filter:blur(8px); border-bottom:1px solid var(--border)}
+    .nav{max-width:1100px; margin:0 auto; padding:14px 16px; /* barre un poil plus haute */ display:flex; align-items:center; justify-content:space-between; gap:12px}
+    .brand{display:flex; align-items:center; gap:12px}
+    .brand .name{display:flex; flex-direction:column; line-height:1}
+    .brand .mario{font-family:'Press Start 2P', cursive; color:#E60012; text-shadow:2px 2px 4px #000; font-size:13px}
+    .brand .title{
+      font-weight:600; letter-spacing:.2px;
+      /* >>> Correctif : reste blanc dans TOUS les thèmes <<< */
+      color:#ffffff !important;
+      opacity:.95;
+    }
+    .logo-wrap{position:relative; width:46px; height:46px}
+    .logo{
+      width:46px; height:46px; object-fit:contain; border-radius:12px; background:transparent; border:none;
+      -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 78%, transparent 92%);
+              mask-image: radial-gradient(ellipse at 50% 50%, black 78%, transparent 92%);
+    }
+    html[data-theme="dark"] .logo-wrap::after{
+      content:""; position:absolute; inset:-6px; border-radius:16px; pointer-events:none;
+      filter: blur(10px); opacity:.8;
+      background: radial-gradient(60% 60% at 50% 50%, rgba(34,211,238,.55), rgba(34,211,238,.08) 60%, transparent 70%);
+    }
+    html[data-theme="light"] .logo-wrap::after{ display:none }
+
+    .controls{display:flex; align-items:center; gap:8px}
+    .btn, .pill{border:1px solid var(--border); background:var(--panel-soft); color:var(--text); border-radius:10px; padding:8px 12px}
+    .btn:hover{background:rgba(255,255,255,.12)}
+    .btn-primary{background:linear-gradient(90deg,#22c55e,#16a34a); border-color:transparent; color:white}
+    .btn-danger{background:linear-gradient(90deg,#ef4444,#b91c1c); border-color:transparent; color:white}
+    .theme-btn{display:inline-flex; align-items:center; gap:6px}
+
+    main{position:relative; z-index:1}
+    .wrap{max-width:1100px; margin:16px auto; padding:14px}
+    .card{background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:14px; box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .grid{display:grid; grid-template-columns:1.1fr .9fr; gap:14px}
+    @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+
+    .hero{display:flex; align-items:center; gap:12px}
+    .hero h1{margin:0; font-size:24px}
+    .muted{color:var(--muted)}
+    .hint{font-size:12px; color:var(--muted)}
+
+    /* Tabs */
+    .tabs{display:flex; gap:8px; margin-bottom:10px}
+    .tab{flex:1; text-align:center; padding:10px; border:1px solid var(--border); border-radius:12px; background:rgba(255,255,255,.06); cursor:pointer; font-weight:600}
+    .tab.active{background:linear-gradient(90deg,#22d3ee33,#22d3ee11); border-color:#22d3ee99; box-shadow:0 0 0 1px #22d3ee66 inset}
+    .panel{display:none}
+    .panel.active{display:block}
+
+    /* Form */
+    form{display:flex; flex-direction:column; gap:10px}
+    .field{display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,.08)}
+    .field input[type="email"], .field input[type="password"], .field input[type="text"]{all:unset; width:100%}
+    .row{display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap}
+    .links{display:flex; align-items:center; justify-content:space-between; gap:8px}
+    .password-tools{display:flex; align-items:center; gap:8px}
+    .toggle-pass{border:1px solid var(--border); background:var(--panel-soft); border-radius:8px; padding:6px 8px}
+
+    .btn-wide{width:100%}
+    .btn-google{
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      background:#fff; color:#111827;
+      border:1px solid #e5e7eb; border-radius:12px; padding:12px 18px; width:100%;
+      font-size:14px; font-weight:600; transition:.2s;
+    }
+    .btn-google img{width:20px; height:20px}
+    .btn-google:hover{background:#f9fafb; border-color:#d1d5db}
+    html[data-theme="dark"] .btn-google{background:#1f2937; color:#f3f4f6; border-color:#334155}
+    html[data-theme="dark"] .btn-google:hover{background:#334155}
+
+    .note{font-size:12px; color:var(--muted)}
+    .ok{color:#22c55e}
+    .err{color:#fca5a5}
+
+    .separator{display:flex; align-items:center; gap:8px; margin:6px 0}
+    .separator::before,.separator::after{content:""; height:1px; flex:1; background:var(--border)}
+
+    /* Toast */
+    .toast{position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      background:rgba(2,6,23,.92); border:1px solid var(--border); padding:10px 14px; border-radius:12px; z-index:70; display:none}
+    .toast.show{display:block; animation:fade .2s ease-out}
+    @keyframes fade{from{opacity:.3; transform:translate(-50%,8px)} to{opacity:1; transform:translate(-50%,0)}}
+
+    /* Status */
+    .status{font-size:13px; padding:10px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,.06)}
+    .spinner{width:16px; height:16px; border:2px solid #ffffff33; border-top-color:#fff; border-radius:50%; display:inline-block; animation:spin .8s linear infinite; vertical-align:-3px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Info pane */
+    .info .card{height:100%}
+    .checklist{display:flex; flex-direction:column; gap:8px; margin-top:6px}
+    .pill{font-size:12px}
+
+    /* Light theme tweaks */
+    html[data-theme="light"] body{color:#0f172a}
+    html[data-theme="light"] .muted{color:#475569}
+    html[data-theme="light"] .card{background:rgba(255,255,255,.85)}
+  </style>
+</head>
+<body>
+  <div class="bg-overlay"></div>
+
+  <header>
+    <nav class="nav" aria-label="Navigation">
+      <div class="brand" onclick="location.href='index.html'" style="cursor:pointer">
+        <div class="logo-wrap">
+          <img class="logo" src="https://i.postimg.cc/v8qx5f6p/IMG-3286.png" alt="Logo PowerBots360" onerror="this.src='https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/star.svg'">
+        </div>
+        <div class="name">
+          <span class="mario">PowerBots360</span>
+          <span class="title">Espace Compte</span>
+        </div>
+      </div>
+      <div class="controls">
+        <a class="btn" href="index.html">← Retour</a>
+        <button class="btn theme-btn" id="themeBtn" aria-label="Basculer thème">🌓 <span id="themeLabel">Dark</span></button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      <!-- Panneau Auth -->
+      <section class="card">
+        <div class="hero">
+          <div>
+            <h1>Bienvenue</h1>
+            <p class="muted">Connecte-toi ou crée ton compte pour accéder au catalogue et au suivi de commandes.</p>
+          </div>
+        </div>
+        <div class="tabs" role="tablist">
+          <button class="tab active" id="tab-login" data-panel="login" role="tab" aria-controls="panel-login" aria-selected="true">Se connecter</button>
+          <button class="tab" id="tab-signup" data-panel="signup" role="tab" aria-controls="panel-signup" aria-selected="false">Créer un compte</button>
+        </div>
+
+        <!-- Connexion -->
+        <div class="panel active" id="panel-login" role="tabpanel" aria-labelledby="tab-login">
+          <form id="loginForm" novalidate>
+            <label class="field">
+              <input type="email" id="loginEmail" placeholder="Adresse e-mail" autocomplete="email" required>
+            </label>
+            <label class="field">
+              <input type="password" id="loginPassword" placeholder="Mot de passe" autocomplete="current-password" required>
+              <button class="toggle-pass" type="button" data-target="loginPassword" aria-label="Afficher / masquer">👁️</button>
+            </label>
+            <div class="row">
+              <label class="note"><input type="checkbox" id="rememberMe"> Rester connecté</label>
+              <a class="note" href="#" id="forgotLink">Mot de passe oublié ?</a>
+            </div>
+            <button type="submit" class="btn-primary btn-wide" id="loginBtn">Se connecter</button>
+          </form>
+
+          <div class="separator"><span class="muted">ou</span></div>
+
+          <button type="button" id="googleLogin" class="btn-google">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Continuer avec Google
+          </button>
+
+          <p class="note" style="margin-top:8px">Pas de compte ? <a href="#" id="toSignup">Créer un compte</a></p>
+          <div id="loginStatus" class="status" style="display:none"></div>
+        </div>
+
+        <!-- Inscription -->
+        <div class="panel" id="panel-signup" role="tabpanel" aria-labelledby="tab-signup">
+          <form id="signupForm" novalidate>
+            <label class="field">
+              <input type="text" id="signupName" placeholder="Nom / Pseudo (optionnel)" autocomplete="nickname">
+            </label>
+            <label class="field">
+              <input type="email" id="signupEmail" placeholder="Adresse e-mail" autocomplete="email" required>
+            </label>
+            <label class="field">
+              <input type="password" id="signupPassword" placeholder="Mot de passe (min. 6 caractères)" autocomplete="new-password" required>
+              <button class="toggle-pass" type="button" data-target="signupPassword" aria-label="Afficher / masquer">👁️</button>
+            </label>
+            <label class="note"><input type="checkbox" id="tos" required> J’accepte les <a href="index.html#legal" target="_blank" rel="noopener">CGU/CGV</a></label>
+            <button type="submit" class="btn-primary btn-wide" id="signupBtn">Créer mon compte</button>
+          </form>
+
+          <div class="separator"><span class="muted">ou</span></div>
+
+          <button type="button" id="googleSignup" class="btn-google">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> S’inscrire avec Google
+          </button>
+
+          <p class="note" style="margin-top:8px">Déjà inscrit ? <a href="#" id="toLogin">Se connecter</a></p>
+          <div id="signupStatus" class="status" style="display:none"></div>
+        </div>
+      </section>
+
+      <!-- Panneau d’info / rassurance -->
+      <aside class="info">
+        <div class="card">
+          <div class="row" style="justify-content:flex-start; gap:10px">
+            <span class="pill">Sécurisé</span>
+            <span class="pill">PayPal</span>
+            <span class="pill">Support 7j/7</span>
+            <span class="pill">Multi-plateformes</span>
+          </div>
+          <div class="divider" style="height:1px; background:var(--border); margin:12px 0"></div>
+          <h3 style="margin:0 0 6px 0">Ton espace client, simplifié</h3>
+          <p class="muted">Commandes, factures, suivi et avantages — centralisés dans un espace sécurisé.</p>
+
+          <div class="checklist">
+            <div>✅ Validation e-mail automatique</div>
+            <div>✅ Réinitialisation de mot de passe</div>
+            <div>✅ Connexion Google (rapide)</div>
+            <div>✅ Redirection fluide vers le catalogue</div>
+          </div>
+          <p class="hint" style="margin-top:10px">Besoin d’aide ? <a href="faq.html">Voir la FAQ</a></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- Firebase v10 modules (auth only) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth, setPersistence, browserLocalPersistence, browserSessionPersistence,
+      signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile,
+      GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail,
+      sendEmailVerification
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    /* ================= THEME ================= */
+    const html = document.documentElement;
+    const themeBtn = document.getElementById('themeBtn');
+    const themeLabel = document.getElementById('themeLabel');
+    const pref = localStorage.getItem('pb360-theme');
+    if(pref){ html.setAttribute('data-theme', pref); themeLabel.textContent = pref==='dark'?'Dark':'Light'; }
+    themeBtn.addEventListener('click', ()=>{
+      const next = html.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next); localStorage.setItem('pb360-theme', next);
+      themeLabel.textContent = next==='dark'?'Dark':'Light';
+    });
+
+    /* ================= UI HELPERS ================= */
+    const $ = s => document.querySelector(s);
+    function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+    function show(el){ el.style.display='block' } function hide(el){ el.style.display='none' }
+    function setStatus(el, msg, type='info'){ el.innerHTML = msg; el.style.display='block'; el.style.borderColor = type==='err'?'#ef4444aa':'var(--border)'; }
+
+    // Tabs
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.panel');
+    const switchTab = (name)=>{
+      tabs.forEach(t=>{ const on=t.dataset.panel===name; t.classList.toggle('active', on); t.setAttribute('aria-selected', on?'true':'false'); });
+      panels.forEach(p=>p.classList.toggle('active', p.id==='panel-'+name));
+    };
+    $('#toSignup').addEventListener('click', e=>{ e.preventDefault(); switchTab('signup'); });
+    $('#toLogin').addEventListener('click', e=>{ e.preventDefault(); switchTab('login'); });
+    tabs.forEach(t=>t.addEventListener('click', ()=>switchTab(t.dataset.panel)));
+
+    // Show/Hide password
+    document.querySelectorAll('.toggle-pass').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.getAttribute('data-target'); const input = document.getElementById(id);
+        input.type = input.type==='password' ? 'text' : 'password';
+      });
+    });
+
+    /* ================= FIREBASE ================= */
+    const firebaseConfig = {
+      apiKey: "AIzaSyChJoeaMJlj2F-7okhrPJYw868Z1RhgMFY",
+      authDomain: "powerbots360-2a163.firebaseapp.com",
+      projectId: "powerbots360-2a163",
+      storageBucket: "powerbots360-2a163.firebasestorage.app",
+      messagingSenderId: "968053928320",
+      appId: "1:968053928320:web:c51f7be039c02f2fb69165",
+      measurementId: "G-TXSM0JYF1G"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    auth.languageCode = 'fr';
+
+    /* ================= HELPERS AUTH ================= */
+    function friendlyError(e){
+      const c = e?.code || '';
+      const m = {
+        "auth/invalid-email":"Adresse e-mail invalide.",
+        "auth/missing-email":"Adresse e-mail requise.",
+        "auth/missing-password":"Mot de passe requis.",
+        "auth/weak-password":"Mot de passe trop court (min. 6).",
+        "auth/wrong-password":"Mot de passe incorrect.",
+        "auth/user-not-found":"Aucun compte trouvé avec cet e-mail.",
+        "auth/email-already-in-use":"Cette adresse e-mail est déjà utilisée.",
+        "auth/popup-closed-by-user":"Fenêtre fermée avant la fin.",
+        "auth/operation-not-allowed":"Méthode désactivée dans Firebase.",
+        "auth/network-request-failed":"Problème réseau. Réessaie."
+      };
+      return m[c] || "Une erreur est survenue. Réessaie.";
+    }
+    function nextUrl(){
+      const p = new URLSearchParams(location.search).get('next');
+      return p && /^\/[^\s]*$/.test(p) ? p : 'index.html';
+    }
+    async function ensureEmailVerified(u){
+      if(!u.emailVerified){
+        await sendEmailVerification(u);
+        toast("E-mail de vérification envoyé.");
+        return false;
+      }
+      return true;
+    }
+
+    /* ================= PERSISTENCE (Rester connecté) ================= */
+    const remember = $('#rememberMe');
+    async function applyPersistence(){
+      const mode = remember?.checked ? browserLocalPersistence : browserSessionPersistence;
+      await setPersistence(auth, mode);
+    }
+
+    /* ================= LOGIN ================= */
+    const loginForm = $('#loginForm');
+    const loginStatus = $('#loginStatus');
+    const loginBtn = $('#loginBtn');
+    loginForm.addEventListener('submit', async (e)=>{
+      e.preventDefault(); hide(loginStatus);
+      const email = $('#loginEmail').value.trim();
+      const pass = $('#loginPassword').value;
+      if(!email || !pass){ setStatus(loginStatus, "Remplis l’e-mail et le mot de passe.", "err"); return; }
+      loginBtn.disabled = true; loginBtn.innerHTML = '<span class="spinner"></span> Connexion…';
+      try{
+        await applyPersistence();
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        const ok = await ensureEmailVerified(cred.user);
+        if(!ok){ setStatus(loginStatus, "Vérifie ton e-mail pour activer le compte. <br><span class='note'>Rafraîchis la page après confirmation.</span>"); }
+        else{ toast("Connexion réussie"); location.href = nextUrl(); }
+      }catch(err){
+        setStatus(loginStatus, `<span class="err">Erreur :</span> ${friendlyError(err)}`, 'err');
+      }finally{
+        loginBtn.disabled = false; loginBtn.textContent = 'Se connecter';
+      }
+    });
+
+    /* ================= SIGNUP ================= */
+    const signupForm = $('#signupForm');
+    const signupStatus = $('#signupStatus');
+    const signupBtn = $('#signupBtn');
+    signupForm.addEventListener('submit', async (e)=>{
+      e.preventDefault(); hide(signupStatus);
+      const name = $('#signupName').value.trim();
+      const email = $('#signupEmail').value.trim();
+      const pass = $('#signupPassword').value;
+      if(!$('#tos').checked){ setStatus(signupStatus, "Tu dois accepter les CGU/CGV.", "err"); return; }
+      if(!email || !pass){ setStatus(signupStatus, "E-mail et mot de passe requis.", "err"); return; }
+      signupBtn.disabled = true; signupBtn.innerHTML = '<span class="spinner"></span> Création…';
+      try{
+        const cred = await createUserWithEmailAndPassword(auth, email, pass);
+        if(name){ await updateProfile(cred.user, { displayName:name }); }
+        await sendEmailVerification(cred.user);
+        setStatus(signupStatus, "<span class='ok'>Compte créé.</span> Vérifie ta boîte mail pour activer ton compte.");
+        toast("Vérification envoyée ✅");
+      }catch(err){
+        setStatus(signupStatus, `<span class="err">Erreur :</span> ${friendlyError(err)}`, 'err');
+      }finally{
+        signupBtn.disabled = false; signupBtn.textContent = 'Créer mon compte';
+      }
+    });
+
+    /* ================= GOOGLE (login & signup) ================= */
+    async function googleFlow(){
+      try{
+        await applyPersistence();
+        const provider = new GoogleAuthProvider();
+        const cred = await signInWithPopup(auth, provider);
+        const ok = await ensureEmailVerified(cred.user);
+        if(!ok){
+          toast("Vérifie ton e-mail pour activer le compte.");
+        }else{
+          toast("Connecté avec Google ✅");
+          location.href = nextUrl();
+        }
+      }catch(err){
+        toast(friendlyError(err));
+      }
+    }
+    document.getElementById('googleLogin').addEventListener('click', googleFlow);
+    document.getElementById('googleSignup').addEventListener('click', googleFlow);
+
+    /* ================= FORGOT ================= */
+    document.getElementById('forgotLink').addEventListener('click', async (e)=>{
+      e.preventDefault();
+      const email = (document.getElementById('loginEmail').value || prompt("Ton adresse e-mail :") || "").trim();
+      if(!email) return;
+      try{
+        await sendPasswordResetEmail(auth, email);
+        toast("Lien de réinitialisation envoyé.");
+        setStatus(loginStatus, "Vérifie ta boîte mail pour réinitialiser le mot de passe.");
+      }catch(err){
+        setStatus(loginStatus, `<span class="err">Erreur :</span> ${friendlyError(err)}`, 'err');
+      }
+    });
+  </script>
+</body>
+</html>
