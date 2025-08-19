@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Powerbots360 — Catalogue</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;width:100%;overflow-x:hidden;font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+
+  :root{
+    --bg-start:#A8D5BA;
+    --bg-end:#D1E8FF;
+    --text:#043233;
+    --accent:#053827;
+    --card-bg: rgba(255,255,255,0.98);
+  }
+  body{
+    background: linear-gradient(135deg,var(--bg-start) 0%,var(--bg-end) 100%);
+    color:var(--text);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .navbar{
+    position:fixed;left:0;top:0;width:100%;
+    background: linear-gradient(135deg,var(--bg-start),var(--bg-end));
+    padding:12px 18px; display:flex;align-items:center;gap:12px;
+    z-index:1000;border:none;box-shadow:none;
+  }
+  .navbar img{height:40px}
+  .brand{font-weight:700;font-size:1.05rem;color:var(--text);letter-spacing:0.3px}
+
+  main{max-width:1200px;margin:0 auto;padding:86px 14px 40px}
+
+  .header-row{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+  .top-line{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .title{font-size:1.4rem;font-weight:700;color:var(--accent)}
+  .subtitle{color:var(--accent);opacity:.9;font-size:0.95rem}
+
+  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;width:100%}
+  .search{
+    display:flex;align-items:center;background:rgba(255,255,255,0.96);
+    padding:8px 12px;border-radius:999px;box-shadow:0 6px 22px rgba(6,40,30,0.06);
+    min-width:180px;max-width:720px;flex:1;
+  }
+  .search svg{margin-right:8px;opacity:.7}
+  .search input{border:0;background:transparent;outline:none;font-size:0.95rem;width:100%}
+
+  .cat-wrapper{position:relative}
+  .cat-btn{
+    background:#fff;border:1px solid rgba(5,58,40,0.08);padding:8px 12px;border-radius:8px;font-weight:600;
+    cursor:pointer;box-shadow:0 6px 18px rgba(6,40,30,0.04);
+    display:flex;align-items:center;gap:8px;
+  }
+
+  /* menu déroulant : contient la liste alphabétique des plateformes */
+  .cat-menu{
+    position:absolute;right:0;top:calc(100% + 8px);width:320px;background:#fff;border-radius:10px;
+    box-shadow:0 18px 40px rgba(6,40,30,0.12);padding:8px;max-height:420px;overflow:auto;z-index:1200;
+    -webkit-overflow-scrolling:touch;
+  }
+  .alpha-group{margin-bottom:8px}
+  .alpha-title{font-weight:700;color:var(--accent);padding:6px 8px}
+  .platform-link{
+    display:block;padding:8px 10px;border-radius:8px;color:var(--text);text-align:left;
+    margin:4px 2px;font-weight:600;font-size:0.92rem;cursor:pointer;background:transparent;border:none;width:100%;
+  }
+  .platform-link:hover{background:rgba(5,58,40,0.06)}
+
+  .grid{margin-top:18px;display:grid;grid-template-columns: repeat(auto-fit,minmax(160px,1fr));gap:14px}
+  .card{
+    background:var(--card-bg);border-radius:12px;padding:14px;display:flex;flex-direction:column;
+    align-items:center;gap:10px;text-align:center;transition:transform .14s ease,box-shadow .14s ease;
+    box-shadow:0 8px 26px rgba(6,40,30,0.06);cursor:pointer;
+  }
+  .card:active{transform:translateY(2px)}
+  .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(6,40,30,0.10)}
+
+  .logo-wrap{width:64px;height:64px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(245,245,245,0.95));box-shadow:0 6px 18px rgba(6,40,30,0.04)}
+  .logo-wrap img{width:42px;height:42px;object-fit:contain;display:block}
+
+  .card-title{font-weight:700;font-size:0.98rem;color:var(--accent)}
+  .card-sub{font-weight:500;font-size:0.85rem;color:#265b4b;line-height:1.15}
+
+  @media (max-width:720px){
+    main{padding:96px 12px 40px}
+    .grid{gap:10px}
+    .logo-wrap{width:56px;height:56px}
+    .logo-wrap img{width:36px;height:36px}
+    .cat-menu{left:8px;right:8px;width:auto}
+  }
+</style>
+</head>
+<body>
+
+<header class="navbar" role="banner">
+  <img src="https://i.postimg.cc/vZrnmPXd/IMG-3286.png" alt="Powerbots360 logo">
+  <div class="brand">Powerbots360</div>
+</header>
+
+<main>
+  <div class="header-row">
+    <div class="top-line">
+      <div>
+        <div class="title">Catalogue — plateformes</div>
+        <div class="subtitle">Rechercher une plateforme</div>
+      </div>
+
+      <div class="controls" style="max-width:920px;">
+        <div class="search" role="search" aria-label="Recherche de plateforme">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="#2a6b56" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6.2" stroke="#2a6b56" stroke-width="1.6" fill="none"/></svg>
+          <input id="searchInput" type="search" placeholder="Tapez le nom (ex: 'TikTok' ou 'T')" autocomplete="off"/>
+        </div>
+
+        <div class="cat-wrapper">
+          <button id="catBtn" class="cat-btn" aria-haspopup="true" aria-expanded="false" title="Voir toutes les plateformes">Catégories</button>
+
+          <!-- menu sera généré dynamiquement en JS -->
+          <div id="catMenu" class="cat-menu" role="menu" aria-hidden="true" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="grid" id="platformGrid" aria-live="polite"></section>
+</main>
+
+<footer aria-hidden="true"></footer>
+
+<script>
+/* -------------------------
+   Données plateformes (titre, slug pour icon, catégorie interne, description FR, aliases utiles)
+   IMPORTANT : ne pas mettre 'douyin' comme alias de tiktok — Douyin est listée séparément.
+------------------------- */
+const PLATFORMS = [
+  {title:"500px", slug:"500px", category:"creative", services:"Photos • Abonnés", aliases:[]},
+  {title:"Amazon", slug:"amazon", category:"ecommerce", services:"Avis • Classements", aliases:["amzn"]},
+  {title:"Anchor.fm", slug:"anchor", category:"podcast", services:"Distribution • Écoutes", aliases:["anchor"]},
+  {title:"Apple (Music/Podcasts)", slug:"apple", category:"streaming", services:"Streams • Classements", aliases:["apple music","apple podcasts"]},
+  {title:"ArtStation", slug:"artstation", category:"creative", services:"Vues • Abonnés", aliases:[]},
+  {title:"Behance", slug:"behance", category:"creative", services:"Vues de projets • Appréciations", aliases:[]},
+  {title:"Bilibili", slug:"bilibili", category:"regional", services:"Vues • Abonnés", aliases:[]},
+  {title:"Caffeine", slug:"caffeine", category:"streaming", services:"Spectateurs • Abonnés", aliases:[]},
+  {title:"Dailymotion", slug:"dailymotion", category:"streaming", services:"Vues • Abonnés", aliases:[]},
+  {title:"Deezer", slug:"deezer", category:"streaming", services:"Streams • Abonnés", aliases:[]},
+  {title:"DeviantArt", slug:"deviantart", category:"creative", services:"Vues • Abonnés", aliases:[]},
+  {title:"Discord", slug:"discord", category:"messaging", services:"Membres • Activité", aliases:[]},
+  {title:"Dribbble", slug:"dribbble", category:"creative", services:"Shots • Abonnés", aliases:[]},
+  {title:"Douyin", slug:"douyin", category:"regional", services:"Followers • Vues (Chine)", aliases:["douyin"]},
+  {title:"Etsy", slug:"etsy", category:"ecommerce", services:"Favoris • Trafic boutique", aliases:[]},
+  {title:"Facebook", slug:"facebook", category:"social", services:"Mentions J’aime • Partages", aliases:["fb"]},
+  {title:"Facebook Gaming", slug:"facebook", category:"streaming", services:"Spectateurs • Clips", aliases:["facebook gaming"]},
+  {title:"Flickr", slug:"flickr", category:"creative", services:"Photos • Abonnés", aliases:[]},
+  {title:"GitBook", slug:"gitbook", category:"developer", services:"Docs • Pages", aliases:[]},
+  {title:"GitHub", slug:"github", category:"developer", services:"Stars • Forks", aliases:[]},
+  {title:"Instagram", slug:"instagram", category:"social", services:"Abonnés • J’aime • Vues • Commentaires", aliases:[]},
+  {title:"Kick", slug:"kick", category:"streaming", services:"Spectateurs • Abonnés", aliases:[]},
+  {title:"KakaoTalk", slug:"kakaotalk", category:"messaging", services:"Messages • Groupes", aliases:[]},
+  {title:"Koo", slug:"koo", category:"regional", services:"Abonnés • Publications", aliases:[]},
+  {title:"LINE", slug:"line", category:"messaging", services:"Chats • Groupes", aliases:[]},
+  {title:"Lazada", slug:"lazada", category:"ecommerce", services:"Trafic • Avis", aliases:[]},
+  {title:"LinkedIn", slug:"linkedin", category:"social", services:"Connexions • Vues de profil", aliases:[]},
+  {title:"Mixcloud", slug:"mixcloud", category:"streaming", services:"Écoutes • Abonnés", aliases:[]},
+  {title:"Odysee (LBRY)", slug:"odysee", category:"streaming", services:"Vues • Abonnés", aliases:["lbr y","lbry"]},
+  {title:"Patreon", slug:"patreon", category:"ecommerce", services:"Soutiens • Abonnements", aliases:[]},
+  {title:"Pinterest", slug:"pinterest", category:"social", services:"Épingles • Abonnés • Réépingles", aliases:[]},
+  {title:"Podbean", slug:"podbean", category:"podcast", services:"Écoutes • Abonnés", aliases:[]},
+  {title:"Podcasts (générique)", slug:"podcast", category:"podcast", services:"Écoutes • Abonnés", aliases:[]},
+  {title:"Reddit", slug:"reddit", category:"social", services:"Votes • Commentaires • Abonnés", aliases:[]},
+  {title:"Rumble", slug:"rumble", category:"streaming", services:"Vues • Abonnés", aliases:[]},
+  {title:"Roblox", slug:"roblox", category:"gaming", services:"Abonnés • Visites", aliases:[]},
+  {title:"Shopify", slug:"shopify", category:"ecommerce", services:"Boutiques • Trafic", aliases:[]},
+  {title:"Shopee", slug:"shopee", category:"ecommerce", services:"Ventes • Favoris", aliases:[]},
+  {title:"Snapchat", slug:"snapchat", category:"social", services:"Spotlight • Vues • Stories", aliases:[]},
+  {title:"SoundCloud", slug:"soundcloud", category:"streaming", services:"Lectures • Reposts • Abonnés", aliases:[]},
+  {title:"Spotify", slug:"spotify", category:"streaming", services:"Streams • Followers (playlists)", aliases:[]},
+  {title:"Steam", slug:"steam", category:"gaming", services:"Abonnés • Avis", aliases:[]},
+  {title:"Substack", slug:"substack", category:"social", services:"Abonnés • Newsletters", aliases:[]},
+  {title:"Telegram", slug:"telegram", category:"messaging", services:"Membres • Vues • Transmissions", aliases:[]},
+  {title:"TikTok", slug:"tiktok", category:"social", services:"Abonnés • J’aime • Vues • Partages", aliases:["tt","tiktok"]},
+  {title:"TikTok Creative", slug:"tiktok", category:"creative", services:"Effets • Boost créatif", aliases:["tiktok creative"]},
+  {title:"Trovo", slug:"trovo", category:"streaming", services:"Spectateurs • Abonnés", aliases:[]},
+  {title:"Twitch", slug:"twitch", category:"streaming", services:"Spectateurs • Abonnés • Subs", aliases:[]},
+  {title:"Tumblr", slug:"tumblr", category:"social", services:"Abonnés • Reblogs", aliases:[]},
+  {title:"Twitter / X", slug:"x", category:"social", services:"Abonnés • Retweets • J’aime", aliases:["twitter","x"]},
+  {title:"Twitch Clips / Highlights", slug:"twitch", category:"streaming", services:"Clips • Moments", aliases:[]},
+  {title:"Tuni n (TuneIn)", slug:"tunein", category:"podcast", services:"Écoutes • Classements", aliases:[]},
+  {title:"Vimeo", slug:"vimeo", category:"streaming", services:"Vues • Abonnés", aliases:[]},
+  {title:"Viber", slug:"viber", category:"messaging", services:"Groupes • Messages", aliases:[]},
+  {title:"VK (VKontakte)", slug:"vk", category:"regional", services:"Abonnés • Mentions", aliases:[]},
+  {title:"WeChat", slug:"wechat", category:"messaging", services:"Moments • Groupes", aliases:[]},
+  {title:"WhatsApp", slug:"whatsapp", category:"messaging", services:"Groupes • Diffusion", aliases:[]},
+  {title:"Wish", slug:"wish", category:"ecommerce", services:"Listings • Trafic", aliases:[]},
+  {title:"WordPress (commentaires)", slug:"wordpress", category:"seo", services:"Commentaires • Engagement", aliases:["wp"]},
+  {title:"Xiaohongshu (RED)", slug:"xiaohongshu", category:"regional", services:"Abonnés • Publications", aliases:["red"]},
+  {title:"Yelp", slug:"yelp", category:"seo", services:"Avis • Notes", aliases:[]},
+  {title:"YouTube", slug:"youtube", category:"social", services:"Vues • Abonnés • Watch Time", aliases:["yt","youtube"]},
+  {title:"Zalo", slug:"zalo", category:"messaging", services:"Chats • Groupes", aliases:[]}
+];
+
+/* -------------------------
+   Normalisation utilities
+------------------------- */
+function normalize(s){
+  return (s||'').toString().trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9 ]/g,'');
+}
+
+/* -------------------------
+   Construction du menu déroulant alphabétique
+------------------------- */
+const catMenu = document.getElementById('catMenu');
+function buildCategoryMenu(){
+  // clone platforms and sort A->Z by title normalized
+  const sorted = PLATFORMS.slice().sort((a,b)=> normalize(a.title).localeCompare(normalize(b.title),'fr'));
+  // group by initial letter
+  const groups = {};
+  sorted.forEach(p=>{
+    const letter = (normalize(p.title).charAt(0) || '#').toUpperCase();
+    if(!groups[letter]) groups[letter] = [];
+    groups[letter].push(p);
+  });
+  catMenu.innerHTML = ''; // clear
+  // "Afficher tout"
+  const allBtn = document.createElement('button');
+  allBtn.className = 'platform-link';
+  allBtn.textContent = 'Afficher toutes les plateformes';
+  allBtn.onclick = ()=>{
+    searchInput.value = '';
+    selectedCategory = 'all';
+    applySearch();
+    closeCatMenu();
+  };
+  catMenu.appendChild(allBtn);
+
+  Object.keys(groups).sort().forEach(letter=>{
+    const block = document.createElement('div'); block.className='alpha-group';
+    const h = document.createElement('div'); h.className='alpha-title'; h.textContent = letter;
+    block.appendChild(h);
+    groups[letter].forEach(p=>{
+      const btn = document.createElement('button');
+      btn.className = 'platform-link';
+      btn.textContent = p.title;
+      btn.title = p.services;
+      btn.onclick = ()=>{
+        // set search to exact platform name and apply
+        searchInput.value = p.title;
+        selectedCategory = 'all';
+        applySearch();
+        closeCatMenu();
+        // on mobile, focus out
+        searchInput.blur();
+      };
+      block.appendChild(btn);
+    });
+    catMenu.appendChild(block);
+  });
+}
+buildCategoryMenu();
+
+/* -------------------------
+   Création des cartes (grille)
+------------------------- */
+const grid = document.getElementById('platformGrid');
+
+function createCard(p){
+  const a = document.createElement('a'); a.className='card';
+  a.href = `services/${encodeURIComponent((p.slug||p.title).toLowerCase().replace(/\s+/g,'-'))}.html`;
+  a.setAttribute('data-title', p.title);
+
+  const logoWrap = document.createElement('div'); logoWrap.className='logo-wrap';
+  const img = document.createElement('img');
+  img.alt = p.title; img.setAttribute('data-name', p.title);
+  // try SimpleIcons by slug
+  img.src = p.slug ? `https://cdn.simpleicons.org/${encodeURIComponent(p.slug)}` : '';
+  logoWrap.appendChild(img);
+
+  const h = document.createElement('div'); h.className='card-title'; h.textContent = p.title;
+  const sub = document.createElement('div'); sub.className='card-sub'; sub.textContent = p.services;
+
+  a.appendChild(logoWrap); a.appendChild(h); a.appendChild(sub);
+  return {node:a, meta:p};
+}
+
+const allCards = PLATFORMS.map(p => createCard(p));
+function renderAll(){
+  grid.innerHTML = '';
+  // Alphabetical
+  const sorted = allCards.slice().sort((a,b)=> normalize(a.meta.title).localeCompare(normalize(b.meta.title),'fr'));
+  sorted.forEach(c => grid.appendChild(c.node));
+  attachFallbacks();
+}
+renderAll();
+
+/* -------------------------
+   Fallback icons (SVG with initials) si SimpleIcons non dispo
+------------------------- */
+function initialsFrom(name){
+  const parts = (name||'').replace(/[^A-Za-z0-9 ]/g,' ').trim().split(/\s+/);
+  if(parts.length===0) return '';
+  if(parts.length===1) return parts[0].slice(0,2).toUpperCase();
+  return (parts[0][0] + (parts[1][0]||'')).toUpperCase();
+}
+function colorFromString(s){
+  let h=0;
+  for(let i=0;i<s.length;i++){ h = s.charCodeAt(i) + ((h<<5)-h); h = h & h; }
+  const r = (h>>16)&255, g=(h>>8)&255, b=h&255;
+  const toHex = x => ('0'+(x & 0xFF).toString(16)).slice(-2);
+  return '#'+toHex((r+140)%256)+toHex((g+80)%256)+toHex((b+40)%256);
+}
+function fallbackSVGDataURL(name, w=120, h=120){
+  const initials = initialsFrom(name);
+  const bg = colorFromString(name);
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><rect rx='18' width='100%' height='100%' fill='${bg}'/><text x='50%' y='54%' font-family='Poppins, Arial, sans-serif' font-size='48' font-weight='700' fill='#fff' text-anchor='middle' dominant-baseline='middle'>${initials}</text></svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+function attachFallbacks(){
+  document.querySelectorAll('.logo-wrap img').forEach(img=>{
+    img.onerror = function(){
+      this.onerror = null;
+      const name = this.getAttribute('data-name') || this.alt || 'Logo';
+      this.src = fallbackSVGDataURL(name,120,120);
+      this.alt = name;
+    };
+    setTimeout(()=>{ if(img.naturalWidth === 0) img.onerror(); }, 500);
+  });
+}
+
+/* -------------------------
+   Recherche : exact -> alias exact -> startsWith -> alias startsWith -> includes
+------------------------- */
+const searchInput = document.getElementById('searchInput');
+let selectedCategory = 'all';
+
+function applySearch(){
+  const raw = (searchInput.value || '').trim();
+  const q = normalize(raw);
+
+  // pool based on category (we keep 'all' default)
+  let pool = PLATFORMS.map(p => ({
+    meta:p,
+    titleNorm: normalize(p.title),
+    aliases: (p.aliases||[]).map(normalize),
+    node: allCards.find(c => c.meta.title === p.title).node
+  }));
+
+  // if category filtering implemented later, apply here (selectedCategory variable)
+  if(selectedCategory && selectedCategory !== 'all'){
+    pool = pool.filter(p=> p.meta.category === selectedCategory);
+  }
+
+  if(!q){
+    const sorted = pool.sort((a,b)=> a.titleNorm.localeCompare(b.titleNorm,'fr'));
+    renderPool(sorted);
+    return;
+  }
+
+  // exact title
+  let exact = pool.filter(p => p.titleNorm === q);
+  if(exact.length){ renderPool(exact.sort((a,b)=>a.titleNorm.localeCompare(b.titleNorm,'fr'))); return; }
+
+  // exact alias
+  let exactAlias = pool.filter(p => p.aliases.includes(q));
+  if(exactAlias.length){ renderPool(exactAlias.sort((a,b)=>a.titleNorm.localeCompare(b.titleNorm,'fr'))); return; }
+
+  // startsWith title or alias
+  let starts = pool.filter(p => p.titleNorm.startsWith(q) || p.aliases.some(a=> a.startsWith(q) ));
+  if(starts.length){ renderPool(starts.sort((a,b)=>a.titleNorm.localeCompare(b.titleNorm,'fr'))); return; }
+
+  // fallback includes in title, alias or services
+  let incl = pool.filter(p =>
+    p.titleNorm.includes(q) ||
+    p.aliases.some(a=>a.includes(q)) ||
+    normalize(p.meta.services || '').includes(q)
+  );
+  renderPool(incl.sort((a,b)=>a.titleNorm.localeCompare(b.titleNorm,'fr')));
+}
+
+function renderPool(list){
+  grid.innerHTML = '';
+  if(list.length === 0){
+    const msg = document.createElement('div');
+    msg.style.gridColumn = '1 / -1';
+    msg.style.textAlign = 'center';
+    msg.style.padding = '22px';
+    msg.style.color = 'rgba(4,50,40,0.9)';
+    msg.textContent = 'Aucun résultat.';
+    grid.appendChild(msg);
+    return;
+  }
+  list.forEach(item => grid.appendChild(item.node));
+  attachFallbacks();
+}
+
+/* debounce */
+let timer = null;
+searchInput.addEventListener('input', ()=>{
+  clearTimeout(timer);
+  timer = setTimeout(applySearch, 110);
+});
+
+/* -------------------------
+   Cat menu open/close + outside click
+------------------------- */
+const catBtn = document.getElementById('catBtn');
+function openCatMenu(){ catMenu.style.display = 'block'; catMenu.setAttribute('aria-hidden','false'); catBtn.setAttribute('aria-expanded','true'); }
+function closeCatMenu(){ catMenu.style.display = 'none'; catMenu.setAttribute('aria-hidden','true'); catBtn.setAttribute('aria-expanded','false'); }
+catBtn.addEventListener('click', (e)=>{
+  if(catMenu.style.display === 'block') closeCatMenu(); else openCatMenu();
+});
+document.addEventListener('click', (e)=>{
+  if(!catMenu.contains(e.target) && !catBtn.contains(e.target)) closeCatMenu();
+});
+
+/* close menu when a platform chosen via menu handled earlier */
+
+</script>
+</body>
+</html>
