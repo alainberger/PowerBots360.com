@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PowerBots360 — Accueil</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; width: 100%; overflow-x: hidden; font-family: 'Poppins', sans-serif; }
+a { color: inherit; text-decoration: none; }
+
+:root {
+    --bg-start: #A8D5BA;
+    --bg-end: #D1E8FF;
+    --text: #043233;
+    --id-card-gradient: linear-gradient(135deg, #A8D5BA, #D1E8FF);
+}
+
+body { background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%); color: var(--text); }
+
+/* Navbar */
+.navbar { position: fixed; top: 0; left: 0; width: 100%; background: var(--id-card-gradient); padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; }
+.navbar img { height: 40px; }
+.brand { font-weight: 700; font-size: 1rem; color: var(--text); letter-spacing: 0.3px; }
+
+/* Hamburger réduit */
+.hamburger { display: flex; flex-direction: column; cursor: pointer; gap: 4px; z-index: 1100; width: 28px; height: 22px; }
+.hamburger span { width: 100%; height: 3px; background: var(--text); border-radius: 2px; transition: all 0.3s ease; }
+
+/* Menu Hamburger réduit */
+.menu { position: fixed; top: 60px; right: -180px; width: 180px; height: calc(100% - 60px); background: var(--id-card-gradient); padding: 12px; display: flex; flex-direction: column; gap: 10px; transition: right 0.3s ease; z-index: 998; overflow-y: auto; }
+.menu.open { right: 0; }
+.menu a { font-weight: 600; font-size: 0.9rem; padding: 6px; border-radius: 5px; transition: background 0.2s, transform 0.1s; cursor: pointer; }
+.menu a:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.05); }
+
+/* Carré identifiant collé sous navbar */
+.id-card-container {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    display: flex;
+    transition: all 0.4s ease;
+    z-index: 1001;
+}
+
+/* Carré identifiant */
+.id-card {
+    background: var(--id-card-gradient);
+    padding: 18px 16px;
+    border-radius: 0 12px 12px 0;
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 2px 4px 12px rgba(0,0,0,0.15);
+    color: var(--text);
+    min-width: 180px;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+/* Barre de fermeture attachée et fine */
+.toggle-bar {
+    width: 8px;
+    height: 100%;
+    background: var(--id-card-gradient);
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+.toggle-bar::before {
+    content: '';
+    width: 2px;
+    height: 50px;
+    background: var(--text);
+    border-radius: 2px;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+/* Contenu identifiant */
+.id-card .status { display: flex; align-items: center; gap: 8px; }
+.status-dot { width: 10px; height: 10px; background: #4CAF50; border-radius: 50%; }
+
+/* Boutons réactifs */
+button, .btn-catalogue {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+button:active, .btn-catalogue:active {
+    transform: scale(0.95);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+/* Bouton déconnexion avec logo */
+.logout-btn {
+    margin-top: 6px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--id-card-gradient);
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.logout-btn img {
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+}
+.logout-btn:hover {
+    background: linear-gradient(135deg, #B0E0C2, #E0F0FF);
+    transform: scale(1.05);
+}
+
+/* Contenu principal */
+.content { padding-top: 260px; text-align: center; }
+.content h1 { font-size: 2rem; margin-bottom: 15px; }
+.content p { font-size: 1.1rem; max-width: 600px; margin: 0 auto 25px auto; line-height: 1.5; }
+.btn-catalogue { background: var(--id-card-gradient); color: var(--text); padding: 12px 25px; font-weight: 600; border-radius: 6px; display: inline-block; }
+.btn-catalogue:hover { background: linear-gradient(135deg, #B0E0C2, #E0F0FF); }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <div style="display:flex; align-items:center; gap:10px;">
+        <img src="https://i.postimg.cc/vZrnmPXd/IMG-3286.png" alt="Logo PowerBots360">
+        <span class="brand">PowerBots360</span>
+    </div>
+    <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+
+<div class="id-card-container" id="idCardContainer">
+    <div class="id-card" id="idCard">
+        <span>Identifiant : <strong id="username">Utilisateur</strong></span>
+        <span>Solde : <strong id="balance">0 €</strong></span>
+        <div class="status">
+            <span class="status-dot"></span>
+            <span>En ligne</span>
+        </div>
+        <button class="logout-btn" id="logoutBtn">
+            <img src="https://cdn-icons-png.flaticon.com/512/61/61457.png" alt="Cadenas">
+            Se déconnecter
+        </button>
+    </div>
+    <div class="toggle-bar" id="toggleBar"></div>
+</div>
+
+<div class="menu" id="menu">
+    <a href="index.html">Accueil</a>
+    <a href="categorie.html">Catégorie</a>
+    <a href="payment.html">Paiement</a>
+    <a href="juridique.html">Juridique</a>
+    <a href="bonnespratiques.html">Bonnes Pratiques</a>
+    <a href="connexion.html">Connexion</a>
+    <a href="inscription.html">Inscription</a>
+</div>
+
+<div class="content">
+    <h1>Bienvenue sur <strong>PowerBots360</strong></h1>
+    <p>Notre plateforme SMM vous offre des <strong>services performants et fiables</strong>, pensés pour maximiser votre impact digital et sécuriser vos résultats sur tous vos réseaux.</p>
+    <button class="btn-catalogue" id="catalogBtn">Voir le catalogue</button>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+    // === CONFIGURATION FIREBASE ===
+    const firebaseConfig = {
+        apiKey: "VOTRE_API_KEY",
+        authDomain: "VOTRE_PROJECT.firebaseapp.com",
+        projectId: "VOTRE_PROJECT",
+        storageBucket: "VOTRE_PROJECT.appspot.com",
+        messagingSenderId: "VOTRE_MESSAGING_ID",
+        appId: "VOTRE_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // === FONCTIONS UTILITAIRES ===
+    function formatUsername(name) {
+        if(!name) return "Utilisateur";
+        return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    }
+
+    function updateUI(userData) {
+        document.getElementById("username").textContent = formatUsername(userData.pseudo);
+        document.getElementById("balance").textContent = userData.solde + " €";
+    }
+
+    // === REDIRECTION AUTOMATIQUE ===
+    auth.onAuthStateChanged(user => {
+        if(user) {
+            const userRef = db.collection("users").doc(user.uid);
+            userRef.onSnapshot(doc => {
+                if(doc.exists) {
+                    const data = doc.data();
+                    updateUI({
+                        pseudo: data.pseudo || user.displayName || "Utilisateur",
+                        solde: data.solde || 0
+                    });
+                }
+            });
+        } else {
+            window.location.href = "index.html";
+        }
+    });
+
+    // === LOGOUT ===
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        auth.signOut().then(() => {
+            window.location.href = "index.html";
+        });
+    });
+
+    // === HAMBURGER MENU ===
+    const hamburger = document.getElementById('hamburger');
+    const menu = document.getElementById('menu');
+    hamburger.addEventListener('click', () => { menu.classList.toggle('open'); });
+
+    // === CARTE TOGGLE ===
+    const toggleBar = document.getElementById('toggleBar');
+    const idCard = document.getElementById('idCard');
+    toggleBar.addEventListener('click', () => {
+        idCard.style.display = idCard.style.display === 'none' ? 'flex' : 'none';
+    });
+
+    // === CATALOGUE ===
+    document.getElementById("catalogBtn").addEventListener("click", () => {
+        window.location.href = "categorie.html";
+    });
+
+    // === CONNEXION GOOGLE ET TÉLÉPHONE (EXEMPLE) ===
+    // Google
+    function googleLogin() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider);
+    }
+    // Téléphone
+    function phoneLogin(phoneNumber, appVerifier) {
+        auth.signInWithPhoneNumber(phoneNumber, appVerifier)
+            .then(confirmationResult => { window.confirmationResult = confirmationResult; })
+            .catch(error => console.error(error));
+    }
+</script>
+
+</body>
+</html>
