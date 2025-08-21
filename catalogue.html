@@ -1,0 +1,31 @@
+<script>
+async function chargerCatalogue() {
+  try {
+    const res = await fetch("/api/services");
+    const data = await res.json();
+
+    const container = document.getElementById("catalogueContainer");
+    container.innerHTML = "";
+
+    if (data.error) {
+      container.innerHTML = "<p>Erreur : " + data.error + "</p>";
+      return;
+    }
+
+    data.forEach(service => {
+      const div = document.createElement("div");
+      div.className = "catalogue-item";
+      div.innerHTML = `
+        <h3>${service.name}</h3>
+        <p>ID: ${service.service}</p>
+        <p>Prix: ${service.rate} $</p>
+      `;
+      container.appendChild(div);
+    });
+  } catch (err) {
+    console.error("Erreur API:", err);
+  }
+}
+
+chargerCatalogue();
+</script>
