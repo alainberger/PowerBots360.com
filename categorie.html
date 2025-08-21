@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PowerBots360 — Catégorie</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin:0; padding:0; }
+html, body { height:100%; width:100%; font-family: 'Poppins', sans-serif; }
+body { background: linear-gradient(135deg, #A8D5BA 0%, #D1E8FF 100%); color: #043233; }
+
+/* Navbar */
+.navbar { position: fixed; top: 0; left:0; width:100%; display:flex; align-items:center; gap:12px; padding:12px 18px; background: linear-gradient(135deg,#A8D5BA,#D1E8FF); z-index:1000; }
+.navbar img { height:40px; }
+.brand { font-weight:700; font-size:1.05rem; color:#043233; }
+
+/* Main */
+main { max-width: 1200px; margin:0 auto; padding: 120px 20px 40px; text-align:center; }
+
+/* Boutons */
+.btn { background: linear-gradient(135deg,#A8D5BA,#D1E8FF); color: #043233; padding:12px 25px; font-weight:600; border-radius:6px; text-decoration:none; display:inline-block; margin:6px; cursor:pointer; transition:0.3s; }
+.btn:hover { background: linear-gradient(135deg,#B0E0C2,#E0F0FF); }
+
+/* Formulaire catalogue */
+#catalogForm { margin-top: 20px; display:flex; flex-direction:column; gap:12px; text-align:left; max-width:600px; margin-left:auto; margin-right:auto; }
+#catalogForm select, #catalogForm input { padding:10px; font-size:1rem; border-radius:6px; border:1px solid #ccc; }
+#catalogForm button { align-self:center; }
+
+/* Services table */
+#servicesTable { width:100%; border-collapse:collapse; margin-top:20px; }
+#servicesTable th, #servicesTable td { border:1px solid #ccc; padding:8px; text-align:left; }
+#servicesTable th { background: linear-gradient(135deg,#A8D5BA,#D1E8FF); }
+
+/* Responsive */
+@media(max-width:600px){
+  main { padding:140px 10px 40px; }
+  #catalogForm { max-width:100%; }
+}
+</style>
+</head>
+<body>
+
+<header class="navbar">
+  <img src="https://i.postimg.cc/vZrnmPXd/IMG-3286.png" alt="PowerBots360 logo">
+  <div class="brand">PowerBots360</div>
+</header>
+
+<main>
+  <a href="index.html" class="btn">Retour</a>
+
+  <h1>Catalogue SMM</h1>
+  <p>Choisissez une catégorie et un service, puis passez votre commande directement ici.</p>
+
+  <form id="catalogForm">
+    <label for="categorySelect">Choisir une catégorie</label>
+    <select id="categorySelect">
+      <option value="">-- Sélectionnez --</option>
+      <option value="instagram">Instagram</option>
+      <option value="facebook">Facebook</option>
+      <option value="twitter">Twitter</option>
+      <option value="tiktok">TikTok</option>
+      <option value="youtube">YouTube</option>
+    </select>
+
+    <label for="serviceSelect">Choisir un service</label>
+    <select id="serviceSelect">
+      <option value="">-- Sélectionnez une catégorie d'abord --</option>
+    </select>
+
+    <label for="quantityInput">Quantité</label>
+    <input type="number" id="quantityInput" placeholder="Ex: 100" min="1" required>
+
+    <button type="button" class="btn" id="orderBtn">Commander</button>
+  </form>
+
+  <table id="servicesTable">
+    <thead>
+      <tr>
+        <th>Service</th>
+        <th>Plateforme</th>
+        <th>Prix minimum</th>
+        <th>USD</th>
+      </tr>
+    </thead>
+    <tbody id="servicesBody">
+      <!-- Les services s'afficheront ici dynamiquement -->
+    </tbody>
+  </table>
+</main>
+
+<script>
+// Exemple de catalogue dynamique simulé
+const servicesData = {
+  instagram: [
+    {name:"Followers", price:1},
+    {name:"Likes", price:0.5},
+    {name:"Commentaires", price:0.7}
+  ],
+  facebook:[
+    {name:"Likes page", price:0.4},
+    {name:"Partages", price:0.8}
+  ],
+  twitter:[
+    {name:"Followers", price:0.6},
+    {name:"Likes", price:0.3}
+  ],
+  tiktok:[
+    {name:"Followers", price:0.5},
+    {name:"Likes", price:0.4}
+  ],
+  youtube:[
+    {name:"Subscribers", price:1},
+    {name:"Views", price:0.2}
+  ]
+};
+
+const categorySelect = document.getElementById('categorySelect');
+const serviceSelect = document.getElementById('serviceSelect');
+const servicesBody = document.getElementById('servicesBody');
+const orderBtn = document.getElementById('orderBtn');
+
+categorySelect.addEventListener('change',()=>{
+  const category = categorySelect.value;
+  serviceSelect.innerHTML = '<option value="">-- Sélectionnez un service --</option>';
+  servicesBody.innerHTML = '';
+  if(category && servicesData[category]){
+    servicesData[category].forEach(s=>{
+      const opt = document.createElement('option');
+      opt.value = s.name;
+      opt.textContent = s.name;
+      serviceSelect.appendChild(opt);
+
+      // Affichage dans le tableau
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${s.name}</td><td>${category}</td><td>${s.price}</td><td>USD</td>`;
+      servicesBody.appendChild(tr);
+    });
+  }
+});
+
+// Commander
+orderBtn.addEventListener('click',()=>{
+  const category = categorySelect.value;
+  const service = serviceSelect.value;
+  const quantity = document.getElementById('quantityInput').value;
+  if(!category || !service || !quantity){
+    alert("Veuillez remplir tous les champs avant de commander.");
+    return;
+  }
+  alert(`Commande passée : ${quantity} ${service} sur ${category}`);
+  // Ici tu peux ajouter l'appel à ton API pour créer la commande
+});
+</script>
+
+</body>
+</html>
