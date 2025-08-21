@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Connexion — Powerbots360</title>
+<title>Connexion — PowerBots360</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -14,7 +14,6 @@ body{
   display:flex;flex-direction:column;
 }
 a{color:inherit;text-decoration:none}
-
 .navbar{
   position:fixed;left:0;top:0;width:100%;
   background: linear-gradient(135deg,#A8D5BA,#D1E8FF);
@@ -109,7 +108,6 @@ label{display:block;font-weight:600;margin-bottom:6px;text-align:left}
 }
 .forgot-link a{color:#053827; text-decoration:underline;}
 
-/* Bouton Google corrigé avec dégradé identique au bouton principal et logo propre */
 .google-btn{
   display:flex;
   align-items:center;
@@ -137,12 +135,71 @@ label{display:block;font-weight:600;margin-bottom:6px;text-align:left}
   .login-box{padding:24px 20px}
 }
 </style>
+
+<!-- Firebase SDKs -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyChJoeaMJlj2F-7okhrPJYw868Z1RhgMFY",
+  authDomain: "powerbots360-2a163.firebaseapp.com",
+  projectId: "powerbots360-2a163",
+  storageBucket: "powerbots360-2a163.firebasestorage.app",
+  messagingSenderId: "968053928320",
+  appId: "1:968053928320:web:c51f7be039c02f2fb69165",
+  measurementId: "G-TXSM0JYF1G"
+};
+
+// Initialisation Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// Rediriger si déjà connecté
+onAuthStateChanged(auth, (user) => {
+  if(user){
+    window.location.href = "index.html";
+  }
+});
+
+// Fonction Google Sign-In
+window.forceGoogleSignIn = async function() {
+  const provider = new GoogleAuthProvider();
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    console.log("Google connecté :", user.email);
+    window.location.href = "index.html";
+  } catch(error) {
+    console.error("Erreur Google Sign-In :", error.message);
+    alert("Erreur Google Sign-In : " + error.message);
+  }
+}
+
+// Fonction Mot de passe oublié
+window.forceForgotPassword = function() {
+  window.location.href = "mailto:contact@powerbots360.net?subject=Mot de passe oublié";
+}
+
+// Fonction Connexion classique
+window.forceLogin = function() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  if(!email || !password) {
+    alert("Merci de remplir tous les champs !");
+    return;
+  }
+  // Ici tu peux intégrer ton backend réel
+  console.log("Connexion classique :", email);
+  window.location.href = "index.html"; // Redirection après connexion
+}
+</script>
 </head>
 <body>
 
 <header class="navbar">
   <img src="https://i.postimg.cc/vZrnmPXd/IMG-3286.png" alt="Powerbots360 logo">
-  <div class="brand">Powerbots360</div>
+  <div class="brand">PowerBots360</div>
 </header>
 
 <div style="text-align:center;">
@@ -153,7 +210,6 @@ label{display:block;font-weight:600;margin-bottom:6px;text-align:left}
   <div class="login-box">
     <h2>Connexion</h2>
 
-    <!-- Adresse mail -->
     <label for="email">Adresse mail</label>
     <div class="input-wrapper">
       <span class="leading-icon">
@@ -167,10 +223,9 @@ label{display:block;font-weight:600;margin-bottom:6px;text-align:left}
       <input type="email" id="email" placeholder="Votre adresse mail" required>
     </div>
 
-    <!-- Mot de passe -->
     <label for="password">Mot de passe</label>
     <div class="input-wrapper">
-      <span class="leading-icon" id="togglePassword" aria-label="Afficher/Masquer le mot de passe">
+      <span class="leading-icon" id="togglePassword">
         <svg id="iconEye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="1.8"
              stroke-linecap="round" stroke-linejoin="round">
@@ -179,11 +234,11 @@ label{display:block;font-weight:600;margin-bottom:6px;text-align:left}
           <line id="eyeSlash" x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:none"/>
         </svg>
       </span>
-      <input type="text" id="password" placeholder="Votre mot de passe" required>
+      <input type="password" id="password" placeholder="Votre mot de passe" required>
     </div>
 
     <div class="forgot-link">
-      <a href="#">Mot de passe ou adresse mail oublié(e) ?</a>
+      <a href="javascript:void(0)" onclick="forceForgotPassword()">Mot de passe ou adresse mail oublié(e) ?</a>
     </div>
 
     <div class="checkbox-wrapper">
@@ -191,44 +246,31 @@ label{display:block;font-weight:600;margin-bottom:6px;text-align:left}
       <label for="stayConnected">Rester connecté</label>
     </div>
 
-    <button class="btn" id="loginBtn">Se connecter</button>
-    <button class="google-btn" id="googleLogin">
+    <button class="btn" id="loginBtn" onclick="forceLogin()">Se connecter</button>
+
+    <button class="google-btn" onclick="forceGoogleSignIn()">
       <img src="https://i.postimg.cc/0ysPh8Ld/IMG-3446.png" alt="Google" width="20">
       Se connecter avec Google
     </button>
 
-    <button class="btn" id="logoutBtn" style="display:none;background:#ccc;color:#222;">Se déconnecter</button>
   </div>
 </main>
 
 <script>
+// Toggle mot de passe
 const togglePassword = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("password");
 const eyeSlash = document.getElementById("eyeSlash");
-
-// Le mot de passe est visible au départ
-passwordInput.type = "text";
-eyeSlash.style.display = "none";
-
 togglePassword.addEventListener("click", () => {
-  if(passwordInput.type === "text"){
-    passwordInput.type = "password";
-    eyeSlash.style.display = "block";
-  } else {
+  if(passwordInput.type === "password"){
     passwordInput.type = "text";
     eyeSlash.style.display = "none";
+  } else {
+    passwordInput.type = "password";
+    eyeSlash.style.display = "block";
   }
 });
+</script>
 
-// simulation login/logout
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-loginBtn.addEventListener("click", () => {
-  loginBtn.style.display = "none";
-  logoutBtn.style.display = "block";
-});
-
-// simulation Google login
-const googleLogin = document.getElementById("googleLogin");
-googleLogin.addEventListener("click", () => {
-  alert("
+</body>
+</html>
