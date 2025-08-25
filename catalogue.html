@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Catalogue de PowerBots360</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0; }
+    html, body { height:100%; width:100%; font-family:'Poppins',sans-serif; overflow-x:hidden; scroll-behavior:smooth; }
+    body { background: linear-gradient(135deg,#A8D5BA,#D1E8FF); color:#043233; }
+    main { padding-top:10px; max-width:900px; margin:0 auto; text-align:center; padding-bottom:50px; }
+    h1 { font-size:2rem;margin:10px 0; }
+    .catalogue-item { background:linear-gradient(135deg,#A8D5BA,#D1E8FF); padding:15px; margin-bottom:15px; border-radius:8px; text-align:left; box-shadow:0 2px 8px rgba(0,0,0,0.15); }
+    .catalogue-item h2 { margin-bottom:8px; }
+    .catalogue-item p { margin-bottom:5px; }
+    .btn-add { background:#043233; color:#fff; padding:8px 12px; border:none; border-radius:5px; cursor:pointer; transition:0.3s; }
+    .btn-add:hover { background:#065959; }
+    #cart { position:fixed; bottom:0; left:0; width:100%; background:linear-gradient(135deg,#A8D5BA,#D1E8FF); padding:15px; border-radius:10px 10px 0 0; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:left; z-index:1000; }
+    #cart h2 { margin-bottom:10px; }
+    .cart-item { display:flex; justify-content:space-between; margin-bottom:6px; }
+    .cart-quantity { margin-left:5px; font-weight:600; }
+    #btnCheckout { background:linear-gradient(135deg,#A8D5BA,#D1E8FF); color:#043233; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; margin-top:10px; transition:0.3s; }
+    #btnCheckout:hover { background:linear-gradient(135deg,#B0E0C2,#E0F0FF); }
+    .notification { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#043233; color:#fff; padding:10px 20px; border-radius:5px; display:none; z-index:1001; }
+  </style>
+</head>
+<body>
+
+<main>
+  <h1>Catalogue de PowerBots360</h1>
+
+  <div id="catalogue">
+    <div class="catalogue-item" data-name="Bot Telegram" data-price="10">
+      <h2>Bot Telegram</h2>
+      <p>Automatisation avancée sur Telegram.</p>
+      <button class="btn-add">Ajouter au panier - 10€</button>
+    </div>
+    <div class="catalogue-item" data-name="Instagram Likes" data-price="5">
+      <h2>Instagram Likes</h2>
+      <p>Pack de 100 likes pour vos posts Instagram.</p>
+      <button class="btn-add">Ajouter au panier - 5€</button>
+    </div>
+    <div class="catalogue-item" data-name="TikTok Followers" data-price="15">
+      <h2>Followers TikTok</h2>
+      <p>Pack de 500 abonnés pour votre compte TikTok.</p>
+      <button class="btn-add">Ajouter au panier - 15€</button>
+    </div>
+    <div class="catalogue-item" data-name="YouTube Views" data-price="20">
+      <h2>Vues YouTube</h2>
+      <p>Pack de 1000 vues pour vos vidéos YouTube.</p>
+      <button class="btn-add">Ajouter au panier - 20€</button>
+    </div>
+    <div class="catalogue-item" data-name="Twitter Retweets" data-price="8">
+      <h2>Retweets Twitter</h2>
+      <p>Pack de 200 retweets pour vos tweets.</p>
+      <button class="btn-add">Ajouter au panier - 8€</button>
+    </div>
+  </div>
+
+  <div id="cart">
+    <h2>Panier</h2>
+    <div id="cartItems"></div>
+    <button id="btnCheckout">Commander</button>
+  </div>
+</main>
+
+<div class="notification" id="toast"></div>
+
+<script>
+const toast = document.getElementById('toast');
+const cartItemsEl = document.getElementById('cartItems');
+const btnCheckout = document.getElementById('btnCheckout');
+let cart = [];
+
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toast.style.display = 'none', 3500);
+}
+
+function renderCart() {
+  cartItemsEl.innerHTML = '';
+  cart.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.classList.add('cart-item');
+    div.innerHTML = `${item.name} - ${item.price}€ x ${item.qty}
+      <button onclick="removeItem(${i})">❌</button>`;
+    cartItemsEl.appendChild(div);
+  });
+}
+
+function removeItem(index) {
+  cart.splice(index, 1);
+  renderCart();
+}
+
+document.querySelectorAll('.btn-add').forEach((btn, i) => {
+  btn.addEventListener('click', () => {
+    const parent = btn.closest('.catalogue-item');
+    const name = parent.dataset.name;
+    const price = parseInt(parent.dataset.price);
+    const exist = cart.find(item => item.name === name);
+    if (exist) exist.qty++;
+    else cart.push({ name, price, qty: 1 });
+    renderCart();
+    showToast(`${name} ajouté au panier`);
+  });
+});
+
+btnCheckout.addEventListener('click', () => {
+  if (cart.length === 0) {
+    showToast('Votre panier est vide !');
+    return;
+  }
+  showToast('Commande passée avec succès !');
+  cart = [];
+  renderCart();
+});
+</script>
+
+</body>
+</html>
