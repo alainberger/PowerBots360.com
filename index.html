@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PowerBots360 — Accueil</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ... garde ton CSS actuel ... */
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <img src="https://i.postimg.cc/vZrnmPXd/IMG-3286.png" alt="Logo PowerBots360">
+    <span class="brand">PowerBots360</span>
+  </div>
+  <div class="hamburger" id="hamburger" aria-label="Ouvrir le menu" tabindex="0">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
+<!-- ID CARD -->
+<div class="id-card-container">
+  <div class="toggle-btn" id="toggleBtn" aria-label="Ouvrir la carte" tabindex="0">+</div>
+  <div class="id-card" id="idCard">
+    <span>Identifiant : <strong id="userName">---</strong></span>
+    <span>Solde : <strong id="userBalance">0 €</strong></span>
+    <div class="status">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="userStatus">Hors ligne</span>
+    </div>
+    <button class="logout-btn" id="loginBtn">Se connecter</button>
+  </div>
+</div>
+
+<!-- MENU -->
+<div class="menu" id="menu" role="menu" aria-hidden="true">
+  <a href="index.html">Accueil</a>
+  <a href="catalogue.html">Catégorie</a>
+  <a href="payment.html">Paiement</a>
+  <a href="juridique.html">Juridique</a>
+  <a href="bonnespratiques.html">Bonnes Pratiques</a>
+  <a href="connexion.html">Connexion</a>
+  <a href="inscription.html">Inscription</a>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+  <h1>Bienvenue sur <strong>PowerBots360</strong></h1>
+  <p>Notre plateforme SMM vous offre des <strong>services performants et fiables</strong>, pensés pour maximiser votre impact digital et sécuriser vos résultats sur tous vos réseaux.</p>
+  <button class="btn-catalogue" id="catalogBtn" type="button">Voir la catégorie</button>
+</div>
+
+<div class="notification" id="toast">Bienvenue !</div>
+
+<!-- Firebase.js modulaire -->
+<script type="module">
+import { auth, logout, onUserStateChanged, getUserData } from './Firebase.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+  const hamburger   = document.getElementById('hamburger');
+  const menu        = document.getElementById('menu');
+  const toggleBtn   = document.getElementById('toggleBtn');
+  const idCard      = document.getElementById('idCard');
+  const catalogBtn  = document.getElementById('catalogBtn');
+  const loginBtn    = document.getElementById('loginBtn');
+  const userNameEl  = document.getElementById('userName');
+  const userStatusEl= document.getElementById('userStatus');
+  const statusDot   = document.getElementById('statusDot');
+  const balanceEl   = document.getElementById('userBalance');
+  const toast       = document.getElementById('toast');
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.style.display = 'none', 3500);
+  }
+
+  // Menu toggle
+  hamburger?.addEventListener('click', () => {
+    menu.classList.toggle('open');
+    menu.setAttribute('aria-hidden', String(!menu.classList.contains('open')));
+  });
+
+  // ID Card toggle
+  toggleBtn?.addEventListener('click', () => {
+    idCard.classList.toggle('open');
+    toggleBtn.textContent = idCard.classList.contains('open') ? '×' : '+';
+  });
+
+  // Catalogue
+  catalogBtn?.addEventListener('click', () => { window.location.href = 'catalogue.html'; });
+
+  // UI
+  function setOnlineUI(user, balance){
+    userNameEl.textContent = user.displayName || user.email || 'Utilisateur';
+    userStatusEl.textContent = "En ligne";
+    statusDot.classList.add('online');
+    balanceEl.textContent = balance + " €";
+    loginBtn.textContent = "Se déconnecter";
+  }
+
+  function setOfflineUI(){
+    userNameEl.textContent = "---";
+    userStatusEl.textContent = "Hors ligne";
+    statusDot.classList.remove('online');
+    balanceEl.textContent = "0 €";
+    loginBtn.textContent = "Se connecter";
+  }
+
+  // Auth state
+  onUserStateChanged(async (user) => {
+    if(user){
+      try{
+        const data = await getUserData(user.uid);
+        setOnlineUI(user, data?.balance || 0);
+        showToast(`Bienvenue ${user.displayName || user.email}!`);
+      }catch(e){
+        console.error(e);
+        setOnlineUI(user, 0);
+      }
+    }else{
+      setOfflineUI();
+    }
+  });
+
+  // Login/Logout
+  loginBtn?.addEventListener('click', async () => {
+    if(auth.currentUser){
+      await logout();
+      setOfflineUI();
+      showToast("Déconnecté.");
+    }else{
+      window.location.href = 'connexion.html';
+    }
+  });
+});
+</script>
+
+</body>
+</html>
