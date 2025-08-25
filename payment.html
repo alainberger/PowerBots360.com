@@ -1,0 +1,39 @@
+<script>
+  const stripe = Stripe("pk_live_51Ry2SYQ95gBUeG1ny4UiJ5z2HfQHqVnwwzuGjsM5SDFubDIHlnVBd1blXjR2dJH2BTTa28PnfDgQFSlDLcbDMDMa00AMd5Aufn");
+
+  const form = document.getElementById("payment-form");
+  const amountInput = document.getElementById("amount");
+  const message = document.getElementById("message");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const amount = parseFloat(amountInput.value);
+
+    if (amount < 5 || amount > 1000) {
+      message.textContent = "Le montant doit être compris entre 5€ et 1000€";
+      return;
+    }
+
+    message.textContent = "Redirection vers le paiement...";
+
+    try {
+      const response = await fetch("/.netlify/functions/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount }),
+      });
+
+      const session = await response.json();
+
+      if (session.id) {
+        const result = await stripe.redirectToCheckout({ sessionId: session.id });
+        if (result.error) message.textContent = result.error.message;
+      } else {
+        message.textContent = "Erreur serveur.";
+      }
+    } catch (err) {
+      console.error(err);
+      message.textContent = "Erreur serveur, réessayez plus tard.";
+    }
+  });
+</script>
