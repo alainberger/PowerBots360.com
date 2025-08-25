@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catalogue — PowerBots360</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;width:100%;font-family:'Poppins',sans-serif;overflow-x:hidden;scroll-behavior:smooth;}
+body{background:linear-gradient(135deg,#A8D5BA,#D1E8FF);color:#043233;}
+
+/* Navbar */
+.navbar{position:fixed;top:0;left:0;width:100%;background:linear-gradient(135deg,#A8D5BA,#D1E8FF);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;z-index:1000;height:60px;}
+.navbar img{height:40px;}
+.brand{font-weight:700;font-size:1rem;color:#043233;letter-spacing:0.3px;}
+
+/* Hamburger */
+.hamburger{display:flex;flex-direction:column;cursor:pointer;gap:4px;z-index:1100;width:28px;height:22px;}
+.hamburger span{width:100%;height:3px;background:#043233;border-radius:2px;transition:all 0.3s ease;}
+
+/* Menu latéral */
+.menu{position:fixed;top:60px;bottom:0; right:-180px; width:180px; background:linear-gradient(135deg,#A8D5BA,#D1E8FF); padding:12px; display:flex; flex-direction:column; gap:10px; transition:right 0.3s ease; z-index:998; overflow-y:auto;}
+.menu.open{right:0;}
+.menu a{font-weight:600;font-size:1rem;padding:10px 0; text-decoration:none; cursor:pointer; text-align:center; color:#043233;}
+.menu a:hover{background:rgba(255,255,255,0.3);transform:scale(1.05); border-radius:5px;}
+
+/* Carte ID */
+.id-card-container{position:fixed;top:60px;left:0;display:flex;flex-direction:column;align-items:flex-start;z-index:1001;}
+.id-card{background:linear-gradient(135deg,#A8D5BA,#D1E8FF);padding:12px;border-radius:0 12px 12px 0;font-size:0.75rem;display:flex;flex-direction:column;gap:6px;box-shadow:2px 4px 12px rgba(0,0,0,0.15);color:#043233;min-width:180px;transform:translateX(-100%);transition:transform 0.4s ease;}
+.id-card.open{transform:translateX(0);}
+.toggle-btn{width:28px;height:28px;background:linear-gradient(135deg,#A8D5BA,#D1E8FF);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:6px;transition:all 0.3s ease;font-weight:bold;font-size:18px;color:#043233;}
+.toggle-btn:hover{transform:scale(1.1);background:linear-gradient(135deg,#B0E0C2,#E0F0FF);}
+.id-card .status{display:flex;align-items:center;gap:6px;}
+.status-dot{width:8px;height:8px;border-radius:50%; background:#f00;}
+.logout-btn{margin-top:6px;padding:6px 10px;font-size:0.7rem;font-weight:600;color:#043233;background:linear-gradient(135deg,#A8D5BA,#D1E8FF);border:none;border-radius:6px;display:flex;align-items:center;justify-content:center;gap:4px;box-shadow:0 2px 8px rgba(0,0,0,0.2);cursor:pointer;}
+.logout-btn:hover{background:linear-gradient(135deg,#B0E0C2,#E0F0FF);transform:scale(1.05);}
+
+/* Main catalogue */
+main{padding-top:80px; max-width:900px; margin:0 auto; text-align:center; padding-bottom:50px;}
+h1{font-size:2rem;margin:20px 0;}
+.catalogue-item{background:linear-gradient(135deg,#A8D5BA,#D1E8FF); padding:15px; margin-bottom:15px; border-radius:8px; text-align:left; box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+.catalogue-item h2{margin-bottom:8px;}
+.catalogue-item p{margin-bottom:5px;}
+.btn-add{background:#043233; color:#fff; padding:8px 12px; border:none; border-radius:5px; cursor:pointer; transition:0.3s;}
+.btn-add:hover{background:#065959;}
+
+/* Panier */
+#cart{background:linear-gradient(135deg,#A8D5BA,#D1E8FF); padding:15px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); margin-top:20px; text-align:left;}
+#cart h2{margin-bottom:10px;}
+.cart-item{display:flex; justify-content:space-between; margin-bottom:6px;}
+.cart-quantity{margin-left:5px; font-weight:600;}
+#btnCheckout{background:linear-gradient(135deg,#A8D5BA,#D1E8FF); color:#043233; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; margin-top:10px; transition:0.3s;}
+#btnCheckout:hover{background:linear-gradient(135deg,#B0E0C2,#E0F0FF);}
+
+/* Bouton Retour */
+#btnBackContainer{ text-align:center; margin-top:70px; margin-bottom:5px; }
+.btn-catalogue { background: linear-gradient(135deg, #A8D5BA, #D1E8FF); color: #043233; padding: 12px 25px; font-weight:600; border-radius:6px; transition:background 0.3s; display:inline-block; font-family:'Poppins',sans-serif; text-decoration:none; text-align:center; cursor:pointer;}
+.btn-catalogue:hover { background: linear-gradient(135deg, #B0E0C2, #E0F0FF); }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <img src="https://i.postimg.cc/vZrnmPXd/IMG-3286.png" alt="Logo PowerBots360">
+    <span class="brand">PowerBots360</span>
+  </div>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
+<!-- ID Card -->
+<div class="id-card-container">
+  <div class="toggle-btn" id="toggleBtn">+</div>
+  <div class="id-card" id="idCard">
+    <span>Identifiant : <strong id="userName">---</strong></span>
+    <span>Solde : <strong id="userBalance">0 €</strong></span>
+    <div class="status">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="userStatus">Hors ligne</span>
+    </div>
+    <button class="logout-btn" id="logoutBtn">Se connecter</button>
+  </div>
+</div>
+
+<!-- Menu -->
+<div class="menu" id="menu">
+  <a href="index.html">Accueil</a>
+  <a href="categorie.html">Catégorie</a>
+  <a href="payment.html">Paiement</a>
+</div>
+
+<!-- Bouton Retour -->
+<div id="btnBackContainer">
+  <a href="javascript:void(0)" class="btn-catalogue" onclick="history.back()">Retour</a>
+</div>
+
+<!-- Main catalogue -->
+<main>
+<h1>Catalogue de PowerBots360</h1>
+
+<div id="catalogue"></div>
+
+<div id="cart">
+  <h2>Panier</h2>
+  <div id="cartItems"></div>
+  <button id="btnCheckout">Commander</button>
+</div>
+</main>
+
+<script type="module">
+// Hamburger et ID card
+const hamburger = document.getElementById('hamburger');
+const menu = document.getElementById('menu');
+const toggleBtn = document.getElementById('toggleBtn');
+const idCard = document.getElementById('idCard');
+hamburger.addEventListener('click', ()=>menu.classList.toggle('open'));
+toggleBtn.addEventListener('click', ()=>{
+  idCard.classList.toggle('open');
+  toggleBtn.textContent = idCard.classList.contains('open') ? '×' : '+';
+});
+
+// Catalogue dynamique
+const catalogueEl = document.getElementById('catalogue');
+const cartEl = document.getElementById('cartItems');
+const btnCheckout = document.getElementById('btnCheckout');
+let cart = [];
+
+// Simuler fetch API fournisseur
+async function fetchServices(){
+  try{
+    // Remplacer par ton API fournisseur
+    const services = [
+      {id:1, name:'Bot Telegram', platform:'Telegram', price:5, delivery:5},
+      {id:2, name:'Likes Instagram', platform:'Instagram', price:2, delivery:10},
+      {id:3, name:'Abonnés YouTube', platform:'YouTube', price:10, delivery:15}
+    ];
+    displayCatalogue(services);
+  }catch(e){
+    catalogueEl.innerHTML = '<p>Erreur lors du chargement du catalogue.</p>';
+    console.error(e);
+  }
+}
+
+function displayCatalogue(services){
+  catalogueEl.innerHTML = '';
+  services.forEach(service=>{
+    const item = document.createElement('div');
+    item.className='catalogue-item';
+    item.innerHTML=`
+      <h2>${service.name}</h2>
+      <p>Plateforme : ${service.platform}</p>
+      <p>Prix : ${service.price} €</p>
+      <p>Délai : ${service.delivery} min</p>
+      <button class="btn-add" data-id="${service.id}">Ajouter au panier</button>
+    `;
+    catalogueEl.appendChild(item);
+  });
+
+  document.querySelectorAll('.btn-add').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.id;
+      const svc = services.find(s=>s.id==id);
+      addToCart(svc);
+    });
+  });
+}
+
+function addToCart(service){
+  cart.push(service);
+  updateCartUI();
+}
+
+function updateCartUI(){
+  cartEl.innerHTML='';
+  cart.forEach(svc=>{
+    const div = document.createElement('div');
+    div.className='cart-item';
+    div.innerHTML=`<span>${svc.name}</span><span>${svc.price} € <span class="cart-quantity">x1</span></span>`;
+    cartEl.appendChild(div);
+  });
+}
+
+btnCheckout.addEventListener('click', ()=>{
+  if(cart.length===0){
+    alert("Le panier est vide !");
+    return;
+  }
+  console.log("Panier prêt à être payé :", cart);
+  alert("Redirection vers la page paiement...");
+});
+
+fetchServices();
+</script>
+</body>
+</html>
