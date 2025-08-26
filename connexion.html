@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion — PowerBots360</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;width:100%;font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+body{background: linear-gradient(135deg,#A8D5BA,#D1E8FF);color:#043233;}
+a{color:inherit;text-decoration:none;}
+
+.navbar{
+  position:fixed;left:0;top:0;width:100%;
+  background: linear-gradient(135deg,#A8D5BA,#D1E8FF);
+  padding:12px 18px; display:flex;align-items:center;justify-content:space-between;
+  z-index:1000;
+}
+.navbar img{height:40px;}
+.brand{font-weight:700;font-size:1rem;color:#043233;}
+
+.hamburger{display:flex;flex-direction:column;cursor:pointer;gap:4px;width:28px;height:22px;}
+.hamburger span{width:100%;height:3px;background:#043233;border-radius:2px;}
+.menu{
+  position:fixed;top:60px;right:-220px;width:220px;height:calc(100% - 60px);
+  background:linear-gradient(135deg,#A8D5BA,#D1E8FF);
+  padding:12px;display:flex;flex-direction:column;gap:10px;transition:right .3s;overflow-y:auto;
+}
+.menu.open{right:0;}
+.menu a{font-weight:600;font-size:.9rem;padding:6px;border-radius:6px;transition:background .2s;}
+.menu a:hover{background:rgba(255,255,255,.3);transform:scale(1.03);}
+
+.container{
+  padding-top:80px;
+  max-width:400px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.login-box{
+  background:rgba(255,255,255,0.95);
+  padding:32px 28px;
+  border-radius:12px;
+  box-shadow:0 8px 26px rgba(6,40,30,0.08);
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  text-align:center;
+}
+.login-box h2{font-size:1.3rem;font-weight:700;color:#053827;margin-bottom:10px;}
+label{display:block;font-weight:600;margin-bottom:6px;text-align:left;}
+.input-wrapper{position:relative;}
+.input-wrapper input{
+  width:100%;padding:12px 12px 12px 42px;
+  border:1px solid rgba(5,58,40,0.2);border-radius:8px;
+  font-size:.95rem;outline:none;transition:border .2s,box-shadow .2s;
+}
+.input-wrapper input:focus{border-color:#053827;box-shadow:0 0 4px rgba(5,58,40,0.2);}
+.leading-icon{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  width:22px;height:22px;color:#043233;
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.btn{background:linear-gradient(135deg,#A8D5BA,#D1E8FF);color:#043233;font-weight:600;padding:12px;border-radius:8px;cursor:pointer;transition:background .3s;width:100%;border:none;margin-top:8px;}
+.btn:hover{background:linear-gradient(135deg,#B0E0C2,#E0F0FF);}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:8px;background: linear-gradient(135deg,#A8D5BA,#D1E8FF);color:#043233;border:none;border-radius:8px;padding:12px;font-weight:600;cursor:pointer;margin-top:8px;transition:background .3s;}
+.google-btn:hover{background:linear-gradient(135deg,#B0E0C2,#E0F0FF);}
+.google-btn img{display:inline-block;vertical-align:middle;}
+.checkbox-wrapper{display:flex;align-items:center;gap:10px;font-size:.9rem;font-weight:600;color:#043233;cursor:pointer;user-select:none;margin-top:6px;}
+.checkbox-wrapper input[type="checkbox"]{width:16px;height:16px;accent-color:#043233;cursor:pointer;margin:0;}
+.forgot-link{text-align:right;margin-top:-8px;margin-bottom:8px;font-size:.9rem;color:#053827;}
+.forgot-link a{color:#053827;text-decoration:underline;}
+.btn-return{display:inline-block;margin:20px 0;background:linear-gradient(135deg,#A8D5BA,#D1E8FF);color:#043233;padding:10px 20px;border-radius:6px;font-weight:600;cursor:pointer;text-decoration:none;}
+.btn-return:hover{background:linear-gradient(135deg,#B0E0C2,#E0F0FF);}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <img src="https://i.postimg.cc/vZrnmPXd/IMG-3286.png" alt="Logo PowerBots360">
+    <span class="brand">PowerBots360</span>
+  </div>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</div>
+
+<div class="menu" id="menu">
+  <a href="index.html">Accueil</a>
+  <a href="catalogue.html">Catégorie</a>
+  <a href="payment.html">Paiement</a>
+  <a href="juridique.html">Juridique</a>
+  <a href="bonnespratiques.html">Bonnes Pratiques</a>
+  <a href="connexion.html">Connexion</a>
+  <a href="inscription.html">Inscription</a>
+</div>
+
+<div class="container">
+  <a href="index.html" class="btn-return">Retour</a>
+  <div class="login-box">
+    <h2>Connexion</h2>
+    <label for="email">Adresse mail</label>
+    <div class="input-wrapper">
+      <span class="leading-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2" ry="2"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+      </span>
+      <input type="email" id="email" placeholder="Votre adresse mail" required>
+    </div>
+
+    <label for="password">Mot de passe</label>
+    <div class="input-wrapper">
+      <span class="leading-icon" id="togglePassword">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/>
+          <circle cx="12" cy="12" r="3.5"/>
+          <line id="eyeSlash" x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:none"/>
+        </svg>
+      </span>
+      <input type="password" id="password" placeholder="Votre mot de passe" required>
+    </div>
+
+    <div class="forgot-link">
+      <a href="#" id="forgotPasswordLink">Mot de passe ou adresse mail oublié(e) ?</a>
+    </div>
+
+    <div class="checkbox-wrapper">
+      <input type="checkbox" id="stayConnected">
+      <label for="stayConnected">Rester connecté</label>
+    </div>
+
+    <button class="btn" id="loginBtn">Se connecter</button>
+    <button class="google-btn" id="googleSignInBtn">
+      <img src="https://i.postimg.cc/0ysPh8Ld/IMG-3446.png" alt="Google" width="20">
+      Se connecter avec Google
+    </button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+// ⚠️ Remplace par tes vraies clés Firebase
+const firebaseConfig = {
+  apiKey: "VOTRE_API_KEY",
+  authDomain: "VOTRE_PROJECT_ID.firebaseapp.com",
+  projectId: "VOTRE_PROJECT_ID",
+  storageBucket: "VOTRE_PROJECT_ID.appspot.com",
+  messagingSenderId: "VOTRE_SENDER_ID",
+  appId: "VOTRE_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const loginBtn = document.getElementById('loginBtn');
+const googleSignInBtn = document.getElementById('googleSignInBtn');
+const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+
+// Connexion classique
+loginBtn.addEventListener('click', async (e) => {
+  e.preventDefault();
+  if(!emailInput.value || !passwordInput.value) return alert("Merci de remplir tous les champs !");
+  try {
+    await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+    window.location.href = 'index.html';
+  } catch (err) {
+    alert("Erreur connexion : " + err.message);
+  }
+});
+
+// Connexion Google
+googleSignInBtn.addEventListener('click', async () => {
+  const provider = new GoogleAuthProvider();
+  try {
+    await signInWithPopup(auth, provider);
+    window.location.href = 'index.html';
+  } catch (err) {
+    alert("Erreur Google Sign-In : " + err.message);
+  }
+});
+
+// Mot de passe oublié
+forgotPasswordLink.addEventListener('click', () => {
+  const email = prompt("Veuillez entrer votre adresse e-mail pour réinitialiser votre mot de passe :");
+  if(email) sendPasswordResetEmail(auth, email).then(()=>alert("E-mail envoyé !")).catch(e=>alert("Erreur : "+e.message));
+});
+
+// Hamburger menu
+const hamburger = document.getElementById('hamburger');
+const menu = document.getElementById('menu');
+hamburger.addEventListener('click', ()=>menu.classList.toggle('open'));
+
+// Toggle mot de passe
+const togglePassword = document.getElementById("togglePassword");
+const eyeSlash = document.getElementById("eyeSlash");
+togglePassword.addEventListener('click', ()=>{
+  if(passwordInput.type === "password"){passwordInput.type="text";eyeSlash.style.display="none";}
+  else{passwordInput.type="password";eyeSlash.style.display="block";}
+});
+</script>
+
+</body>
+</html>
