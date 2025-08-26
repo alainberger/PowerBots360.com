@@ -1,0 +1,86 @@
+<div class="id-card-container">
+  <div class="toggle-btn" id="toggleBtn">+</div>
+  <div class="id-card" id="idCard">
+    <span>Identifiant : <strong id="userName">---</strong></span>
+    <span>Solde : <strong id="userBalance">0 €</strong></span>
+    <div class="status">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="userStatus">Hors ligne</span>
+    </div>
+    <button class="logout-btn" id="loginBtn">Se connecter</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+// --- Config Firebase ---
+const firebaseConfig = {
+  apiKey: "AIzaSyChJoeaMJlj2F-7okhrPJYw868Z1RhgMFY",
+  authDomain: "powerbots360-2a163.firebaseapp.com",
+  projectId: "powerbots360-2a163",
+  storageBucket: "powerbots360-2a163.appspot.com",
+  messagingSenderId: "968053928320",
+  appId: "1:968053928320:web:c51f7be039c02f2fb69165"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// DOM
+const toggleBtn = document.getElementById('toggleBtn');
+const idCard = document.getElementById('idCard');
+const userNameEl = document.getElementById('userName');
+const userBalanceEl = document.getElementById('userBalance');
+const statusDot = document.getElementById('statusDot');
+const userStatusEl = document.getElementById('userStatus');
+const loginBtn = document.getElementById('loginBtn');
+
+// --- Toggle ID Card ---
+toggleBtn.addEventListener('click', () => {
+  idCard.classList.toggle('open');
+  toggleBtn.textContent = idCard.classList.contains('open') ? '×' : '+';
+});
+
+// --- UI Functions ---
+let unsubscribeBalance = null;
+
+function setOfflineUI() {
+  userNameEl.textContent = "---";
+  userBalanceEl.textContent = "0 €";
+  userStatusEl.textContent = "Hors ligne";
+  statusDot.classList.remove('online');
+  loginBtn.textContent = "Se connecter";
+  loginBtn.onclick = () => window.location.href = "connexion.html";
+  if (unsubscribeBalance) unsubscribeBalance();
+  unsubscribeBalance = null;
+}
+
+function setOnlineUI(user, balance = 0) {
+  userNameEl.textContent = user.displayName || user.email;
+  userBalanceEl.textContent = balance + " €";
+  userStatusEl.textContent = "En ligne";
+  statusDot.classList.add('online');
+  loginBtn.textContent = "Se déconnecter";
+  loginBtn.onclick = async () => {
+    await signOut(auth);
+    setOfflineUI();
+  };
+}
+
+// --- Firebase Auth Listener ---
+onAuthStateChanged(auth, user => {
+  if (user) {
+    const userDocRef = doc(db, "users", user.uid);
+    unsubscribeBalance = onSnapshot(userDocRef, docSnap => {
+      let balance = docSnap.exists() ? docSnap.data().balance || 0 : 0;
+      setOnlineUI(user, balance);
+    });
+  } else {
+    setOfflineUI();
+  }
+});
+</script>
