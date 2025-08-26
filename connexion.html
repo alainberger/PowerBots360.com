@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Connexion — PowerBots360</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;width:100%;font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased;}
+body{background: linear-gradient(135deg,#A8D5BA,#D1E8FF);color:#043233;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+.navbar{position:fixed;top:0;left:0;width:100%;background: linear-gradient(135deg,#A8D5BA,#D1E8FF);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;z-index:1000;height:60px;}
+.navbar img{height:40px;}
+.brand{font-weight:700;font-size:1.05rem;}
+.hamburger{display:flex;flex-direction:column;cursor:pointer;gap:4px;width:28px;height:22px;}
+.hamburger span{width:100%;height:3px;background:#043233;border-radius:2px;transition:all .3s;}
+.menu{position:fixed;top:60px;right:-220px;width:220px;height:calc(100% - 60px);background: linear-gradient(135deg,#A8D5BA,#D1E8FF);padding:12px;display:flex;flex-direction:column;gap:10px;transition:right .3s;overflow-y:auto;z-index:998;}
+.menu.open{right:0;}
+.menu a{font-weight:600;font-size:.9rem;padding:6px;border-radius:6px;transition:background .2s, transform .1s;}
+.menu a:hover{background:rgba(255,255,255,.3);transform:scale(1.03);}
+.id-card-container{position:fixed;top:60px;left:0;display:flex;flex-direction:column;align-items:flex-start;z-index:1001;}
+.toggle-btn{width:28px;height:28px;background:linear-gradient(135deg,#A8D5BA,#D1E8FF);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:6px;font-weight:bold;font-size:18px;color:#043233;transition:all .3s;}
+.id-card{background:linear-gradient(135deg,#A8D5BA,#D1E8FF);padding:12px;border-radius:0 12px 12px 0;font-size:.8rem;display:flex;flex-direction:column;gap:6px;min-width:200px;transform:translateX(-100%);transition:transform .4s;box-shadow:2px 4px 12px rgba(0,0,0,.15);}
+.id-card.open{transform:translateX(0);}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#E53935;transition:background-color .3s;}
+.status-dot.online{background:#4CAF50;}
+.logout-btn{margin-top:6px;padding:6px 10px;font-size:.75rem;font-weight:600;color:#043233;border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.login-box{background:rgba(255,255,255,0.96);padding:32px 28px;border-radius:12px;box-shadow:0 8px 26px rgba(6,40,30,0.08);max-width:380px;width:100%;display:flex;flex-direction:column;gap:16px;text-align:center;margin:100px auto 0;}
+.btn{background: linear-gradient(135deg,#A8D5BA,#D1E8FF);color:#043233;font-weight:600;padding:12px;border-radius:8px;cursor:pointer;width:100%;border:none;margin-top:8px;transition:background .3s;}
+.btn:hover{background:linear-gradient(135deg,#B0E0C2,#E0F0FF);}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:8px;background: linear-gradient(135deg,#A8D5BA,#D1E8FF);color:#043233;border:none;border-radius:8px;padding:12px;font-weight:600;cursor:pointer;margin-top:8px;transition:background .3s;}
+.google-btn:hover{background: linear-gradient(135deg,#B0E0C2,#E0F0FF);}
+.notification{position:fixed;top:70px;right:20px;background:linear-gradient(135deg,#A8D5BA,#D1E8FF);color:#043233;padding:12px 18px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.2);font-weight:600;display:none;z-index:1200;}
+</style>
+</head>
+<body>
+
+<header class="navbar">
+  <img src="https://i.postimg.cc/vZrnmPXd/IMG-3286.png" alt="Powerbots360 logo">
+  <div class="brand">PowerBots360</div>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</header>
+
+<div class="id-card-container">
+  <div class="toggle-btn" id="toggleBtn">+</div>
+  <div class="id-card" id="idCard">
+    <span>Identifiant : <strong id="userName">---</strong></span>
+    <span>Solde : <strong id="userBalance">0 €</strong></span>
+    <div class="status">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="userStatus">Hors ligne</span>
+    </div>
+    <button class="logout-btn" id="loginBtn">Se connecter</button>
+  </div>
+</div>
+
+<div class="menu" id="menu">
+  <a href="index.html">Accueil</a>
+  <a href="catalogue.html">Catégorie</a>
+  <a href="payment.html">Paiement</a>
+  <a href="juridique.html">Juridique</a>
+  <a href="bonnespratiques.html">Bonnes Pratiques</a>
+  <a href="connexion.html">Connexion</a>
+  <a href="inscription.html">Inscription</a>
+</div>
+
+<div class="login-box">
+  <h2>Connexion</h2>
+  <label for="email">Adresse mail</label>
+  <input type="email" id="email" placeholder="Votre adresse mail">
+  <label for="password">Mot de passe</label>
+  <input type="password" id="password" placeholder="Votre mot de passe">
+  <button class="btn" id="loginBtnForm">Se connecter</button>
+  <button class="google-btn" id="googleBtn">Se connecter avec Google</button>
+</div>
+
+<div class="notification" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "API_KEY_FIREBASE",
+  authDomain: "PROJECT_ID.firebaseapp.com",
+  projectId: "PROJECT_ID",
+  storageBucket: "PROJECT_ID.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// --- DOM ---
+const hamburger = document.getElementById('hamburger');
+const menu = document.getElementById('menu');
+const toggleBtn = document.getElementById('toggleBtn');
+const idCard = document.getElementById('idCard');
+const loginBtnUI = document.getElementById('loginBtn');
+const userNameEl = document.getElementById('userName');
+const userStatusEl = document.getElementById('userStatus');
+const statusDot = document.getElementById('statusDot');
+const balanceEl = document.getElementById('userBalance');
+const toast = document.getElementById('toast');
+const loginBtnForm = document.getElementById('loginBtnForm');
+const googleBtn = document.getElementById('googleBtn');
+
+// --- Toast ---
+const showToast = (msg)=>{
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=> toast.style.display='none',3000);
+}
+
+// --- Hamburger toggle ---
+hamburger.addEventListener('click', ()=> menu.classList.toggle('open'));
+
+// --- ID card toggle ---
+toggleBtn.addEventListener('click', ()=>{
+  idCard.classList.toggle('open');
+  toggleBtn.textContent = idCard.classList.contains('open') ? '×' : '+';
+});
+
+// --- Auth UI ---
+let unsubscribeBalance = null;
+const setOfflineUI = ()=>{
+  userNameEl.textContent = "---";
+  userStatusEl.textContent = "Hors ligne";
+  statusDot.classList.remove('online');
+  balanceEl.textContent = "0 €";
+  loginBtnUI.textContent = "Se connecter";
+  loginBtnUI.onclick = ()=> window.location.href="connexion.html";
+  if(unsubscribeBalance) unsubscribeBalance();
+};
+const setOnlineUI = (user, balance=0)=>{
+  userNameEl.textContent = user.displayName || user.email;
+  userStatusEl.textContent = "En ligne";
+  statusDot.classList.add('online');
+  balanceEl.textContent = balance+" €";
+  loginBtnUI.textContent = "Se déconnecter";
+  loginBtnUI.onclick = async ()=>{
+    await signOut(auth);
+    setOfflineUI();
+    showToast("Au revoir "+(user.displayName || user.email));
+  };
+};
+
+onAuthStateChanged(auth,(user)=>{
+  if(user){
+    const balanceDoc = doc(db,"users",user.uid);
+    unsubscribeBalance = onSnapshot(balanceDoc,(docSnap)=>{
+      let balance = docSnap.exists()? docSnap.data().balance || 0 : 0;
+      setOnlineUI(user,balance);
+      showToast("Bonjour "+(user.displayName || user.email));
+    });
+  }else setOfflineUI();
+});
+
+// --- Login classique ---
+loginBtnForm.addEventListener('click', async ()=>{
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  if(!email || !password){ showToast("Merci de remplir tous les champs !"); return; }
+  try{
+    await signInWithEmailAndPassword(auth,email,password);
+  }catch(e){ showToast("Erreur connexion : "+e.message);}
+});
+
+// --- Login Google ---
+googleBtn.addEventListener('click', async ()=>{
+  const provider = new GoogleAuthProvider();
+  try{
+    const result = await signInWithPopup(auth,provider);
+  }catch(e){ showToast("Erreur Google : "+e.message);}
+});
+</script>
+
+</body>
+</html>
