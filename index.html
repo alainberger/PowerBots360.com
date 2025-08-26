@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PowerBots360 — Accueil</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;width:100%;font-family:'Poppins',sans-serif;overflow-x:hidden;}
+:root{--bg-start:#A8D5BA;--bg-end:#D1E8FF;--text:#043233;--id-card-gradient:linear-gradient(135deg,#A8D5BA,#D1E8FF);}
+body{background:linear-gradient(135deg,var(--bg-start),var(--bg-end));color:var(--text);}
+a{text-decoration:none;color:inherit;}
+.navbar{position:fixed;top:0;left:0;width:100%;background:var(--id-card-gradient);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;z-index:1000;height:60px;}
+.navbar img{height:40px;}
+.brand{font-weight:700;font-size:1rem;}
+.hamburger{display:flex;flex-direction:column;cursor:pointer;gap:4px;width:28px;height:22px;}
+.hamburger span{width:100%;height:3px;background:var(--text);border-radius:2px;}
+.menu{position:fixed;top:60px;right:-220px;width:220px;height:calc(100% - 60px);background:var(--id-card-gradient);padding:12px;display:flex;flex-direction:column;gap:10px;transition:right .3s;overflow-y:auto;}
+.menu.open{right:0;}
+.menu a{font-weight:600;font-size:.9rem;padding:6px;border-radius:6px;transition:background .2s, transform .1s;}
+.menu a:hover{background:rgba(255,255,255,.3);transform:scale(1.03);}
+.id-card-container{position:fixed;top:60px;left:0;display:flex;flex-direction:column;align-items:flex-start;z-index:1001;}
+.toggle-btn{width:28px;height:28px;background:var(--id-card-gradient);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:6px;transition:all .3s;font-weight:bold;font-size:18px;color:var(--text);}
+.toggle-btn:hover{transform:scale(1.1);}
+.id-card{background:var(--id-card-gradient);padding:12px;border-radius:0 12px 12px 0;font-size:.8rem;display:flex;flex-direction:column;gap:6px;box-shadow:2px 4px 12px rgba(0,0,0,.15);min-width:200px;transform:translateX(-100%);transition:transform .4s;}
+.id-card.open{transform:translateX(0);}
+.id-card .status{display:flex;align-items:center;gap:6px;}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#E53935;transition:background-color .3s;}
+.status-dot.online{background:#4CAF50;}
+.logout-btn{margin-top:6px;padding:6px 10px;font-size:.75rem;font-weight:600;color:var(--text);border:none;border-radius:6px;display:flex;align-items:center;justify-content:center;gap:4px;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;background:linear-gradient(135deg,#B0E0C2,#E0F0FF);}
+.content{padding-top:80px;text-align:center;max-width:900px;margin:0 auto;}
+.content h1{font-size:2rem;margin-bottom:15px;}
+.content p{font-size:1.05rem;max-width:640px;margin:0 auto 25px;line-height:1.5;}
+.btn-catalogue{background:var(--id-card-gradient);color:var(--text);padding:12px 24px;font-weight:600;border-radius:6px;cursor:pointer;}
+.btn-catalogue:hover{background:linear-gradient(135deg,#B0E0C2,#E0F0FF);}
+.notification{position:fixed;top:70px;right:20px;background:linear-gradient(135deg,#A8D5BA,#D1E8FF);color:#043233;padding:12px 18px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.2);font-weight:600;display:none;z-index:1200;}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <img src="https://i.postimg.cc/vZrnmPXd/IMG-3286.png" alt="Logo PowerBots360">
+    <span class="brand">PowerBots360</span>
+  </div>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</div>
+
+<div class="id-card-container">
+  <div class="toggle-btn" id="toggleBtn">+</div>
+  <div class="id-card" id="idCard">
+    <span>Identifiant : <strong id="userName">---</strong></span>
+    <span>Solde : <strong id="userBalance">0 €</strong></span>
+    <div class="status">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="userStatus">Hors ligne</span>
+    </div>
+    <button class="logout-btn" id="loginBtn">Se connecter</button>
+  </div>
+</div>
+
+<div class="menu" id="menu">
+  <a href="index.html">Accueil</a>
+  <a href="catalogue.html">Catalogue</a>
+  <a href="payment.html">Paiement</a>
+  <a href="juridique.html">Juridique</a>
+  <a href="bonnespratiques.html">Bonnes Pratiques</a>
+  <a href="connexion.html">Connexion</a>
+  <a href="inscription.html">Inscription</a>
+</div>
+
+<div class="content">
+  <h1>Bienvenue sur <strong>PowerBots360</strong></h1>
+  <p>Notre plateforme SMM vous offre des <strong>services performants et fiables</strong>, pensés pour maximiser votre impact digital et sécuriser vos résultats sur tous vos réseaux.</p>
+  <button class="btn-catalogue" id="catalogBtn">Voir le catalogue</button>
+</div>
+
+<div class="notification" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+// --- Firebase config ---
+const firebaseConfig = {
+  apiKey: "API_KEY_FIREBASE",
+  authDomain: "PROJECT_ID.firebaseapp.com",
+  projectId: "PROJECT_ID",
+  storageBucket: "PROJECT_ID.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// --- DOM elements ---
+const toggleBtn = document.getElementById('toggleBtn');
+const idCard = document.getElementById('idCard');
+const userNameEl = document.getElementById('userName');
+const userBalanceEl = document.getElementById('userBalance');
+const statusDot = document.getElementById('statusDot');
+const userStatusEl = document.getElementById('userStatus');
+const loginBtn = document.getElementById('loginBtn');
+const catalogBtn = document.getElementById('catalogBtn');
+const hamburger = document.getElementById('hamburger');
+const menu = document.getElementById('menu');
+const toast = document.getElementById('toast');
+
+let unsubscribeBalance = null;
+
+// --- Toggle ID Card ---
+toggleBtn.addEventListener('click', ()=>{
+  idCard.classList.toggle('open');
+  toggleBtn.textContent = idCard.classList.contains('open') ? '×' : '+';
+});
+
+// --- Hamburger menu ---
+hamburger.addEventListener('click', ()=> menu.classList.toggle('open'));
+
+// --- Catalogue bouton ---
+catalogBtn.addEventListener('click', ()=> window.location.href='catalogue.html');
+
+// --- Toast ---
+function showToast(msg){
+  toast.textContent = msg;
+  toast.style.display='block';
+  setTimeout(()=>toast.style.display='none',3000);
+}
+
+// --- UI offline ---
+const setOfflineUI = ()=>{
+  userNameEl.textContent = "---";
+  userStatusEl.textContent = "Hors ligne";
+  statusDot.classList.remove('online');
+  userBalanceEl.textContent = "0 €";
+  loginBtn.textContent = "Se connecter";
+  loginBtn.onclick = ()=> window.location.href="connexion.html";
+  if(unsubscribeBalance) unsubscribeBalance();
+  unsubscribeBalance = null;
+};
+
+// --- UI online ---
+const setOnlineUI = (user, balance=0)=>{
+  userNameEl.textContent = user.displayName || user.email;
+  userStatusEl.textContent = "En ligne";
+  statusDot.classList.add('online');
+  userBalanceEl.textContent = balance + " €";
+  loginBtn.textContent = "Se déconnecter";
+  loginBtn.onclick = async ()=>{
+    await signOut(auth);
+    setOfflineUI();
+    showToast(`Au revoir ${user.displayName || user.email} !`);
+  };
+};
+
+// --- Listener Auth ---
+onAuthStateChanged(auth, (user)=>{
+  if(user){
+    const balanceDocRef = doc(db,"users",user.uid);
+    unsubscribeBalance = onSnapshot(balanceDocRef,(docSnap)=>{
+      let balance = 0;
+      if(docSnap.exists()) balance = docSnap.data().balance || 0;
+      setOnlineUI(user, balance);
+      showToast(`Bienvenue ${user.displayName || user.email} !`);
+    });
+  }else{
+    setOfflineUI();
+  }
+});
+</script>
+</body>
+</html>
